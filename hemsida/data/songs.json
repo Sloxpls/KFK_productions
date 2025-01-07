@@ -1,0 +1,12 @@
+[
+  {
+    "title": "Song 1",
+    "audio": "src/assets/audio/song1.mp3",
+    "cover": "src/assets/images/cover1.webp"
+  },
+  {
+    "title": "Song 2",
+    "audio": "src/assets/audio/song2.mp3",
+    "cover": "src/assets/images/cover2.webp"
+  }
+]
