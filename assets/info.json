@@ -1,0 +1,154 @@
+{
+    "assets": [
+        {
+            "song": "../../assets/song/Nattklubben.mp3",
+            "image": "../../assets/img/Nattklubben.jpg",
+            "output_video": "../../assets/final/Nattklubben.mp4",
+            "background_video": "../../assets/background/dj.mp4"
+        },
+        {
+            "song": "../../assets/song/Mitä vittua!.mp3",
+            "image": "../../assets/img/Mitä Vittua!.jpg",
+            "output_video": "../../assets/final/Mitä vittua!.mp4",
+            "background_video": "../../assets/background/rave.mp4"
+        },
+        {
+            "song": "../../assets/song/B230 och hemkört (Remix) A.mp3",
+            "image": "../../assets/img/B230 Och Hemkört (Remix).jpg",
+            "output_video": "../../assets/final/B230 och hemkört (Remix) A.mp4",
+            "background_video": "../../assets/background/b230.mp4"
+        },
+        {
+            "song": "../../assets/song/B230 och hemkört A.mp3",
+            "image": "../../assets/img/B230 och hemkört A.mp3",
+            "output_video": "../../assets/final/B230 och hemkört A.mp4",
+            "background_video": "../../assets/background/b230.mp4"
+        },
+        {
+            "song": "../../assets/song/Förfest.mp3",
+            "image": "../../assets/img/Förfest.jpg",
+            "output_video": "../../assets/final/Förfest.mp4",
+            "background_video": "../../assets/background/party.mp4"
+        },
+        {
+            "song": "../../assets/song/spendere peng.mp3",
+            "image": "../../assets/img/Spendere Peng (Hardstyle).jpg",
+            "output_video": "../../assets/final/spendere peng.mp4",
+            "background_video": "../../assets/background/d24.mp4"
+        },
+        {
+            "song": "../../assets/song/öl, sprit och vin.mp3",
+            "image": "../../assets/img/Öl, Sprit Och Vin.jpg",
+            "output_video": "../../assets/final/öl, sprit och vin.mp4",
+            "background_video": "../../assets/background/party.mp4"
+        },
+        {
+            "song": "../../assets/song/Rävsax.mp3",
+            "image": "../../assets/img/Rävsax.jpg",
+            "output_video": "../../assets/final/Rävsax.mp4",
+            "background_video": "../../assets/background/turbobunout.mp4.mp4"
+        },
+        {
+            "song": "../../assets/song/Gud eller gin.mp3",
+            "image": "../../assets/img/Gud Eller Gin.jpg",
+            "output_video": "../../assets/final/Gud eller gin.mp4",
+            "background_video": "../../assets/background/rave.mp4"
+        },
+        {
+            "song": "../../assets/song/Dagstur i Dalarna.mp3",
+            "image": "../../assets/img/Dagstur I Dalarna.webp",
+            "output_video": "../../assets/final/Dagstur i Dalarna.mp4",
+            "background_video": "../../assets/background/rave.mp4"
+        },
+        {
+            "song": "../../assets/song/Arboga 10.2.mp3",
+            "image": "../../assets/img/Arboga 10.2.jpg",
+            "output_video": "../../assets/final/Arboga 10.2.mp4",
+            "background_video": "../../assets/background/party.mp4"
+        },
+        {
+            "song": "../../assets/song/Heroin i Halmstad.mp3",
+            "image": "../../assets/img/Heroin I Halmstad.webp",
+            "output_video": "../../assets/final/Heroin i Halmstad.mp4",
+            "background_video": "../../assets/background/rave.mp4"
+        },
+        {
+            "song": "../../assets/song/Berit från boden.mp3",
+            "image": "../../assets/img/Berit Från Boden.webp",
+            "output_video": "../../assets/final/Berit från boden.mp4",
+            "background_video": "../../assets/background/party.mp4"
+        },
+        {
+            "song": "../../assets/song/Sala Sheriffen.mp3",
+            "image": "../../assets/img/Sala Sheriffen.png",
+            "output_video": "../../assets/final/Sala Sheriffen.mp4",
+            "background_video": "../../assets/background/rave.mp4"
+        },
+        {
+            "song": "../../assets/song/Simones.mp3",
+            "image": "../../assets/song/Simones.webp",
+            "output_video": "../../assets/final/Simones.mp4",
+            "background_video": "../../assets/background/party.mp4"
+        },
+        {
+            "song": "../../assets/song/tio komma tvåan.mp3",
+            "image": "../../assets/song/Tio Komma Tvåan (fem komma tvåan).jpg",
+            "output_video": "../../assets/final/tio komma tvåan.mp4",
+            "background_video": "../../assets/background/rave.mp4"
+        },
+        {
+            "song": "../../assets/song/Betänkar blues.mp3",
+            "image": "../../assets/song/Betänkar blues.webp",
+            "output_video": "../../assets/final/Betänkar blues.mp4",
+            "background_video": "../../assets/background/party.mp4"
+        },
+        {
+            "song": "../../assets/song/MOTORIKENE.mp3",
+            "image": "../../assets/song/MOTORIKENE.webp",
+            "output_video": "../../assets/final/MOTORIKENE.mp4",
+            "background_video": "../../assets/background/rave.mp4"
+        },
+        {
+            "song": "../../assets/song/Ockelbo 2025.mp3",
+            "image": "../../assets/song/Ockelbo 2025.jpg",
+            "output_video": "../../assets/final/Ockelbo 2025.mp4",
+            "background_video": "../../assets/background/party.mp4"
+        },
+        {
+            "song": "../../assets/song/Sjöbo I Sitt Loft 2028.mp3",
+            "image": "../../assets/song/Sjöbo I Sitt Loft 2028.webp",
+            "output_video": "../../assets/final/Sjöbo I Sitt Loft 2028.mp4",
+            "background_video": "../../assets/background/rave.mp4"
+        },
+        {
+            "song": "../../assets/song/Mörkrädd B.mp3",
+            "image": "../../assets/song/Mörkrädd.png",
+            "output_video": "../../assets/final/Mörkrädd B.mp4",
+            "background_video": "../../assets/background/party.mp4"
+        },
+        {
+            "song": "../../assets/song/Postorder Blondin.mp3",
+            "image": "../../assets/song/Postorder Blondin.png",
+            "output_video": "../../assets/final/Postorder Blondin.mp4",
+            "background_video": "../../assets/background/rave.mp4"
+        },
+        {
+            "song": "../../assets/song/Ladd Och Laddtryck.mp3",
+            "image": "../../assets/song/Ladd Och Laddtryck.png",
+            "output_video": "../../assets/final/Ladd Och Laddtryck.mp4",
+            "background_video": "../../assets/background/party.mp4"
+        },
+        {
+            "song": "../../assets/song/Krama ett Träd.mp3",
+            "image": "../../assets/song/Krama ett Träd.jpg",
+            "output_video": "../../assets/final/Krama ett Träd.mp4",
+            "background_video": "../../assets/background/rave.mp4"
+        },
+        {
+            "song": "../../assets/song/Fylla på Fjell.mp3",
+            "image": "../../assets/song/Fylla på Fjell.jpg",
+            "output_video": "../../assets/final/Fylla på Fjell.mp4",
+            "background_video": "../../assets/background/Fjällen.mp4"
+        }
+    ]
+}

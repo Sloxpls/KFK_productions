@@ -1,3 +1,5 @@
+import json
+
 from moviepy import ImageClip, VideoFileClip, CompositeVideoClip, AudioFileClip, concatenate_videoclips
 from PIL import Image, ImageDraw
 
@@ -66,33 +68,38 @@ class VideoCreator:
 
         final_video.write_videofile(
             self.output_video_path,
-            fps=1,
+            fps=30,
             audio_codec="aac",
             threads=24
         )
         print(f"Video saved to {self.output_video_path}")
 
 
+def main():
+    try:
+        with open("../../assets/info.json", "r") as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        print("Error: Could not find 'info.json' or the file contains invalid data.")
+        return
+
+    for asset in data.get("assets", []):
+        try:
+            song_image = asset["image"]
+            song_audio = asset["song"]
+            background_video = asset["background_video"]
+            output_video = asset["output_video"]
+
+            # Create video
+            video_creator = VideoCreator(song_image, song_audio, background_video, output_video)
+            video_creator.create_final_video()
+        except KeyError as e:
+            print(f"Error: Missing key {e} in asset data.")
+        except Exception as e:
+            print(f"Error processing asset: {e}")
+
+
 if __name__ == "__main__":
-    SONG_IMAGES = [
-        "../../assets/img/Nattklubben.jpg",
-        "../../assets/img/Fylla på Fjell.jpg"
-    ]
-    SONG_AUDIOS = [
-        "../../assets/song/Nattklubben.mp3",
-        "../../assets/song/Fylla på Fjell.mp3"
+    main()
 
-    ]
-    BACKGROUND_VIDEOS = [
-        "../../assets/background/dj.mp4",
-        "../../assets/background/Fjällen.mp4"
-    ]
-    OUTPUT_VIDEOS = [
-        "../../assets/final/Nattklubben.mp4",
-        "../../assets/final/Fylla på Fjell.mp4"
-    ]
 
-    for song_image, song_audio, background_video, output_video in zip(SONG_IMAGES, SONG_AUDIOS, BACKGROUND_VIDEOS,
-                                                                      OUTPUT_VIDEOS):
-        video_creator = VideoCreator(song_image, song_audio, background_video, output_video)
-        video_creator.create_final_video()
