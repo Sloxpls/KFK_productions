@@ -1,4 +1,5 @@
 import json
+import os
 
 from moviepy import ImageClip, VideoFileClip, CompositeVideoClip, AudioFileClip, concatenate_videoclips
 from PIL import Image, ImageDraw
@@ -90,7 +91,10 @@ def main():
             background_video = asset["background_video"]
             output_video = asset["output_video"]
 
-            # Create video
+            if os.path.exists(output_video):
+                print(f"Skipping {output_video}: File already exists.")
+                continue
+
             video_creator = VideoCreator(song_image, song_audio, background_video, output_video)
             video_creator.create_final_video()
         except KeyError as e:
