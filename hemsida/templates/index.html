@@ -1,65 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simple SoundCloud</title>
-  <link rel="stylesheet" href="../static/css/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KFK produktions</title>
+    <link rel="stylesheet" href="../static/css/styles.css">
 </head>
+<
 <body>
-  <header>
-    <h1>Simple SoundCloud</h1>
-  </header>
+<header>
+    <h1>Hello</h1>
+</header>
+<main>
+    <div id="popup" class="popup hidden">
+        <p id="popup-message"></p>
+        <button onclick="closePopup()">OK</button>
+    </div>
 
-  <main>
-    <section id="upload-section">
-      <h2>Upload Song</h2>
-      <form action="/upload" method="post" enctype="multipart/form-data">
-        <label for="song-name">Song Name:</label>
-        <input type="text" id="song-name" name="song-name" required>
+    <div id="drag-and-drop" class="drag-drop-area">
+        <p>Drag and drop your files here, or click the button to choose files.</p>
+        <input type="file" id="file-input" multiple hidden>
+        <button id="upload-button">Choose Files</button>
+        <button id="confirm-upload" disabled>Upload Files</button>
+        <div id="file-list"></div> <!-- Här visas filnamnen -->
+    </div>
 
-        <label for="song-file">Song File:</label>
-        <input type="file" id="song-file" name="song-file" accept="audio/*" required>
+    <div id="song-list">
+        <h2>All Songs</h2>
+        <ul>
+            <li>
+                <div class="song">
+                    <div class="song-details">
+                        <h3>Song Title 1</h3>
+                        <p>Artist: John Doe</p>
+                        <p>Album: Best Hits</p>
+                        <p>Duration: 3:45</p>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="song">
+                    <div class="song-details">
+                        <h3>Song Title 2</h3>
+                        <p>Artist: Jane Smith</p>
+                        <p>Album: Chill Vibes</p>
+                        <p>Duration: 4:20</p>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="song">
+                    <div class="song-details">
+                        <h3>Song Title 3</h3>
+                        <p>Artist: The Cool Band</p>
+                        <p>Album: Summer 2025</p>
+                        <p>Duration: 2:55</p>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</main>
+<script type="module" src="../static/js/main.js"></script>
 
-        <label for="image-file">Image File:</label>
-        <input type="file" id="image-file" name="image-file" accept="image/*" required>
-
-        <label for="output-video">Output Video:</label>
-        <input type="file" id="output-video" name="output-video" accept="video/*">
-
-        <label for="background-video">Background Video:</label>
-        <input type="file" id="background-video" name="background-video" accept="video/*">
-
-        <label for="tags">Tags (comma-separated):</label>
-        <input type="text" id="tags" name="tags">
-
-        <button type="submit">Upload</button>
-      </form>
-    </section>
-
-    <section id="songs-list">
-      <h2>Saved Songs</h2>
-      <ul>
-        {% for song in songs %}
-        <li>
-          <h3>{{ song.name }}</h3>
-          <p>Tags: {{ song.tags }}</p>
-          <audio controls src="{{ song.song_path }}"></audio>
-          <img src="{{ song.image_path }}" alt="{{ song.name }}" style="max-width: 200px;">
-          {% if song.output_video_path %}
-          <video controls src="{{ song.output_video_path }}" style="max-width: 400px;"></video>
-          {% endif %}
-          {% if song.background_video_path %}
-          <video controls src="{{ song.background_video_path }}" style="max-width: 400px;"></video>
-          {% endif %}
-        </li>
-        {% endfor %}
-      </ul>
-    </section>
-  </main>
-
-  <footer>
-    <p>© 2025 Simple SoundCloud</p>
-  </footer>
 </body>
 </html>

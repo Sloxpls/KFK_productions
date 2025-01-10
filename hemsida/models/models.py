@@ -1,36 +1,36 @@
-import os
 import sqlite3
-database_file = "database.db"
-
-
+import os
 
 class Models:
     def __init__(self):
         self.database_file = "database.db"
-
         self.create_database()
-        self.connection_test()
-        self.create_table()
+
+    def load_query(self, query_file):
+        with open(query_file, 'r') as file:
+            return file.read()
 
     def create_database(self):
-        if not os.path.exists(self.database_file):
-            connection = sqlite3.connect(database_file)
-            cursor = connection.cursor()
+        """Initialize the database and create tables if they do not exist."""
+        query = self.load_query("queries/create_media_files.sql")
+        with sqlite3.connect(self.database_file) as conn:
+            cursor = conn.cursor()
+            cursor.execute(query)
+            conn.commit()
 
-    def create_table(self):
-        try:
-            with sqlite3.connect(self.database_file) as conn:
-                # create a cursor
-                cursor = conn.cursor()
+    def save_file(self, filename, file_type, file_data):
+        """Save a file as a binary blob in the database."""
+        query = self.load_query("queries/insert_file.sql")
+        with sqlite3.connect(self.database_file) as conn:
+            cursor = conn.cursor()
+            cursor.execute(query, (filename, file_type, file_data))
+            conn.commit()
+            return cursor.lastrowid
 
-                # execute statements
-                for statement in sql_statements:
-                    cursor.execute(statement)
-
-                # commit the changes
-                conn.commit()
-
-                print("Tables created successfully.")
-        except sqlite3.OperationalError as e:
-            print("Failed to create tables:", e)
-
+    def retrieve_file(self, file_id):
+        """Retrieve a file's metadata and binary data from the database."""
+        query = self.load_query("queries/select_file.sql")
+        with sqlite3.connect(self.database_file) as conn:
+            cursor = conn.cursor()
+            cursor.execute(query, (file_id,))
+            return cursor.fetchone()
