@@ -19,3 +19,11 @@ confirmUpload.addEventListener('click', uploadFiles);
 
 // Setup drag-and-drop area
 setupDragAndDrop();
+
+
+import { fetchSongs } from "./songs.js";
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Hämta låtar när sidan är redo
+    fetchSongs();
+});

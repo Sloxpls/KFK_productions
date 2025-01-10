@@ -161,4 +161,21 @@ li {
 #confirm-upload:hover:enabled {
     background-color: #218838;
 }
+.song-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.song-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.download-link, .stream-link {
+    margin-right: 10px;
+    text-decoration: none;
+    color: blue;
+}
 

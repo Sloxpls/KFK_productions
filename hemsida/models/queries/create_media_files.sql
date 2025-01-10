@@ -1,6 +1,0 @@
-CREATE TABLE IF NOT EXISTS media_files (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    filename TEXT NOT NULL,
-    file_type TEXT NOT NULL,
-    data BLOB NOT NULL
-);
