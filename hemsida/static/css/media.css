@@ -1,4 +1,24 @@
-/* Styles for the media library */
+/* Media Grid */
+form {
+  margin-top: 20px;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+fieldset {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  background-color: #fff;
+}
+
+legend {
+  font-weight: bold;
+  color: #333;
+}
 .media-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -11,6 +31,7 @@
   border-radius: 5px;
   overflow: hidden;
   text-align: center;
+  padding: 10px;
 }
 
 .media-item img, .media-item video {

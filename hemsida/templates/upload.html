@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload</title>
-    <link rel="stylesheet" href="/static/css/base.css">
-    <link rel="stylesheet" href="/static/css/upload.css">
+    <link rel="stylesheet" href="../static/css/base.css">
+    <link rel="stylesheet" href="../static/css/upload.css">
 
 </head>
 <body>
@@ -42,8 +42,8 @@
         <!-- Song File -->
         <fieldset>
             <legend>Song File</legend>
-            <label for="song_file">Choose a Song File:</label>
-            <input type="file" id="song_file" name="song_file" accept=".mp3,.wav" required>
+            <div id="song-drop-zone" class="drop-zone">Drag and drop your song file here or click to select</div>
+            <input type="file" id="song_file" name="song_file" accept=".mp3,.wav" required style="display: none;">
 
             <label for="song_genere">Song Genre:</label>
             <input type="text" id="song_genere" name="song_genere" placeholder="Enter song genre">
@@ -52,15 +52,16 @@
         <!-- Image Data -->
         <fieldset>
             <legend>Image Data</legend>
-            <label for="img_file">Choose an Image File:</label>
-            <input type="file" id="img_file" name="img_file" accept=".jpg,.png" required>
+            <div id="img-drop-zone" class="drop-zone">Drag and drop your image file here or click to select</div>
+            <input type="file" id="img_file" name="img_file" accept=".jpg,.png" required style="display: none;">
         </fieldset>
 
         <button type="submit">Upload</button>
     </form>
 
+
 </div>
 
-<script src="/static/js/upload.js"></script>
+<script src="../static/js/upload.js"></script>
 </body>
 </html>

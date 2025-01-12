@@ -13,9 +13,12 @@ class Track(db.Model):
     title = db.Column(db.String(255), nullable=False)
     beskrivning = db.Column(db.Text, nullable=True)
     created_date = db.Column(db.DateTime, default=db.func.current_timestamp())
-
-    # One-to-one relationship with Song
-    song = db.relationship('Song', backref='track', uselist=False)
+    song = db.relationship(
+        'Song',
+        backref='track',
+        uselist=False,
+        cascade="all, delete-orphan"
+    )
 
 
 class Song(db.Model):
@@ -69,3 +72,12 @@ class Social(db.Model):
     spotify = db.Column(db.Text)
     tiktok = db.Column(db.Text)
     andra_medier = db.Column(db.Text)
+
+class Media(db.Model):
+    __tablename__ = 'media'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    filename = db.Column(db.String(255), nullable=False)
+    file_type = db.Column(db.String(50), nullable=False)  # e.g., 'image', 'video'
+    file_data = db.Column(db.LargeBinary, nullable=False)
+    uploaded_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+    description = db.Column(db.Text, nullable=True)

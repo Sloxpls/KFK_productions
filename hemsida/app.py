@@ -9,6 +9,7 @@ from api.routes import (
     socials_routes
 )
 from db.models import db
+from hemsida.api.routes.media import media_routes
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///music.db'
@@ -25,6 +26,7 @@ app.register_blueprint(producers_routes, url_prefix='/api')
 app.register_blueprint(images_routes, url_prefix='/api')
 app.register_blueprint(videos_routes, url_prefix='/api')
 app.register_blueprint(socials_routes, url_prefix='/api')
+app.register_blueprint(media_routes, url_prefix='/api')
 
 print("Registered routes:")
 for rule in app.url_map.iter_rules():
@@ -45,4 +47,4 @@ def media():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)

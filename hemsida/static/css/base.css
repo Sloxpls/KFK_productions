@@ -1,0 +1,113 @@
+/* Base Styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+}
+
+p {
+  margin: 0 0 10px;
+}
+
+.container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+a {
+  color: #007BFF;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Navigation Bar */
+.navbar {
+  background-color: #333;
+  color: white;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.navbar-container {
+  display: flex;
+  gap: 15px;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  padding: 5px 10px;
+}
+
+.nav-link:hover {
+  background-color: #555;
+  border-radius: 5px;
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+thead {
+  background-color: #f4f4f4;
+}
+
+th, td {
+  text-align: left;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tbody tr:hover {
+  background-color: #f1f1f1;
+}
+#drop-zone {
+  margin: 10px 0;
+  padding: 20px;
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  text-align: center;
+  color: #777;
+  cursor: pointer;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+#drop-zone.dragover {
+  background-color: #f0f8ff;
+  border-color: #007bff;
+  color: #007bff;
+}
+/* Drag-and-Drop Zones */
+.drop-zone {
+    margin-top: 10px;
+    padding: 20px;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    text-align: center;
+    color: #777;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.drop-zone.dragover {
+    background-color: #f0f8ff;
+    border-color: #007bff;
+    color: #007bff;
+}

@@ -1,16 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
     const tableBody = document.querySelector("#song-table-body");
     const errorMessage = document.querySelector("#error-message");
-    const modal = document.querySelector("#song-modal");
-    const closeModal = document.querySelector("#close-modal");
-
-    // Modal Fields
-    const modalTitle = document.querySelector("#modal-title");
-    const modalGenre = document.querySelector("#modal-genre");
-    const modalDuration = document.querySelector("#modal-duration");
-    const modalDescription = document.querySelector("#modal-description");
-    const modalDownload = document.querySelector("#modal-download");
-    const modalStream = document.querySelector("#modal-stream");
 
     try {
         // Fetch songs from the API
@@ -34,21 +24,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                   <td>${song.song_genere || "N/A"}</td>
                   <td>${song.song_duration || "N/A"} sekunder</td>
                   <td>
-                    <a href="/api/songs/download/${song.track_id}" target="_blank">Ladda ner</a> |
-                    <a href="/api/songs/stream/${song.track_id}" target="_blank">Streama</a>
+                    <a href="/api/songs/download/${song.track_id}" download>Ladda ner</a>
+                    <br>
+                    <audio src="/api/songs/stream/${song.track_id}" controls></audio>
                   </td>
                 `;
-
-                // Add click event to the row
-                row.addEventListener("click", () => {
-                    modal.style.display = "block"; // Show modal
-                    modalTitle.textContent = song.title || "N/A";
-                    modalGenre.textContent = song.song_genere || "N/A";
-                    modalDuration.textContent = song.song_duration || "N/A";
-                    modalDescription.textContent = "No description available."; // Replace with API data if available
-                    modalDownload.href = `/api/songs/download/${song.track_id}`;
-                    modalStream.href = `/api/songs/stream/${song.track_id}`;
-                });
 
                 tableBody.appendChild(row);
             });
@@ -59,16 +39,4 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.error("Error fetching songs:", error);
         errorMessage.textContent = "An error occurred while fetching data.";
     }
-
-    // Close modal when clicking the close button
-    closeModal.addEventListener("click", () => {
-        modal.style.display = "none";
-    });
-
-    // Close modal when clicking outside the modal content
-    window.addEventListener("click", (event) => {
-        if (event.target === modal) {
-            modal.style.display = "none";
-        }
-    });
 });
