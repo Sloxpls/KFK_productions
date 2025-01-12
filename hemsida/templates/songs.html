@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Song List</title>
+  <link rel="stylesheet" href="/static/css/base.css">
+<link rel="stylesheet" href="/static/css/songs.css">
+
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="/" class="nav-link">Home</a>
+      <a href="/upload" class="nav-link">Uploads</a>
+      <a href="/media" class="nav-link">Media Library</a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container">
+    <h1>Song List</h1>
+    <p id="error-message" style="color: red;"></p>
+    <table>
+      <thead>
+    <tr>
+      <th>Image</th>
+      <th>Title</th>
+      <th>Genre</th>
+      <th>Duration</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+      <tbody id="song-table-body">
+        <!-- Songs will be populated here dynamically -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal for Song Details -->
+  <div id="song-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span id="close-modal" class="close">&times;</span>
+      <h2 id="modal-title">Song Title</h2>
+      <p><strong>Genre:</strong> <span id="modal-genre"></span></p>
+      <p><strong>Duration:</strong> <span id="modal-duration"></span> seconds</p>
+      <p><strong>Description:</strong> <span id="modal-description">No description available.</span></p>
+      <div>
+        <a id="modal-download" href="#" target="_blank">Download Song</a> |
+        <a id="modal-stream" href="#" target="_blank">Stream Song</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/songs.js"></script>
+</body>
+</html>

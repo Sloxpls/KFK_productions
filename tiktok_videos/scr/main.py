@@ -1,6 +1,5 @@
 import json
 import os
-
 from moviepy import ImageClip, VideoFileClip, CompositeVideoClip, AudioFileClip, concatenate_videoclips
 from PIL import Image, ImageDraw
 
@@ -81,8 +80,9 @@ def main():
         with open("../../assets/info.json", "r") as file:
             data = json.load(file)
     except FileNotFoundError:
-        print("Error: Could not find 'info.json' or the file contains invalid data.")
+        print("Error: Could not find 'infomdszfoböi.json' or the file contains invalid data.")
         return
+
 
     for asset in data.get("assets", []):
         try:
@@ -92,9 +92,10 @@ def main():
             output_video = asset["output_video"]
 
             if os.path.exists(output_video):
-                print(f"Skipping {output_video}: File already exists.")
+                print(f"Skipping: {output_video} already exists.")
                 continue
 
+            # Create video
             video_creator = VideoCreator(song_image, song_audio, background_video, output_video)
             video_creator.create_final_video()
         except KeyError as e:

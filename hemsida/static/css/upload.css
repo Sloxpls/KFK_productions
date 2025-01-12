@@ -1,0 +1,16 @@
+/* Styles for the upload page */
+form {
+  margin-top: 20px;
+}
+
+fieldset {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+}
+
+legend {
+  font-weight: bold;
+  color: #333;
+}

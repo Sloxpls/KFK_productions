@@ -1,0 +1,26 @@
+/* Styles for the media library */
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.media-item {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow: hidden;
+  text-align: center;
+}
+
+.media-item img, .media-item video {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.media-item p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #555;
+}

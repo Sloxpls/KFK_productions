@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Library</title>
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/media.css">
+
+</head>
+<body>
+<!-- Navigation Bar -->
+<nav class="navbar">
+    <div class="navbar-container">
+        <a href="/" class="nav-link">Home</a>
+        <a href="/upload" class="nav-link">Uploads</a>
+        <a href="/media" class="nav-link">Media Library</a>
+
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container">
+    <h1>Media Library</h1>
+    <p id="error-message" style="color: red;"></p>
+    <div id="media-grid" class="media-grid">
+        <!-- Images and videos will be dynamically populated here -->
+    </div>
+</div>
+
+<script src="/static/js/media.js"></script>
+</body>
+</html>

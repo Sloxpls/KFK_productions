@@ -1,0 +1,10 @@
+/* Styles for the home page */
+.container h1 {
+  text-align: center;
+  color: #333;
+}
+
+.home-content {
+  text-align: center;
+  margin-top: 30px;
+}
