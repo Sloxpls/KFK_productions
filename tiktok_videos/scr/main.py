@@ -3,7 +3,6 @@ import os
 from moviepy import ImageClip, VideoFileClip, CompositeVideoClip, AudioFileClip, concatenate_videoclips
 from PIL import Image, ImageDraw
 
-
 class VideoCreator:
     LP_IMAGE_PATH = "../../assets/img/skiva.png"
     TEMP_LP_IMAGE_PATH = "temp_lp.png"
@@ -44,8 +43,10 @@ class VideoCreator:
         lp_record_image.paste(resized_song_image, (x_offset, y_offset), mask=resized_song_image)
         lp_record_image.save(self.TEMP_LP_IMAGE_PATH)
 
-        spinning_lp_clip = ImageClip(self.TEMP_LP_IMAGE_PATH, duration=duration)
-        return spinning_lp_clip.rotated(lambda t: t * 360 / self.SPINNING_DURATION)
+        spinning_lp_clip = ImageClip(self.TEMP_LP_IMAGE_PATH).with_duration(duration)
+        spinning_lp_clip = spinning_lp_clip.rotated(lambda t: t * 360 / self.SPINNING_DURATION)
+
+        return spinning_lp_clip
 
     def create_final_video(self):
         """Create the final video combining spinning LP and background video."""
@@ -70,19 +71,19 @@ class VideoCreator:
             self.output_video_path,
             fps=30,
             audio_codec="aac",
-            threads=24
+            threads=24,
+            preset="ultrafast"
+
         )
         print(f"Video saved to {self.output_video_path}")
-
 
 def main():
     try:
         with open("../../assets/info.json", "r") as file:
             data = json.load(file)
     except FileNotFoundError:
-        print("Error: Could not find 'infomdszfoböi.json' or the file contains invalid data.")
+        print("Error: Could not find '../../assets/info.json' or the file contains invalid data.")
         return
-
 
     for asset in data.get("assets", []):
         try:
@@ -103,8 +104,5 @@ def main():
         except Exception as e:
             print(f"Error processing asset: {e}")
 
-
 if __name__ == "__main__":
     main()
-
-

@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from db.models import db, Video
+from hemsida.database_models.models import Video, db
 
 videos_routes = Blueprint('videos_routes', __name__)
 

@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from db.models import db, Playlist
+from hemsida.database_models.models import Playlist, db
 
 playlists_routes = Blueprint('playlists_routes', __name__)
 

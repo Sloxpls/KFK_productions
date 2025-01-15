@@ -1,8 +1,6 @@
 from flask import Blueprint, jsonify, request, send_file
-from db.models import db, Media
+from hemsida.database_models.models import Media, db
 from io import BytesIO
-import os
-
 media_routes = Blueprint('media_routes', __name__)
 
 # Upload a media file

@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from db.models import db, Track
+from hemsida.database_models.models import Track, db
 
 # Correctly define the Blueprint
 tracks_routes = Blueprint('tracks_routes', __name__)
@@ -50,9 +50,6 @@ def create_track():
     db.session.add(new_track)
     db.session.commit()
     return jsonify({"message": "Track created successfully"}), 201
-
-from flask import Blueprint, request, jsonify
-from db.models import db, Track
 
 # Define the Blueprint
 tracks_routes = Blueprint('tracks_routes', __name__)

@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from db.models import db, Social
+from hemsida.database_models.models import Social, db
 
 socials_routes = Blueprint('socials_routes', __name__)
 

@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request, send_file, Response
-from db.models import db, Song, Track
+from hemsida.database_models.models import Song, db
 from mutagen.mp3 import MP3
 from mutagen.wave import WAVE
 from io import BytesIO

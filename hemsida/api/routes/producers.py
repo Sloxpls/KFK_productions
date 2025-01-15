@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from db.models import db, Producer
+from hemsida.database_models.models import  Producer, db
 
 producers_routes = Blueprint('producers_routes', __name__)
 

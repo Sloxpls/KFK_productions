@@ -1,7 +1,7 @@
 from io import BytesIO
 
 from flask import Blueprint, jsonify, request, send_file
-from db.models import db, Image
+from hemsida.database_models.models import Image, db
 
 images_routes = Blueprint('images_routes', __name__)
 
