@@ -3,12 +3,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   const uploadForm = document.querySelector("#upload-form");
   const dropZone = document.createElement("div");
 
-  // Add a drag-and-drop area
   dropZone.id = "drop-zone";
   dropZone.textContent = "Drag and drop files here or click to upload";
-  uploadForm.prepend(dropZone); // Add drop zone above the form
 
-  // Fetch and display all media
+  uploadForm.prepend(dropZone);
   async function fetchMedia() {
     try {
       const response = await fetch("/api/media");
@@ -17,13 +15,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
 
       const media = await response.json();
-      mediaGrid.innerHTML = ""; // Clear the grid
+      mediaGrid.innerHTML = "";
 
       media.forEach(item => {
         const mediaItem = document.createElement("div");
         mediaItem.classList.add("media-item");
 
-        // Handle different file types
+
         if (item.file_type === "image") {
           mediaItem.innerHTML = `
             <img src="/api/media/${item.id}" alt="${item.filename}">
@@ -51,7 +49,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // Handle drag-and-drop events
+
   dropZone.addEventListener("dragover", (event) => {
     event.preventDefault();
     dropZone.classList.add("dragover");
@@ -70,18 +68,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       const formData = new FormData();
       Array.from(files).forEach(file => formData.append("file", file));
 
-      // Upload files via drag-and-drop
       uploadFiles(formData);
     }
   });
 
   dropZone.addEventListener("click", () => {
-    // Simulate a click on the file input to open file dialog
+
     const fileInput = uploadForm.querySelector("input[type='file']");
     fileInput.click();
   });
 
-  // Handle file upload
+
   uploadForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     const formData = new FormData(uploadForm);
@@ -102,7 +99,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       const result = await response.json();
       alert(result.message);
-      fetchMedia(); // Refresh media list
+      fetchMedia();
     } catch (error) {
       console.error("Error uploading file:", error);
     }

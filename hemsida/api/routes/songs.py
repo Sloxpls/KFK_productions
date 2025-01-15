@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request, send_file, Response
-from hemsida.database_models.models import Song, db
+from hemsida.database_models.models import Song, db, Track
 from mutagen.mp3 import MP3
 from mutagen.wave import WAVE
 from io import BytesIO
@@ -9,10 +9,7 @@ songs_routes = Blueprint('songs_routes', __name__)
 
 @songs_routes.route('/songs', methods=['GET'])
 def get_songs():
-    # Fetch all tracks with their associated songs
     tracks = Track.query.all()
-
-    # Serialize the data
     return jsonify([
         {
             "track_id": track.id,

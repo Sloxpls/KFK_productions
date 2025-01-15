@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const songFileInput = document.querySelector("#song_file");
     const imgFileInput = document.querySelector("#img_file");
 
-    // Function to setup drag-and-drop for a specific zone
     function setupDragAndDrop(dropZone, fileInput) {
         dropZone.addEventListener("dragover", (event) => {
             event.preventDefault();
@@ -22,27 +21,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const files = event.dataTransfer.files;
             if (files.length > 0) {
-                fileInput.files = files; // Assign the dropped files to the input element
-                dropZone.textContent = files[0].name; // Show file name in the drop zone
+                fileInput.files = files;
+                dropZone.textContent = files[0].name;
             }
         });
 
         dropZone.addEventListener("click", () => {
-            fileInput.click(); // Trigger file dialog on click
+            fileInput.click();
         });
 
         fileInput.addEventListener("change", () => {
             if (fileInput.files.length > 0) {
-                dropZone.textContent = fileInput.files[0].name; // Show file name when selected
+                dropZone.textContent = fileInput.files[0].name;
             }
         });
     }
 
-    // Setup drag-and-drop for song and image files
     setupDragAndDrop(songDropZone, songFileInput);
     setupDragAndDrop(imgDropZone, imgFileInput);
 
-    // Handle form submission
     uploadForm.addEventListener("submit", async (event) => {
         event.preventDefault();
         const formData = new FormData(uploadForm);
