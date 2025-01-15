@@ -46,21 +46,52 @@ def create_social():
     db.session.commit()
     return jsonify({"message": "Social entry created successfully", "id": new_social.id}), 201
 
-# Update an existing social link
-@socials_routes.route('/socials/<int:social_id>', methods=['PUT'])
-def update_social(social_id):
-    social = Social.query.get(social_id)
-    if not social:
-        return jsonify({"error": "Social entry not found"}), 404
+@socials_routes.route('/social/<int:social_id>', methods=['PUT'])
+def update_or_create_social(social_id):
+    data = request.json  # JSON payload
+    if not data:
+        return jsonify({"error": "No data provided"}), 400
 
-    data = request.json
-    social.instagram = data.get('instagram', social.instagram)
-    social.youtube = data.get('youtube', social.youtube)
-    social.spotify = data.get('spotify', social.spotify)
-    social.tiktok = data.get('tiktok', social.tiktok)
-    social.andra_medier = data.get('andra_medier', social.andra_medier)
-    db.session.commit()
-    return jsonify({"message": "Social entry updated successfully"})
+    # Find the Social record by ID
+    social = Social.query.get(social_id)
+
+    if social:
+        # Update existing record
+        fields_to_update = ["instagram", "youtube", "spotify", "tiktok", "andra_medier"]
+        for field in fields_to_update:
+            if field in data:
+                setattr(social, field, data[field])
+        message = "Social data updated successfully"
+    else:
+        # Create a new record if it doesn't exist
+        social = Social(
+            id=social_id,  # Explicitly set the ID
+            instagram=data.get("instagram"),
+            youtube=data.get("youtube"),
+            spotify=data.get("spotify"),
+            tiktok=data.get("tiktok"),
+            andra_medier=data.get("andra_medier")
+        )
+        db.session.add(social)
+        message = "Social data created successfully"
+
+    try:
+        db.session.commit()
+        return jsonify({
+            "message": message,
+            "social": {
+                "id": social.id,
+                "instagram": social.instagram,
+                "youtube": social.youtube,
+                "spotify": social.spotify,
+                "tiktok": social.tiktok,
+                "andra_medier": social.andra_medier
+            }
+        }), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
 
 # Delete a social link
 @socials_routes.route('/socials/<int:social_id>', methods=['DELETE'])

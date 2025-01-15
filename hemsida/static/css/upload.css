@@ -1,83 +1,30 @@
-/* Styles for the upload page */
+/* Specific Styling for Upload Page */
 form {
-  margin-top: 20px;
-  background-color: #f9f9f9;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 fieldset {
-  border: 1px solid #ddd;
-  padding: 15px;
-  margin-bottom: 15px;
-  border-radius: 5px;
-  background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 15px;
 }
 
 legend {
-  font-weight: bold;
-  color: #333;
-}
-
-label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-  color: #555;
+    font-weight: bold;
+    font-size: 16px;
 }
 
 input[type="text"],
-input[type="file"],
-textarea,
-select {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 14px;
+input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
-input[type="text"]:focus,
-input[type="file"]:focus,
-textarea:focus,
-select:focus {
-  outline: none;
-  border-color: #007BFF;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-}
-
-button[type="submit"] {
-  background-color: #007BFF;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 5px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-button[type="submit"]:hover {
-  background-color: #0056b3;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  form {
-    padding: 15px;
-  }
-
-  input[type="text"],
-  input[type="file"],
-  textarea,
-  select {
-    font-size: 12px;
-  }
-
-  button[type="submit"] {
-    font-size: 14px;
-    padding: 8px 12px;
-  }
+button {
+    align-self: flex-end;
 }

@@ -1,8 +1,9 @@
 from flask import Blueprint, jsonify, request
 from hemsida.database_models.models import Track, db
 
-# Correctly define the Blueprint
 tracks_routes = Blueprint('tracks_routes', __name__)
+
+
 @tracks_routes.route('/tracks', methods=['GET'])
 def get_tracks():
     tracks = Track.query.all()
@@ -17,6 +18,37 @@ def get_tracks():
         "title": track.title,
         "beskrivning": track.beskrivning
     } for track in tracks])
+
+
+@tracks_routes.route('/tracks/<int:track_id>', methods=['PUT'])
+def update_track(track_id):
+    # Find the Track by ID
+    track = Track.query.get(track_id)
+    if not track:
+        return jsonify({"error": "Track not found"}), 404
+
+    data = request.json  # JSON payload from the client
+
+    # Allowed fields for partial update
+    fields_to_update = ["title", "song_genere"]
+    for field in fields_to_update:
+        if field in data:
+            setattr(track, field, data[field])
+
+    try:
+        db.session.commit()
+        return jsonify({
+            "message": "Track updated successfully",
+            "track": {
+                "id": track.id,
+                "title": track.title,
+                "song_genere": track.song_genere
+                # Add other fields if you want to return them
+            }
+        }), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
 
 @tracks_routes.route('/tracks/<int:track_id>', methods=['GET'])
 def get_track(track_id):
@@ -50,34 +82,6 @@ def create_track():
     db.session.add(new_track)
     db.session.commit()
     return jsonify({"message": "Track created successfully"}), 201
-
-# Define the Blueprint
-tracks_routes = Blueprint('tracks_routes', __name__)
-
-@tracks_routes.route('/tracks', methods=['POST'])
-def upload_track():
-    try:
-        # Extract form data
-        title = request.form.get('title')
-        if not title:
-            return jsonify({"error": "Title is required"}), 400
-
-        # Create a new Track instance
-        new_track = Track(title=title)
-
-        # Save to the database
-        db.session.add(new_track)
-        db.session.commit()
-
-        # Return the new track's ID
-        return jsonify({
-            "message": "Track created successfully",
-            "id": new_track.id  # Generated track_id
-        }), 201
-
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
 @tracks_routes.route('/tracks/<int:track_id>', methods=['DELETE'])
 def delete_track(track_id):

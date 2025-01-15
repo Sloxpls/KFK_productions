@@ -1,113 +1,132 @@
-/* Base Styles */
+/* General Reset */
+body, h1, h2, h3, p, ul, ol, table, th, td {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body Styling */
 body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  margin: 0;
-}
-
-p {
-  margin: 0 0 10px;
-}
-
-.container {
-  padding: 20px;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-a {
-  color: #007BFF;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-/* Navigation Bar */
+/* Navbar Styling */
 .navbar {
-  background-color: #333;
-  color: white;
-  padding: 10px;
-  display: flex;
-  justify-content: center;
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
 }
 
 .navbar-container {
-  display: flex;
-  gap: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
 }
 
 .nav-link {
-  color: white;
-  text-decoration: none;
-  padding: 5px 10px;
+    color: #fff;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 5px;
 }
 
 .nav-link:hover {
-  background-color: #555;
-  border-radius: 5px;
+    background-color: #555;
 }
 
-/* Table */
+/* Container */
+.container {
+    margin: 20px auto;
+    max-width: 800px;
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Buttons */
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Tables */
 table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-thead {
-  background-color: #f4f4f4;
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
 }
 
 th, td {
-  text-align: left;
-  padding: 10px;
-  border: 1px solid #ddd;
+    text-align: left;
+    padding: 10px;
+    border: 1px solid #ccc;
 }
 
-tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
+th {
+    background-color: #f2f2f2;
 }
 
-tbody tr:hover {
-  background-color: #f1f1f1;
-}
-#drop-zone {
-  margin: 10px 0;
-  padding: 20px;
-  border: 2px dashed #ccc;
-  border-radius: 10px;
-  text-align: center;
-  color: #777;
-  cursor: pointer;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+.editButton {
+    background-color: #ffc107;
+    color: black;
 }
 
-#drop-zone.dragover {
-  background-color: #f0f8ff;
-  border-color: #007bff;
-  color: #007bff;
+.saveButton {
+    background-color: #28a745;
+    color: white;
 }
-/* Drag-and-Drop Zones */
+
+/* Drop Zones */
 .drop-zone {
-    margin-top: 10px;
-    padding: 20px;
     border: 2px dashed #ccc;
-    border-radius: 10px;
+    padding: 20px;
     text-align: center;
-    color: #777;
+    border-radius: 10px;
     cursor: pointer;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-.drop-zone.dragover {
-    background-color: #f0f8ff;
+.drop-zone:hover {
     border-color: #007bff;
-    color: #007bff;
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 100%;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    cursor: pointer;
 }
