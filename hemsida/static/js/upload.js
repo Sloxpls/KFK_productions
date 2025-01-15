@@ -40,25 +40,69 @@ document.addEventListener("DOMContentLoaded", () => {
     setupDragAndDrop(songDropZone, songFileInput);
     setupDragAndDrop(imgDropZone, imgFileInput);
 
+
     uploadForm.addEventListener("submit", async (event) => {
         event.preventDefault();
-        const formData = new FormData(uploadForm);
 
         try {
-            const response = await fetch("/api/media", {
-                method: "POST",
-                body: formData,
-            });
+            // Tracks FormData
+            const fromDataTracks = new FormData();
+            fromDataTracks.append('title', document.getElementById('title').value || null);
 
-            if (!response.ok) {
-                throw new Error("Failed to upload file.");
+            // Step 1: Upload Track and get track_id
+            const trackResponse = await uploadToEndpoint('/api/tracks', fromDataTracks);
+            const trackId = trackResponse.id; // Assuming the response includes the generated track_id
+            console.log(trackId)
+            if (!trackId) {
+                throw new Error('Failed to generate track ID.');
             }
 
-            const result = await response.json();
-            alert(result.message);
+            // Songs FormData
+            const fromDataSong = new FormData();
+
+            const songFile = document.getElementById('song_file').files[0];
+            console.log('Selected File:', songFile);
+
+
+            if (songFile) {
+                fromDataSong.append('song_file', songFile); // Attach the file
+            } else {
+                throw new Error('Song file is required');
+            }
+
+            fromDataSong.append('song_genere', document.getElementById('song_genere').value || null);
+
+            fromDataSong.append('track_id', trackId); // Link to track ID
+            await uploadToEndpoint('/api/songs', fromDataSong);
+
+            // Images FormData
+            const fromDataImg = new FormData();
+            const imgFile = document.getElementById('img_file').files[0];
+            if (imgFile) {
+                fromDataImg.append('img_file', imgFile);
+            }
+            fromDataImg.append('track_id', trackId); // Link to track ID
+            await uploadToEndpoint('/api/images', fromDataImg);
+
+            alert('All uploads were successful!');
         } catch (error) {
-            console.error("Error uploading file:", error);
-            alert("An error occurred while uploading your files.");
+            console.error('Error during upload:', error);
+            alert(`An error occurred: ${error.message}`);
         }
     });
+
+    async function uploadToEndpoint(endpoint, formData) {
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || `Failed to upload to ${endpoint}`);
+        }
+
+        return response.json(); // Return JSON response for further use
+    }
+
 });
