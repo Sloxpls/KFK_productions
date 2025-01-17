@@ -18,3 +18,22 @@ audio {
     margin-top: 5px;
     width: 100%;
 }
+
+#songs-table {
+    margin-top: 20px;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.editable {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+}
+
+.editable input {
+    width: 100%;
+    box-sizing: border-box;
+    background-color: rgba(221, 221, 221, 0.3);
+}

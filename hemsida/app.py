@@ -2,6 +2,9 @@ import os
 from flask import Flask, render_template, request, session, jsonify
 from hemsida.api.routes import *
 from hemsida.database_models.models import db
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 
@@ -87,4 +90,4 @@ def media():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(debug=True, host="192.168.1.14")
+    app.run(debug=True, port=5000)

@@ -8,15 +8,53 @@ document.addEventListener("DOMContentLoaded", async () => {
             fetch("/api/socials")
         ]);
 
-        if (!songsResponse.ok || !socialResponse.ok) {
-            throw new Error("Failed to fetch data.");
+        if (!songsResponse.ok) {
+            throw new Error(`Songs API responded with status ${songsResponse.status}: ${songsResponse.statusText}`);
+        }
+
+        if (!socialResponse.ok) {
+            throw new Error(`Socials API responded with status ${socialResponse.status}: ${socialResponse.statusText}`);
         }
 
         const songs = await songsResponse.json();
         const socials = await socialResponse.json();
+        /*const songs = [
+          {
+            track_id: 1,
+            title: "Summer Vibes",
+            song_genere: "Pop",
+            song_duration: 210
+          },
+          {
+            track_id: 2,
+            title: "Midnight Groove",
+            song_genere: "Jazz",
+            song_duration: 180
+          }
+        ]
+        const socials = [
+          {
+            track_id: 1,
+            instagram: "@summerVibes",
+            youtube: "youtube.com/summerVibes",
+            spotify: "spotify.com/summerVibes",
+            tiktok: "@summerVibesTikTok",
+            andra_medier: "bandcamp.com/summerVibes"
+          },
+          {
+            track_id: 2,
+            instagram: "@midnightGroove",
+            youtube: "youtube.com/midnightGroove",
+            spotify: "spotify.com/midnightGroove",
+            tiktok: "@midnightGrooveOfficial",
+            andra_medier: "soundcloud.com/midnightGroove"
+          }
+        ]*/
 
         if (songs.length > 0) {
             for (const song of songs) {
+                const songSocials = socials.find((social) => social.track_id === song.track_id) || {};
+
                 const row = document.createElement("tr");
                 row.dataset.id = song.track_id;
 
@@ -36,11 +74,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                         <br>
                         <audio src="/api/songs/stream/${song.track_id}" controls></audio>
                     </td>
-                    <td class="editable" data-field="instagram">${socials.instagram || "N/A"}</td>
-                    <td class="editable" data-field="youtube">${socials.youtube || "N/A"}</td>
-                    <td class="editable" data-field="spotify">${socials.spotify || "N/A"}</td>
-                    <td class="editable" data-field="tiktok">${socials.tiktok || "N/A"}</td>
-                    <td class="editable" data-field="andra_medier">${socials.andra_medier || "N/A"}</td>
+                    
+                    <td class="editable" data-field="instagram">${songSocials.instagram || "N/A"}</td>
+                    <td class="editable" data-field="youtube">${songSocials.youtube || "N/A"}</td>
+                    <td class="editable" data-field="spotify">${songSocials.spotify || "N/A"}</td>
+                    <td class="editable" data-field="tiktok">${songSocials.tiktok || "N/A"}</td>
+                    <td class="editable" data-field="andra_medier">${songSocials.andra_medier || "N/A"}</td>
                 `;
 
                 const editButton = document.createElement("button");
