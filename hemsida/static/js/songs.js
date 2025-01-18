@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const socials = [
           {
             track_id: 1,
-            instagram: "@summerVibes",
+            instagram: "https://www.instagram.com/instagram/",
             youtube: "youtube.com/summerVibes",
             spotify: "spotify.com/summerVibes",
             tiktok: "@summerVibesTikTok",
@@ -58,29 +58,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const row = document.createElement("tr");
                 row.dataset.id = song.track_id;
 
-                row.innerHTML = `
-                    <td>
-                        <img 
-                          src="/api/images/${song.track_id}" 
-                          alt="Track Image" 
-                          style="width: 50px; height: 50px; object-fit: cover;"
-                        >
-                    </td>
-                    <td class="editable" data-field="title">${song.title || "N/A"}</td>
-                    <td class="editable" data-field="song_genere">${song.song_genere || "N/A"}</td>
-                    <td>${song.song_duration || "N/A"} sekunder</td>
-                    <td>
-                        <a href="/api/songs/download/${song.track_id}" download>Ladda ner</a>
-                        <br>
-                        <audio src="/api/songs/stream/${song.track_id}" controls></audio>
-                    </td>
-                    
-                    <td class="editable" data-field="instagram">${songSocials.instagram || "N/A"}</td>
-                    <td class="editable" data-field="youtube">${songSocials.youtube || "N/A"}</td>
-                    <td class="editable" data-field="spotify">${songSocials.spotify || "N/A"}</td>
-                    <td class="editable" data-field="tiktok">${songSocials.tiktok || "N/A"}</td>
-                    <td class="editable" data-field="andra_medier">${songSocials.andra_medier || "N/A"}</td>
-                `;
+                row.innerHTML = generateRowHTML(song, songSocials, isEditing);
 
                 const editButton = document.createElement("button");
                 editButton.innerText = "Redigera";
@@ -102,7 +80,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
+let isEditing = false;
+
 const editRow = (id, row) => {
+    isEditing = true;
     console.log(`Editing row with ID: ${id}`);
 
     const editableCells = row.querySelectorAll(".editable");
@@ -195,6 +176,7 @@ const editRow = (id, row) => {
                 cell.innerText = input.value;
             });
 
+            isEditing = false;
             console.log("Save successful. Updating UI.");
             saveButton.replaceWith(editButton);
         } catch (error) {
@@ -203,3 +185,52 @@ const editRow = (id, row) => {
         }
     });
 };
+
+const generateRowHTML = (song, songSocials, isEditing) => `
+    <td>
+        <img 
+          src="/api/images/${song.track_id}" 
+          alt="Track Image" 
+          style="width: 50px; height: 50px; object-fit: cover;"
+        >
+    </td>
+    <td class="editable" data-field="title">${song.title || "N/A"}</td>
+    <td class="editable" data-field="song_genere">${song.song_genere || "N/A"}</td>
+    <td>${song.song_duration || "N/A"} sekunder</td>
+    <td>
+        <a href="/api/songs/download/${song.track_id}" download>Ladda ner</a>
+        <br>
+        <audio src="/api/songs/stream/${song.track_id}" controls></audio>
+    </td>
+    <td class="editable" data-field="instagram">
+        ${isEditing 
+            ? `<input type="text" value="${songSocials.instagram || ""}" data-field="instagram">`
+            : (songSocials.instagram 
+            ? `<a href="${songSocials.instagram}" target="_blank" rel="noopener noreferrer">
+                <button type="button">
+                    🔗 
+                </button>
+            </a>`
+            : "N/A")}
+    </td>
+    <td class="editable" data-field="youtube">
+        ${isEditing 
+            ? `<input type="text" value="${songSocials.youtube || ""}" data-field="youtube">`
+            : (songSocials.youtube || "N/A")}
+    </td>
+    <td class="editable" data-field="spotify">
+        ${isEditing 
+            ? `<input type="text" value="${songSocials.spotify || ""}" data-field="spotify">`
+            : (songSocials.spotify || "N/A")}
+    </td>
+    <td class="editable" data-field="tiktok">
+        ${isEditing 
+            ? `<input type="text" value="${songSocials.tiktok || ""}" data-field="tiktok">`
+            : (songSocials.tiktok || "N/A")}
+    </td>
+    <td class="editable" data-field="andra_medier">
+        ${isEditing 
+            ? `<input type="text" value="${songSocials.andra_medier || ""}" data-field="andra_medier">`
+            : (songSocials.andra_medier || "N/A")}
+    </td>
+`;
