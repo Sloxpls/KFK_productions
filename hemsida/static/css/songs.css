@@ -37,3 +37,35 @@ audio {
     box-sizing: border-box;
     background-color: rgba(221, 221, 221, 0.3);
 }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    text-align: left;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+th {
+    background-color: rgba(242, 242, 242, 0.3);
+}
+
+.editButton {
+    background-color: #ffc107;
+    color: black;
+}
+
+.saveButton {
+    background-color: #28a745;
+    color: white;
+}
+
+.container h1 {
+    display: flex;
+    justify-content: center;
+
+}

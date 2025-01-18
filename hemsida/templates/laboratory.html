@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Laboratory
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/laboratory.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<main>
+    <h1>
+        Laboratory
+    </h1>
+    <header>
+        <button id="add-lyrics-button">Add New Lyrics</button>
+    </header>
+      <div class="lyrics-cards">
+          <!--
+            title h2
+            lyrics p
+            -->
+      </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/laboratory.js') }}"></script>
+{% endblock %}

@@ -5,6 +5,7 @@ body, h1, h2, h3, p, ul, ol, table, th, td {
     box-sizing: border-box;
 }
 
+
 body {
     font-family: Arial, sans-serif;
     background: rgb(2,0,36);
@@ -16,19 +17,14 @@ body {
 
 .navbar {
     background-color: rgba(51, 51, 51, 0.3);
-    color: #fff;
     padding: 10px;
-}
-
-.navbar-container {
     display: flex;
     justify-content: center;
-    gap: 20px;
 }
 
-.nav-link {
-    color: #fff;
-    text-decoration: none;
+.navbar a {
+    color: #ffffff;
+    text-decoration: wavy;
     padding: 5px 10px;
     border-radius: 5px;
 }
@@ -37,7 +33,6 @@ body {
     background-color: rgba(67, 123, 231, 0.3);
 }
 
-/* Container */
 .container {
     max-width: fit-content;
     background-color: rgba(255, 255, 255, 0.3);
@@ -48,7 +43,6 @@ body {
     overflow-x: auto;
 }
 
-/* Buttons */
 button {
     background-color: #007bff;
     color: white;
@@ -62,47 +56,8 @@ button:hover {
     background-color: #0056b3;
 }
 
-/* Tables */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
 
-th, td {
-    text-align: left;
-    padding: 10px;
-    border: 1px solid #ccc;
-}
 
-th {
-    background-color: rgba(242, 242, 242, 0.3);
-}
-
-.editButton {
-    background-color: #ffc107;
-    color: black;
-}
-
-.saveButton {
-    background-color: #28a745;
-    color: white;
-}
-
-/* Drop Zones */
-.drop-zone {
-    border: 2px dashed #ccc;
-    padding: 20px;
-    text-align: center;
-    border-radius: 10px;
-    cursor: pointer;
-}
-
-.drop-zone:hover {
-    border-color: #007bff;
-}
-
-/* Modal */
 .modal {
     position: fixed;
     top: 0;

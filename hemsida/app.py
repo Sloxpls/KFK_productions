@@ -87,6 +87,10 @@ def upload():
 def media():
     return render_template('media.html')
 
+@app.route('/site/laboratory')
+def laboratory():
+    return render_template('laboratory.html')
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
