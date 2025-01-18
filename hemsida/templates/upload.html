@@ -1,22 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload</title>
-    <link rel="stylesheet" href="../static/css/base.css">
-    <link rel="stylesheet" href="../static/css/upload.css">
+{% extends 'base.html' %}
 
-</head>
-<body>
-<!-- Navigation Bar -->
-<nav class="navbar">
-    <div class="navbar-container">
-        <a href="/site/songs" class="nav-link">Songs</a>
-        <a href="/site/upload" class="nav-link">Uploads</a>
-        <a href="/site/media" class="nav-link">Media Library</a>
-    </div>
-</nav>
+{% block title %}
+Upload Media
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/upload.css') }}">
+{% endblock %}
+
+{% block content %}
 
 <!-- Main Content -->
 <div class="container">
@@ -58,10 +50,9 @@
 
         <button type="submit">Upload</button>
     </form>
-
-
 </div>
+{% endblock %}
 
-<script src="../static/js/upload.js"></script>
-</body>
-</html>
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/upload.js') }}"></script>
+{% endblock %}

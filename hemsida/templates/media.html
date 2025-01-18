@@ -1,20 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Media Library</title>
-    <link rel="stylesheet" href="../static/css/base.css">
-    <link rel="stylesheet" href="../static/css/media.css">
-</head>
-<body>
-<nav class="navbar">
-    <div class="navbar-container">
-        <a href="/site/songs" class="nav-link">Songs</a>
-        <a href="/site/upload" class="nav-link">Uploads</a>
-        <a href="/site/media" class="nav-link">Media Library</a>
-    </div>
-</nav>
+{% extends 'base.html' %}
+
+{% block title %}
+Media Library
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/media.css') }}">
+{% endblock %}
+
+{% block content %}
 
 <div class="container">
     <h1>Media Library</h1>
@@ -41,9 +35,9 @@
     <div id="media-grid" class="media-grid">
         <!-- Dynamically populated content -->
     </div>
-
 </div>
+{% endblock %}
 
-<script src="../static/js/media.js"></script>
-</body>
-</html>
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/media.js') }}"></script>
+{% endblock %}

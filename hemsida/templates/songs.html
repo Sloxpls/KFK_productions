@@ -1,28 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Song List</title>
-    <link rel="stylesheet" href="../static/css/base.css">
-    <link rel="stylesheet" href="../static/css/songs.css">
+{% extends 'base.html' %}
 
-</head>
-<body>
+{% block title %}
+Song List
+{% endblock %}
 
-<nav class="navbar">
-    <div class="navbar-container">
-        <a href="/site/songs" class="nav-link">Songs</a>
-        <a href="/site/upload" class="nav-link">Uploads</a>
-        <a href="/site/media" class="nav-link">Media Library</a>
-    </div>
-</nav>
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='/css/songs.css') }}">
+{% endblock %}
 
+{% block content %}
 
 <div class="container">
     <h1>Song List</h1>
     <p id="error-message" style="color: red;"></p>
-    <table id ="songs-table">
+    <table id="songs-table">
         <thead>
         <tr>
             <th>Image</th>
@@ -30,11 +21,11 @@
             <th>Genre</th>
             <th>Duration</th>
             <th>Stream/download</th>
-            <th>instagram</th>
-            <th>youtube</th>
-            <th>spotify</th>
-            <th>tiktok</th>
-            <th>andra_medier</th>
+            <th>Instagram</th>
+            <th>YouTube</th>
+            <th>Spotify</th>
+            <th>TikTok</th>
+            <th>Other Media</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -43,7 +34,6 @@
         </tbody>
     </table>
 </div>
-
 
 <!-- Modal for Song Details -->
 <div id="song-modal" class="modal" style="display: none;">
@@ -55,13 +45,12 @@
     <p><strong>Description:</strong> <span id="modal-description"></span></p>
     <video id="modal-video-player" controls style="width: 100%; display: none;"></video>
     <div>
-      <a id="modal-download" href="#" download>Ladda ner</a>
+      <a id="modal-download" href="#" download>Download</a>
     </div>
   </div>
 </div>
+{% endblock %}
 
-
-
-<script src="../static/js/songs.js"></script>
-</body>
-</html>
+{% block extra_js %}
+<script src="{{ url_for('static', filename='/js/songs.js') }}"></script>
+{% endblock %}

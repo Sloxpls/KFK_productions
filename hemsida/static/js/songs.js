@@ -16,9 +16,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             throw new Error(`Socials API responded with status ${socialResponse.status}: ${socialResponse.statusText}`);
         }
 
-        const songs = await songsResponse.json();
-        const socials = await socialResponse.json();
-        /*const songs = [
+        /*const songs = await songsResponse.json();
+        const socials = await socialResponse.json();*/
+        const songs = [
           {
             track_id: 1,
             title: "Summer Vibes",
@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             tiktok: "@midnightGrooveOfficial",
             andra_medier: "soundcloud.com/midnightGroove"
           }
-        ]*/
+        ]
 
         if (songs.length > 0) {
             for (const song of songs) {
