@@ -27,6 +27,3 @@ const createLyricsCard = (lyricsArray) => {
     });
 }
 
-const fetchLyrics = () => {
-
-}

@@ -17,15 +17,24 @@ Laboratory
     <header>
         <button id="add-lyrics-button">Add New Lyrics</button>
     </header>
-      <div class="lyrics-cards">
-          <!--
-            title h2
-            lyrics p
-            -->
-      </div>
+    <div class="lyrics-cards">
+      <!--
+        title h2
+        lyrics p
+        -->
+    </div>
 </main>
+<audio id="audio" controls>
+  <source src="{{ url_for('static', filename='Benzo.mp3') }}" type="audio/mpeg">
+</audio>
+
+<div id="background-canvas">
+    <canvas id="canvas"></canvas>
+</div>
+
 {% endblock %}
 
 {% block extra_js %}
 <script src="{{ url_for('static', filename='js/laboratory.js') }}"></script>
+<script src="{{ url_for('static', filename='js/visualizer.js') }}"></script>
 {% endblock %}

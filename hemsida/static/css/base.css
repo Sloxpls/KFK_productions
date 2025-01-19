@@ -5,7 +5,6 @@ body, h1, h2, h3, p, ul, ol, table, th, td {
     box-sizing: border-box;
 }
 
-
 body {
     font-family: Arial, sans-serif;
     background: rgb(2,0,36);
@@ -41,7 +40,10 @@ body {
     margin: 2em auto;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     overflow-x: auto;
+    border: 1px solid;
 }
+
+
 
 button {
     background-color: #007bff;
@@ -55,8 +57,6 @@ button {
 button:hover {
     background-color: #0056b3;
 }
-
-
 
 .modal {
     position: fixed;
@@ -84,4 +84,21 @@ button:hover {
     right: 10px;
     font-size: 20px;
     cursor: pointer;
+}
+
+input[type="text"], input[type="email"], input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: rgba(85, 85, 85, 0.3);
+    border-radius: 5px;
+}
+
+#canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
 }

@@ -36,10 +36,10 @@ document.addEventListener("DOMContentLoaded", async () => {
           {
             track_id: 1,
             instagram: "https://www.instagram.com/instagram/",
-            youtube: "youtube.com/summerVibes",
-            spotify: "spotify.com/summerVibes",
-            tiktok: "@summerVibesTikTok",
-            andra_medier: "bandcamp.com/summerVibes"
+            youtube: "https://www.youtube.com/summerVibes",
+            spotify: "https://www.spotify.com/summerVibes",
+            tiktok: "https://www.example.com",
+            andra_medier: "https://www.example.com"
           },
           {
             track_id: 2,
@@ -186,6 +186,21 @@ const editRow = (id, row) => {
     });
 };
 
+const generateEditableCell = (field, value, isEditing) => {
+    if (isEditing) {
+        return `<input type="text" value="${value || ""}" data-field="${field}">`;
+    }
+    return value || "N/A";
+};
+
+const generateLinkCell = (url, icon = "🔗") => {
+    return url
+        ? `<a href="${url}" target="_blank" rel="noopener noreferrer">
+            <button type="button">${icon}</button>
+          </a>`
+        : "N/A";
+};
+
 const generateRowHTML = (song, songSocials, isEditing) => `
     <td>
         <img 
@@ -204,33 +219,28 @@ const generateRowHTML = (song, songSocials, isEditing) => `
     </td>
     <td class="editable" data-field="instagram">
         ${isEditing 
-            ? `<input type="text" value="${songSocials.instagram || ""}" data-field="instagram">`
-            : (songSocials.instagram 
-            ? `<a href="${songSocials.instagram}" target="_blank" rel="noopener noreferrer">
-                <button type="button">
-                    🔗 
-                </button>
-            </a>`
-            : "N/A")}
+            ? generateEditableCell("instagram", songSocials.instagram, isEditing)
+            : generateLinkCell(songSocials.instagram)}
     </td>
     <td class="editable" data-field="youtube">
         ${isEditing 
-            ? `<input type="text" value="${songSocials.youtube || ""}" data-field="youtube">`
-            : (songSocials.youtube || "N/A")}
+            ? generateEditableCell("youtube", songSocials.youtube, isEditing)
+            : generateLinkCell(songSocials.youtube)}
     </td>
     <td class="editable" data-field="spotify">
         ${isEditing 
-            ? `<input type="text" value="${songSocials.spotify || ""}" data-field="spotify">`
-            : (songSocials.spotify || "N/A")}
+            ? generateEditableCell("spotify", songSocials.spotify, isEditing)
+            : generateLinkCell(songSocials.spotify)}
     </td>
     <td class="editable" data-field="tiktok">
         ${isEditing 
-            ? `<input type="text" value="${songSocials.tiktok || ""}" data-field="tiktok">`
-            : (songSocials.tiktok || "N/A")}
+            ? generateEditableCell("tiktok", songSocials.tiktok, isEditing)
+            : generateLinkCell(songSocials.tiktok)}
     </td>
     <td class="editable" data-field="andra_medier">
         ${isEditing 
-            ? `<input type="text" value="${songSocials.andra_medier || ""}" data-field="andra_medier">`
-            : (songSocials.andra_medier || "N/A")}
+            ? generateEditableCell("andra_medier", songSocials.andra_medier, isEditing)
+            : generateLinkCell(songSocials.andra_medier)}
     </td>
 `;
+

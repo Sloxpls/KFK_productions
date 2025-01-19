@@ -69,3 +69,11 @@ th {
     justify-content: center;
 
 }
+
+canvas {
+    display: block;
+    margin: auto;
+    width: 100%;
+    height: 300px;
+    background: #000;
+}
