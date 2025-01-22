@@ -1,3 +1,7 @@
+// insert canvas element for pages that should use the visualizer
+// <canvas id="canvas"></canvas>
+// spectrogram listens to the audio element with id 'audio'
+
 document.addEventListener('DOMContentLoaded', function () {
     const audioElement = document.getElementById('audio');
     if (!audioElement) {
@@ -55,17 +59,23 @@ class Visualizer {
 
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-            const barWidth = (this.canvas.width / bufferLength) * 2.5;
+            const barWidth = (this.canvas.width / bufferLength) * 10;
             let x = 0;
 
             for (let i = 0; i < bufferLength; i++) {
                 const barHeight = dataArray[i] / 2;
 
-                this.ctx.fillStyle = `rgba(221, 221, 221, 0.3)`;
+                // Calculate individual bar gradients
+                const gradient = this.ctx.createLinearGradient(x, this.canvas.height - 3 * barHeight, x + barWidth, this.canvas.height);
+                gradient.addColorStop(0.5, 'red');
+                gradient.addColorStop(1, 'blue');
+
+                this.ctx.fillStyle = gradient;
                 this.ctx.fillRect(x, this.canvas.height - barHeight, barWidth, barHeight);
 
-                x += barWidth + 1;
+                x += barWidth + 0.21;
             }
+
 
             this.animationId = requestAnimationFrame(draw);
         };

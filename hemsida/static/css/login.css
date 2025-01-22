@@ -3,6 +3,7 @@
     padding: 15px;
     border-radius: 5px;
     background-color: rgba(249, 249, 249, 0.3);
+    display: block;
 }
 
 main h1 {
@@ -14,4 +15,11 @@ main h1 {
     display: block;
     margin-left: auto;
     margin-right: auto;
+}
+
+input[type="text"], input[type="email"], input[type="password"] {
+    width: 100%;
+
+    background-color: rgba(85, 85, 85, 0.3);
+    border-radius: 5px;
 }
