@@ -1,7 +1,5 @@
-from flask import Blueprint, request, jsonify
-from database_models.track import Track
-from database_models import db
-
+from flask import Blueprint, jsonify, request
+from backend.database_models import Track, db
 track_bp = Blueprint('track_bp', __name__)
 
 @track_bp.route('/tracks', methods=['GET'])

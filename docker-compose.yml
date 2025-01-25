@@ -14,13 +14,17 @@ services:
   backend:
     restart: unless-stopped
     build:
-      context: ./backend
-    env_file:
-      - .env
-    depends_on:
-      - database
+      context: .
+      dockerfile: backend/Dockerfile
+    working_dir: /app
+    volumes:
+      - ./backend:/app/backend
+    environment:
+      - PYTHONPATH=/app:/app/backend
     ports:
       - "5000:5000"
+    command: python backend/app.py
+
 
   frontend:
     restart: unless-stopped

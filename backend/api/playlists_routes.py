@@ -1,7 +1,5 @@
-from flask import Blueprint, request, jsonify
-from database_models.playlist import Playlist
-from database_models import db
-
+from flask import Blueprint, jsonify, request
+from backend.database_models import Playlist, db
 playlist_bp = Blueprint('playlist_bp', __name__)
 
 @playlist_bp.route('/playlists', methods=['GET'])
