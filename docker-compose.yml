@@ -1,6 +1,6 @@
-
 services:
   database:
+    restart: unless-stopped
     image: postgres:15
     environment:
       POSTGRES_USER: myuser
@@ -8,22 +8,30 @@ services:
       POSTGRES_DB: mydb
     ports:
       - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data  # Add persistent volume
 
   backend:
+    restart: unless-stopped
+
     build:
       context: ./backend
-    environment:
-      DB_URI: postgresql://myuser:mypassword@database:5432/mydb
-
+    env_file:
+      - .env
     depends_on:
       - database
     ports:
       - "5000:5000"
 
   frontend:
+    restart: unless-stopped
+
     build:
       context: ./frontend
     ports:
       - "3000:80"
     depends_on:
       - backend
+
+volumes:
+  db_data:

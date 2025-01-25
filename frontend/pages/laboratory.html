@@ -1,15 +1,12 @@
-{% extends 'base.html' %}
-
-{% block title %}
-Laboratory
-{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/laboratory.css') }}">
-{% endblock %}
-
-{% block content %}
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratory</title>
+    <link rel="stylesheet" href="/static/css/laboratory.css">
+</head>
+<body>
 <main>
     <h1>
         Laboratory
@@ -22,17 +19,14 @@ Laboratory
     </div>
 </main>
 <audio id="audio" controls>
-  <source src="{{ url_for('static', filename='Benzo.mp3') }}" type="audio/mpeg">
+  <source src="/static/Benzo.mp3" type="audio/mpeg">
 </audio>
 
 <div id="background-canvas">
     <canvas id="canvas"></canvas>
-
 </div>
 
-{% endblock %}
-
-{% block extra_js %}
-<script src="{{ url_for('static', filename='js/laboratory.js') }}"></script>
-<script src="{{ url_for('static', filename='js/visualizer.js') }}"></script>
-{% endblock %}
+<script src="/static/js/laboratory.js"></script>
+<script src="/static/js/visualizer.js"></script>
+</body>
+</html>

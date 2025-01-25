@@ -4,7 +4,7 @@ from database_models import db
 
 track_bp = Blueprint('track_bp', __name__)
 
-@track_bp.route('/', methods=['GET'])
+@track_bp.route('/tracks', methods=['GET'])
 def get_tracks():
     tracks = Track.query.all()
     data = []
@@ -20,7 +20,7 @@ def get_tracks():
         })
     return jsonify(data), 200
 
-@track_bp.route('/', methods=['POST'])
+@track_bp.route('/tracks', methods=['POST'])
 def create_track():
     req_data = request.get_json() or {}
     new_track = Track(

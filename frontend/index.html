@@ -1,38 +1,35 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+    <main>
+        <form id="login-form">
+            <label for="username">Username:</label>
+            <input
+                type="text"
+                id="username"
+                name="username"
+                required
+                placeholder="Enter username">
+            <br><br>
 
-{% block title %}
-Login Page
-{% endblock %}
+            <label for="password">Password:</label>
+            <input
+                type="password"
+                id="password"
+                name="password"
+                required
+                placeholder="Enter password">
+            <br><br>
 
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
-{% endblock %}
-
-{% block content %}
-<main>
-    <form id="login-form">
-        <label for="username">Username:</label>
-        <input
-            type="text"
-            id="username"
-            name="username"
-            required
-            placeholder="Enter username">
-        <br><br>
-
-        <label for="password">Password:</label>
-        <input
-            type="password"
-            id="password"
-            name="password"
-            required
-            placeholder="Enter password">
-        <br><br>
-
-        <button id="login-button" type="submit">Log In</button>
-    </form>
-</main>
-{% endblock %}
-{% block extra_js %}
-        <script src="{{ url_for('static', filename='js/login.js') }}"></script>
-{% endblock %}
+            <button id="login-button" type="submit">Log In</button>
+        </form>
+    </main>
+    <script src="js/login.js"></script>
+</body>
+</html>

@@ -1,15 +1,12 @@
-{% extends 'base.html' %}
-
-{% block title %}
-Media Library
-{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/media.css') }}">
-{% endblock %}
-
-{% block content %}
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Library</title>
+    <link rel="stylesheet" href="/static/css/media.css">
+</head>
+<body>
 <div class="container">
     <h1>Media Library</h1>
 
@@ -36,8 +33,6 @@ Media Library
         <!-- Dynamically populated content -->
     </div>
 </div>
-{% endblock %}
-
-{% block extra_js %}
-<script src="{{ url_for('static', filename='js/media.js') }}"></script>
-{% endblock %}
+<script src="/static/js/media.js"></script>
+</body>
+</html>

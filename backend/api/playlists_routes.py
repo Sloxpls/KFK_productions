@@ -4,7 +4,7 @@ from database_models import db
 
 playlist_bp = Blueprint('playlist_bp', __name__)
 
-@playlist_bp.route('/', methods=['GET'])
+@playlist_bp.route('/playlists', methods=['GET'])
 def get_playlists():
     playlists = Playlist.query.all()
     data = []
@@ -12,7 +12,7 @@ def get_playlists():
         data.append({'id': p.id, 'name': p.name})
     return jsonify(data), 200
 
-@playlist_bp.route('/', methods=['POST'])
+@playlist_bp.route('/playlists', methods=['POST'])
 def create_playlist():
     req_data = request.get_json() or {}
     new_playlist = Playlist(name=req_data.get('name'))

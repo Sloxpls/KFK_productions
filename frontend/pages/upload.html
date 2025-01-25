@@ -1,14 +1,12 @@
-{% extends 'base.html' %}
-
-{% block title %}
-Upload Media
-{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/upload.css') }}">
-{% endblock %}
-
-{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Media</title>
+    <link rel="stylesheet" href="/static/css/upload.css">
+</head>
+<body>
 
 <!-- Main Content -->
 <div class="container">
@@ -51,8 +49,7 @@ Upload Media
         <button type="submit">Upload</button>
     </form>
 </div>
-{% endblock %}
 
-{% block extra_js %}
-<script src="{{ url_for('static', filename='js/upload.js') }}"></script>
-{% endblock %}
+<script src="/static/js/upload.js"></script>
+</body>
+</html>

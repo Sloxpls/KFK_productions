@@ -4,7 +4,7 @@ from database_models import db
 
 media_bp = Blueprint('media_bp', __name__)
 
-@media_bp.route('/', methods=['GET'])
+@media_bp.route('/media', methods=['GET'])
 def get_media():
     """Retrieve all media entries."""
     media_items = Media.query.all()
@@ -19,7 +19,7 @@ def get_media():
         })
     return jsonify(results), 200
 
-@media_bp.route('/', methods=['POST'])
+@media_bp.route('/media', methods=['POST'])
 def create_media():
     """Create a new media entry."""
     data = request.get_json() or {}
@@ -32,7 +32,7 @@ def create_media():
     db.session.commit()
     return jsonify({'message': 'Media created successfully!', 'id': new_media.id}), 201
 
-@media_bp.route('/<int:media_id>', methods=['GET'])
+@media_bp.route('/media/<int:media_id>', methods=['GET'])
 def get_media_item(media_id):
     """Retrieve a single media entry by ID."""
     media_item = Media.query.get(media_id)
@@ -47,7 +47,7 @@ def get_media_item(media_id):
         'uploaded_at': media_item.uploaded_at
     }), 200
 
-@media_bp.route('/<int:media_id>', methods=['DELETE'])
+@media_bp.route('/media/<int:media_id>', methods=['DELETE'])
 def delete_media(media_id):
     """Delete a media entry by ID."""
     media_item = Media.query.get(media_id)
