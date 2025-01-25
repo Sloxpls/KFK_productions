@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
-from backend.database_models import Playlist, db
+from backend.database_models import Playlist, db, Track
+
 playlist_bp = Blueprint('playlist_bp', __name__)
 
 @playlist_bp.route('/playlists', methods=['GET'])
@@ -49,3 +50,41 @@ def delete_playlist(playlist_id):
     db.session.delete(playlist)
     db.session.commit()
     return jsonify({'message': 'Playlist deleted', 'id': playlist.id}), 200
+
+@playlist_bp.route('/playlists/<int:playlist_id>/tracks/<int:track_id>', methods=['POST'])
+def add_track_to_playlist(playlist_id, track_id):
+    playlist = Playlist.query.get(playlist_id)
+    track = Track.query.get(track_id)
+
+    if not playlist:
+        return jsonify({'error': 'Playlist not found'}), 404
+    if not track:
+        return jsonify({'error': 'Track not found'}), 404
+
+    # Add the track to the playlist
+    if track not in playlist.tracks:
+        playlist.tracks.append(track)
+        db.session.commit()
+
+    return jsonify({'message': f'Track {track_id} added to Playlist {playlist_id}'}), 200
+
+@playlist_bp.route('/playlists/<int:playlist_id>/tracks', methods=['GET'])
+def get_tracks_in_playlist(playlist_id):
+    playlist = Playlist.query.get(playlist_id)
+    if not playlist:
+        return jsonify({'error': 'Playlist not found'}), 404
+
+    tracks = [
+        {
+            'id': track.id,
+            'title': track.title,
+            'description': track.description,
+            'song_path': track.song_path,
+            'img_path': track.img_path,
+            'producer': track.producer,
+            'writer': track.writer
+        } for track in playlist.tracks
+    ]
+
+    return jsonify(tracks), 200
+
