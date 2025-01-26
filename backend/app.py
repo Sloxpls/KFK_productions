@@ -6,9 +6,7 @@ from backend.database_models import db
 
 
 def create_app():
-    """Application Factory to create and configure the Flask app."""
     load_dotenv()
-
     app = Flask(__name__)
 
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'defaultsecret')

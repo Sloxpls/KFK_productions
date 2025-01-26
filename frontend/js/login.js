@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!form) return;
 
     form.addEventListener('submit', function (event) {
-        event.preventDefault(); // Prevent full page reload
+        event.preventDefault();
 
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if (response.ok) {
                     alert(data.message);
-                    window.location.href = '/site/songs';
+                    window.location.href = '/';
                 } else {
                     alert(data.message);
                 }
