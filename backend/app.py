@@ -17,7 +17,7 @@ def create_app():
     app.register_blueprint(media_bp, url_prefix='/api')
     app.register_blueprint(track_bp, url_prefix='/api')
     app.register_blueprint(playlist_bp, url_prefix='/api')
-    app.register_blueprint(auth_bp, url_prefix='/')
+    app.register_blueprint(auth_bp, url_prefix='/api')
     with app.app_context():
         db.create_all()
 
@@ -27,4 +27,4 @@ def create_app():
 if __name__ == '__main__':
     app = create_app()
     print(app.url_map)
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
