@@ -1,0 +1,41 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 2rem 0;
+}
+
+.song-card {
+  border: 1px solid #ddd;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.media-player {
+  margin: 1rem 0;
+}
+
+.media-player audio,
+.media-player video {
+  width: 100%;
+}
+
+.upload-form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.playlist-manager {
+  padding: 2rem;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: #007bff;
+  color: white;
+  border-radius: 4px;
+  text-decoration: none;
+  margin: 0.5rem;
+}
