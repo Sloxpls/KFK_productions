@@ -1,5 +1,5 @@
 .audio-player {
-  display: flex;
+  display: inline-flex;
   position: fixed;
   bottom: 10px;
   left: 50%;
@@ -11,12 +11,37 @@
   z-index: 1000;
   padding: 10px 15px;
   border-radius: 10px;
+  background-color: #13131093;
+  align-items: center;
 }
 
-.track-info h4,
+.track-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.track-info h4 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .track-info p {
   margin: 0;
+  font-size: 1rem;
+  color: #ccc;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+
 
 .controls {
   flex: 0.2;
@@ -63,8 +88,24 @@
 .progress-bar {
   position: absolute;
   height: 100%;
-  background-color: #007bff; /* Blue progress color */
+  background-color: #007bff; 
   border-radius: 4px;
-  transition: width 0.1s linear; /* Smooth transition */
+  transition: width 0.1s linear; 
 }
 
+.track-cover-container {
+  width: 100%;
+  max-width: 5%; 
+  height: auto;
+  margin-right: 10px;
+}
+
+.track-cover {
+  width: 100%;
+  height: auto;
+  object-fit: contain; 
+}
+
+#duration {
+  margin: 1em;
+}

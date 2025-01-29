@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import {
   Table,
   TableBody,
@@ -13,35 +14,13 @@ import {
 
 import "../../styles/SongsTable.css";
 
-const SongsTable = () => {
-  const [songs, setSongs] = useState([]);
-  const [errorMessage, setErrorMessage] = useState("");
+const SongsTable = ({ tracks, onTrackSelect}) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [songsResponse] = await Promise.all([
-          fetch("/api/songs"),
-        ]);
-
-        if (!songsResponse.ok) {
-          throw new Error(
-            `Songs API responded with status ${songsResponse.status}: ${songsResponse.statusText}`
-          );
-        }
-
-        const songsData = await songsResponse.json();
-
-        setSongs(songsData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setErrorMessage("An error occurred while fetching data.");
-      }
-    };
-
-    fetchData();
-  }, []);
+  const handlePlay = (track) => {
+    onTrackSelect(track);
+  };
 
   const handleEdit = (id) => {
     setIsEditing(true);
@@ -77,83 +56,54 @@ const SongsTable = () => {
 
   return (
     <div className={"container"}>
-      <TableContainer component={Paper} style={{
-        backgroundColor: "rgba(242, 242, 242, 0.3)",
-      }}>
+      <TableContainer component={Paper} style={{ backgroundColor: "rgba(242, 242, 242, 0.3)" }}>
         <Table>
-          <TableHead>
-            <TableRow >
+          {/* <TableHead>
+            <TableRow>
               <TableCell>Image</TableCell>
               <TableCell>Title</TableCell>
-              <TableCell>Genre</TableCell>
-              <TableCell>Duration</TableCell>
-              <TableCell>Audio</TableCell>
+              <TableCell>Description</TableCell>
+              <TableCell>Producer</TableCell>
+              <TableCell>Writer</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
-          </TableHead>
+          </TableHead> */}
           <TableBody>
-            {songs.map((song) => {
-              return (
-                <TableRow key={song.track_id}>
-                  <TableCell>
-                    <img
-                      src={`/api/images/${song.track_id}`}
-                      alt="Track"
-                      style={{
-                        width: "50px",
-                        height: "50px",
-                        objectFit: "cover",
-                      }}
-                    />
-                  </TableCell>
-
-                  <TableCell>
-                    {isEditing ? (
-                      <TextField
-                        defaultValue={song.title}
-                        size="small"
-                        variant="outlined"
-                      />
-                    ) : (
-                      song.title
-                    )}
-                  </TableCell>
-
-                  <TableCell>{song.song_genere}</TableCell>
-
-                  <TableCell>{song.song_duration} sekunder</TableCell>
-
-                  <TableCell>
-                    <Button> ▶ </Button>
-                  </TableCell>
-
-                  <TableCell>
-                    {isEditing ? (
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => handleSave(song.track_id, {}, {})}
-                      >
-                        Save
-                      </Button>
-                    ) : (
-                      <Button
-                        variant="contained"
-                        color="secondary"
-                        onClick={() => handleEdit(song.track_id)}
-                      >
-                        Edit
-                      </Button>
-                    )}
-                  </TableCell>
-                </TableRow>
-              );
-            })}
+            {tracks.map((track) => (
+              <TableRow key={track.id}>
+                <TableCell>
+                  <img
+                    src={track.img_path}
+                    alt="Track"
+                    style={{ width: "50px", height: "50px", objectFit: "cover" }}
+                  />
+                </TableCell>
+                <TableCell>
+                  {isEditing ? (
+                    <TextField defaultValue={track.title} size="small" variant="outlined" />
+                  ) : (
+                    track.title
+                  )}
+                </TableCell>
+                <TableCell>{track.description}</TableCell>
+                <TableCell>{track.producer}</TableCell>
+                <TableCell>{track.writer}</TableCell>
+                <TableCell>
+                  <Button onClick={() => handlePlay(track)}>Play</Button>
+                  <Button onClick={() => handleEdit(track.id)}>Edit</Button>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </TableContainer>
     </div>
   );
+};
+
+SongsTable.propTypes = {
+  tracks: PropTypes.array.isRequired,
+  onTrackSelect: PropTypes.func.isRequired,
 };
 
 export default SongsTable;

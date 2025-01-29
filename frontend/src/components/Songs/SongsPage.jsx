@@ -1,23 +1,14 @@
-import AudioPlayer from "./AudioPlayer.jsx";
+import { useOutletContext } from "react-router-dom";
 import SongsTable from "./SongsTable.jsx";
 
-const playlist = [
-  {
-    title: "Benzo",
-    artist: "Bennie",
-    url: "/assets/Benzo.mp3",
-    cover: "/assets/Benzo.jpg"
-  }
-];
-
 const SongsPage = () => {
+  const { tracks, setSelectedTrack } = useOutletContext(); 
+
   return (
     <>
-      <SongsTable></SongsTable>
-      <AudioPlayer playlist={playlist}></AudioPlayer>
-
+      <SongsTable tracks={tracks} onTrackSelect={setSelectedTrack} />
     </>
   );
-}
+};
 
 export default SongsPage;

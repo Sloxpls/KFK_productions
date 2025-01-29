@@ -1,23 +1,64 @@
-import Navbar from './Navbar.jsx';
+import { Outlet } from "react-router-dom";
+import { useState, useEffect } from "react";
+import Navbar from "./Navbar.jsx";
 import AudioPlayer from "./Songs/AudioPlayer.jsx";
 
-
-const playlist = [
-  {
-    title: "Gammal Norrlands",
-    artist: "Bennie",
-    url: "/Gammal Norrlands.mp3",
-    cover: "/assets/Benzo.jpg"
-  }
-];
-
 const Layout = () => {
+  const [tracks, setTracks] = useState([]); 
+  const [selectedTrack, setSelectedTrack] = useState(null);
+  
+  useEffect(() => {
+    setTracks([
+      {
+        id: 1,
+        title: "Gammal Norrlands",
+        description: "A hit song by Post Malone",
+        song_path: "/Gammal Norrlands.mp3",
+        img_path: "/assets/gammal.webp",
+        producer: "Producer A",
+        writer: "Writer A",
+      },
+      {
+        id: 2,
+        title: "Raka Regler Raka Rör",
+        description: "A hit song by Post Malone",
+        song_path: "/Raka Regler Raka Rör.mp3",
+        img_path: "/assets/raka.webp",
+        producer: "Producer B",
+        writer: "Writer B",
+      },
+    ]);
+  }, []);
+
+  
+
+  /*
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("/api/tracks"); 
+        if (!response.ok) {
+          throw new Error(`Tracks API error: ${response.status}`);
+        }
+        const tracksData = await response.json();
+        setTracks(tracksData); // Update state with real tracks
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setErrorMessages(["An error occurred while fetching tracks."]);
+      }
+    };
+
+    fetchData();
+  }, []);
+  */
+
   return (
     <>
       <Navbar />
-      <AudioPlayer playlist={playlist}></AudioPlayer>
+      <Outlet context={{ tracks, setSelectedTrack, selectedTrack }} />
+      <AudioPlayer playlist={tracks} selectedTrack={selectedTrack} setSelectedTrack={setSelectedTrack}/>
     </>
   );
-}
+};
 
 export default Layout;

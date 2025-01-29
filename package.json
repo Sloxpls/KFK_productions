@@ -1,0 +1,11 @@
+{
+    "name": "kfkproductionsn",
+    "version": "1.0.0",
+    "scripts": {
+      "start": "concurrently \"cd backend && python3 app.py\" \"cd frontend && npm run dev\""
+    },
+    "devDependencies": {
+      "concurrently": "^7.0.0"
+    }
+  }
+  
