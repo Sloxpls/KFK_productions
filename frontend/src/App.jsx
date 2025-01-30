@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
-import Layout from "./components/Layout.jsx";
-import Login from "./components/Login.jsx";
-import SongsPage from "./components/Songs/SongsPage.jsx";
+import Layout from "./components/Layout/Layout.jsx";
+import Login from "./components/Login/Login.jsx";
+import SongsPage from "./components/SongsPage/SongsPage.jsx";
 import UploadMedia from "./components/UploadMedia.jsx";
 import MediaGallery from './components/MediaGallery/MediaGallery.jsx';
 // import Laboratory from './components/Laboratory';

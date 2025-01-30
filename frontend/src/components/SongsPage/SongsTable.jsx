@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 
 import EditTrack from "./EditTrack";
-import "../../styles/SongsTable.css";
+import "./SongsTable.css";
 
 const SongsTable = ({ tracks, onTrackSelect}) => {
   const [sortConfig, setSortConfig] = useState({ key: 'title', direction: 'asc' });

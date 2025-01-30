@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import AudioVisualizer from "./AudioVisualizer";
 
-import "../../styles/AudioPlayer.css";
+import "./AudioPlayer.css";
 
 const AudioPlayer = ({ playlist, selectedTrack, setSelectedTrack }) => {
   const audioRef = useRef(null);
