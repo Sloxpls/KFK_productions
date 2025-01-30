@@ -93,6 +93,7 @@ const SongsTable = ({ tracks, onTrackSelect}) => {
           <TableHead>
             <TableRow>
               <TableCell></TableCell>
+              <TableCell></TableCell>
               <TableCell>
                 <TableSortLabel
                   active={sortConfig.key === 'title'}
@@ -109,6 +110,15 @@ const SongsTable = ({ tracks, onTrackSelect}) => {
                   onClick={() => handleSort('description')}
                 >
                   Description
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={sortConfig.key === 'album'}
+                  direction={sortConfig.direction}
+                  onClick={() => handleSort('album')}
+                >
+                  Album
                 </TableSortLabel>
               </TableCell>
               <TableCell>
@@ -137,8 +147,11 @@ const SongsTable = ({ tracks, onTrackSelect}) => {
             {sortedTracks.map((track) => (
               <TableRow key={track.id}>
                 <TableCell>
+                <Button id='playbtn' onClick={() => handlePlay(track)}>PLAY</Button>
+                </TableCell>
+                <TableCell>
                   <div style={{ display: "flex", alignItems: "center" }}>
-                    <Button id='playbtn' onClick={() => handlePlay(track)}>PLAY</Button>
+                    
                     <img
                       src={track.img_path}
                       alt="Track"
@@ -148,6 +161,7 @@ const SongsTable = ({ tracks, onTrackSelect}) => {
                 </TableCell>
                 <TableCell>{track.title}</TableCell>
                 <TableCell>{track.description}</TableCell>
+                <TableCell>{track.album}</TableCell>
                 <TableCell>{track.producer}</TableCell>
                 <TableCell>{track.writer}</TableCell>
                 <TableCell>
