@@ -1,11 +1,13 @@
 import {useState} from "react";
 import '../styles/Login.css';
 import {Box} from "@mui/material";
+import {useNavigate} from "react-router-dom";
 
 export const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -22,7 +24,7 @@ export const Login = () => {
         if (response.ok) {
             setMessage(data.message);
             sessionStorage.setItem('logged_in', true);
-            window.location.href = '/site/songs';
+            navigate('/site/songs');
         } else {
             setMessage(data.message);
         }
@@ -53,7 +55,7 @@ export const Login = () => {
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
                 />
-                <button type="submit">Login</button>
+                <button id='loginbutton' type="submit">Login</button>
             </form>
 
             <p>{message}</p>

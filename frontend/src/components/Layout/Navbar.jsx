@@ -10,7 +10,7 @@ function Navbar() {
         Uploads
       </NavLink>
       <NavLink to="/site/media" className="nav-link" activeclassname="active">
-        Media Library
+        Media Gallery
       </NavLink>
       <NavLink to="/site/laboratory" className="nav-link" activeclassname="active">
         Laboratory

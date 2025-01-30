@@ -72,3 +72,15 @@ canvas {
     height: 300px;
     background: #000;
 }
+
+#playbtn {
+    display: block;
+    margin: auto;
+    margin-top: 10px;
+    color: #000000;
+    background-color: #67a9ec85;
+}
+
+#playbtn:hover {
+    background-color: #67a9ec;
+}

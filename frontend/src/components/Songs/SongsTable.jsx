@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
 import {
   Table,
@@ -10,21 +10,60 @@ import {
   Paper,
   Button,
   TextField,
+  TableSortLabel,
 } from "@mui/material";
 
+import EditTrack from "./EditTrack";
 import "../../styles/SongsTable.css";
 
 const SongsTable = ({ tracks, onTrackSelect}) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [sortConfig, setSortConfig] = useState({ key: 'title', direction: 'asc' });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedTrack, setSelectedTrack] = useState(null);
+
+
+  const getComparator = (key, direction) => {
+    return (a, b) => {
+      const aValue = a[key]?.toLowerCase() || '';
+      const bValue = b[key]?.toLowerCase() || '';
+      if (aValue < bValue) {
+        return direction === 'asc' ? -1 : 1;
+      }
+      if (aValue > bValue) {
+        return direction === 'asc' ? 1 : -1;
+      }
+      return 0;
+    };
+  };
+
+  const sortedTracks = useMemo(() => {
+    return [...tracks].sort(getComparator(sortConfig.key, sortConfig.direction));
+  }, [sortConfig, tracks]);
 
   const handlePlay = (track) => {
     onTrackSelect(track);
   };
 
-  const handleEdit = (id) => {
-    setIsEditing(true);
-    console.log(`Editing row with ID: ${id}`);
+  const handleEdit = (track) => {
+    setSelectedTrack(track)
+    setIsModalOpen(true);
+    console.log(`Editing row with ID: ${track.id}`);
+  };
+
+  const handleSort = (column) => {
+    if (sortConfig.key === column) {
+      // Toggle direction if the same column is clicked
+      setSortConfig((prevConfig) => ({
+        key: column,
+        direction: prevConfig.direction === 'asc' ? 'desc' : 'asc',
+      }));
+    } else {
+      // If a different column is clicked, default to the opposite of the current direction
+      setSortConfig({
+        key: column,
+        direction: sortConfig.direction === 'asc' ? 'desc' : 'asc',
+      });
+    }
   };
 
   const handleSave = async (id, tracksData) => {
@@ -41,62 +80,98 @@ const SongsTable = ({ tracks, onTrackSelect}) => {
           throw new Error("Failed to update tracks data.");
         }
       }
-
-      setIsEditing(false);
-      console.log("Save successful.");
-    } catch (error) {
-      console.error("Error saving changes:", error);
-      alert("An error occurred while saving changes.");
+    }
+    catch (error) {
+      console.error("Error updating tracks data:", error);
     }
   };
-
-  if (errorMessage) {
-    return <p>{errorMessage}</p>;
-  }
 
   return (
     <div className={"container"}>
       <TableContainer component={Paper} style={{ backgroundColor: "rgba(242, 242, 242, 0.3)" }}>
         <Table>
-          {/* <TableHead>
+          <TableHead>
             <TableRow>
-              <TableCell>Image</TableCell>
-              <TableCell>Title</TableCell>
-              <TableCell>Description</TableCell>
-              <TableCell>Producer</TableCell>
-              <TableCell>Writer</TableCell>
+              <TableCell></TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={sortConfig.key === 'title'}
+                  direction={sortConfig.direction}
+                  onClick={() => handleSort('title')}
+                >
+                  Title
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={sortConfig.key === 'description'}
+                  direction={sortConfig.direction}
+                  onClick={() => handleSort('description')}
+                >
+                  Description
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={sortConfig.key === 'producer'}
+                  direction={sortConfig.direction}
+                  onClick={() => handleSort('producer')}
+                >
+                  Producer
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={sortConfig.key === 'writer'}
+                  direction={sortConfig.direction}
+                  onClick={() => handleSort('writer')}
+                >
+                  Writer
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>Socials</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
-          </TableHead> */}
+          </TableHead>
           <TableBody>
-            {tracks.map((track) => (
+            {sortedTracks.map((track) => (
               <TableRow key={track.id}>
                 <TableCell>
-                  <img
-                    src={track.img_path}
-                    alt="Track"
-                    style={{ width: "50px", height: "50px", objectFit: "cover" }}
-                  />
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <Button id='playbtn' onClick={() => handlePlay(track)}>PLAY</Button>
+                    <img
+                      src={track.img_path}
+                      alt="Track"
+                      style={{ width: "50px", height: "50px", objectFit: "cover", marginLeft: "10px" }}
+                    />
+                  </div>
                 </TableCell>
-                <TableCell>
-                  {isEditing ? (
-                    <TextField defaultValue={track.title} size="small" variant="outlined" />
-                  ) : (
-                    track.title
-                  )}
-                </TableCell>
+                <TableCell>{track.title}</TableCell>
                 <TableCell>{track.description}</TableCell>
                 <TableCell>{track.producer}</TableCell>
                 <TableCell>{track.writer}</TableCell>
                 <TableCell>
-                  <Button onClick={() => handlePlay(track)}>Play</Button>
-                  <Button onClick={() => handleEdit(track.id)}>Edit</Button>
+                  {track.tiktok && 'tiktok'}
+                  {track.soundcloud && 'soundcloud'}
+                  {track.spotify && 'spotify'}
+                  {track.youtube && 'youtube'}
+                  {track.instagram && 'instagram'}
+                </TableCell>
+                <TableCell>
+                  <Button onClick={() => handleEdit(track)}>Edit</Button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+
+      {/* <EditTrack
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        track={selectedTrack}
+        onSave={handleSave}
+      /> */}
     </div>
   );
 };

@@ -1,14 +1,15 @@
 #login-form {
+    display: block;
+    width: 50%;
+    margin: 0 auto;
     padding: 15px;
     border-radius: 50px;
     background-color: rgba(249, 249, 249, 0.3);
-    display: flex;
 }
 
 #login-button {
     display: block;
     margin: 10%;
-
 }
 
 input[id="username"], input[id="password"] {
@@ -16,7 +17,15 @@ input[id="username"], input[id="password"] {
     width: 80%;
     background-color: rgba(85, 85, 85, 0.3);
     padding: 10px;
-    margin: 10px 0;
+    margin: 10px 10px;
+}
+
+#loginbutton{
+    display: inline-flex;
+    justify-content: center;
+    width: 10em;
+    height: 3em;
+    margin: 1em;
 }
 
 .container {
