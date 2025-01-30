@@ -2,7 +2,6 @@ import {useEffect, useState} from "react";
 import './Login.css';
 import {Box} from "@mui/material";
 import {useNavigate} from "react-router-dom";
-import { use } from "react";
 
 export const Login = () => {
     const [username, setUsername] = useState('');
@@ -10,12 +9,13 @@ export const Login = () => {
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
 
-    // if user is already logged in, redirect to /site/songs
-    useEffect(() => {
+    // negerfippel
+    /* useEffect(() => {
         if (sessionStorage.getItem('logged_in')) {
             navigate('/site/songs');
         }
-    }, []);
+    }, [navigate]); */
+
 
     const handleSubmit = async (event) => {
         event.preventDefault();

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import AudioVisualizer from "./AudioVisualizer";
+import Slider from "@mui/material/Slider";
 
 import "./AudioPlayer.css";
 
@@ -143,15 +144,15 @@ const AudioPlayer = ({ playlist, selectedTrack, setSelectedTrack }) => {
       </div>
       <div className="volume-control">
         <label htmlFor="volume">Volume: </label>
-        <input
+        <Slider
             id="volume"
-            type="range"
-            min="0"
-            max="1"
-            step="0.01"
             value={volume}
-            onChange={(e) => setVolume(e.target.value)}
-        />
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(e, newValue) => setVolume(newValue)}
+            
+          />
       </div>
     </div>
     </>
