@@ -14,24 +14,6 @@ body {
   padding: 0;
 }
 
-.navbar {
-  background-color: rgba(51, 51, 51, 0.3);
-  padding: 10px;
-  display: flex;
-  justify-content: center;
-}
-
-.navbar a {
-  color: #ffffff;
-  text-decoration: wavy;
-  padding: 5px 10px;
-  border-radius: 5px;
-}
-
-.nav-link:hover {
-  background-color: rgba(67, 123, 231, 0.3);
-}
-
 .container {
   max-width: fit-content;
   background-color: rgba(255, 255, 255, 0.3);

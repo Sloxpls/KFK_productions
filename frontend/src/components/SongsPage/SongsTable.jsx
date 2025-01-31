@@ -9,7 +9,6 @@ import {
   TableRow,
   Paper,
   Button,
-  TextField,
   TableSortLabel,
 } from "@mui/material";
 
@@ -184,7 +183,6 @@ const SongsTable = ({ tracks, onTrackSelect}) => {
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         track={selectedTrack}
-        onSave={handleSave}
       /> */}
     </div>
   );

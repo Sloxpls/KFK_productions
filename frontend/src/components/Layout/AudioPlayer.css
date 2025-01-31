@@ -4,15 +4,15 @@
   bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
-  width: calc(100% - 40px);
   max-width: 75%;
-  color: white;
-  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.5);
+  color: rgb(42, 170, 230);
+  box-shadow: 0 -5px 5px rgba(0, 0, 0, 0.5);
   z-index: 1000;
   padding: 10px 15px;
-  border-radius: 10px;
+  border-radius: 40px;
   background-color: #13131093;
   align-items: center;
+
 }
 
 .track-info {
@@ -45,10 +45,9 @@
 
 
 .controls {
-  flex: 0.2;
+  flex: 0.1;
   display: flex;
   align-items: center;
-  justify-content: space-around;
 }
 
 .controls button {

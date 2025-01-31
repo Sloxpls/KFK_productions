@@ -1,0 +1,53 @@
+.navbar {
+    background-color: rgba(51, 51, 51, 0.3);
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+}
+
+.nav-link {
+    color: #ffffff !important;
+    text-decoration: none;
+    padding: 5px 10px !important;
+    border-radius: 5px !important;
+    font-size: 1rem !important;
+    text-transform: none !important;
+    min-width: unset !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+}
+
+.nav-link:hover {
+    background-color: rgba(241, 241, 241, 0.26) !important;
+}
+
+/* Style for dropdown menu */
+.MuiMenu-paper {
+    background-color: rgba(51, 51, 51, 0.719) !important;
+    border-radius: 5px !important;
+    margin-top: 5px !important;
+}
+
+.MuiMenuItem-root {
+    padding: 0 !important;
+}
+
+.dropdown-item {
+    color: #ffffff !important;
+    text-decoration: none;
+    padding: 8px 16px;
+    width: 100%;
+    display: block;
+}
+
+.dropdown-item:hover {
+    background-color: rgba(241, 241, 241, 0.26);
+}

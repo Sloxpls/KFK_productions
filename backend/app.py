@@ -10,8 +10,8 @@ def create_app():
     app = Flask(__name__)
 
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'defaultsecret')
-    #app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_URI')
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_URI')
+    #app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
     app.register_blueprint(media_bp, url_prefix='/api')

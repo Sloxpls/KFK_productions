@@ -1,27 +1,45 @@
 import { useState } from "react";
-import {
-  Modal,
-  Box,
-  Typography,
-  TextField,
-  Button,
-} from "@mui/material";
-import { use } from "react";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Modal, Box, Typography, TextField, Button } from "@mui/material";
 
-const EditTrack = ({ open, onClose, track, onSave }) => {
-  const [editedTrack, setEditedTrack] = useState({ ...track });
+/* const updateTrack = async (trackData) => {
+  const response = await fetch(`/api/tracks/${trackData.id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(trackData),
+  });
+  if (!response.ok) {
+    throw new Error("Failed to update track data.");
+  }
+  return response.json();
+}; */
+
+const EditTrack = ({ open, onClose, track }) => {
+  const [editedTrack, setEditedTrack] = useState({ ...track } ||{id: 1 });
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation(updateTrack, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['tracks']);
+      onClose();
+    },
+    onError: (error) => {
+      console.error("Error updating track:", error);
+    },
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setEditedTrack((prev) => ({
+    setEditedTrack(prev => ({
       ...prev,
       [name]: value,
     }));
   };
 
   const handleSave = () => {
-    onSave(editedTrack);
-    onClose();
+    mutation.mutate(editedTrack);
   };
 
   return (

@@ -1,36 +1,38 @@
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
-import Layout from "./components/Layout/Layout.jsx";
-import Login from "./components/Login/Login.jsx";
-import SongsPage from "./components/SongsPage/SongsPage.jsx";
-import UploadMedia from "./components/UploadMedia.jsx";
-import MediaGallery from './components/MediaGallery/MediaGallery.jsx';
-// import Laboratory from './components/Laboratory';
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom"
+import { AuthProvider } from "./contexts/AuthContext"
+import Layout from "./components/Layout/Layout.jsx"
+import Login from "./components/Login/Login.jsx"
+import SongsPage from "./components/SongsPage/SongsPage.jsx"
+import MediaGallery from "./components/MediaGallery/MediaGallery.jsx"
+import UploadSong from "./components/UploadSong/UploadSong.jsx"
+import PrivateRoute from "./components/PrivateRoute"
 
-import "./App.css";
+import "./App.css"
 
 function App() {
-  const isLoggedIn = sessionStorage.getItem("logged_in");
-
   return (
-    <Router>
-      <Routes>
-        {/* Login Route (No Layout) */}
-        <Route path="/" element={<Login />} />
-
-        {/* Protected Routes with Layout */}
-        {isLoggedIn ? (
-          <Route path="/site/*" element={<Layout />}>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route
+            path="/site"
+            element={
+              <PrivateRoute>
+                <Layout />
+              </PrivateRoute>
+            }
+          >
             <Route path="songs" element={<SongsPage />} />
-            <Route path="upload" element={<UploadMedia />} />
-            <Route path="media" element={<MediaGallery />} />
-            {/* <Route path="laboratory" element={<Laboratory />} /> */}
+            <Route path="upload-song" element={<UploadSong />} />
+            <Route path="media-gallery" element={<MediaGallery />} />
           </Route>
-        ) : (
           <Route path="*" element={<Navigate to="/" />} />
-        )}
-      </Routes>
-    </Router>
-  );
+        </Routes>
+      </Router>
+    </AuthProvider>
+  )
 }
 
-export default App;
+export default App
+
