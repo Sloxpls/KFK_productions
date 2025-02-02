@@ -6,8 +6,18 @@ playlist_bp = Blueprint('playlist_bp', __name__)
 @playlist_bp.route('/playlists', methods=['GET'])
 def get_playlists():
     playlists = Playlist.query.all()
-    data = [{'id': p.id, 'name': p.name} for p in playlists]
-    return jsonify(data), 200
+    if not playlists:
+        # Return static dummy data if the database is empty.
+        dummy_albums = [
+            {'id': 1, 'name': 'Album One'},
+            {'id': 2, 'name': 'Album Two'},
+            {'id': 3, 'name': 'Album Three'}
+        ]
+        return jsonify(dummy_albums), 200
+    else:
+        # Return the data from the database if it exists.
+        data = [{'id': p.id, 'name': p.name} for p in playlists]
+        return jsonify(data), 200
 
 @playlist_bp.route('/playlists/<int:playlist_id>', methods=['GET'])
 def get_playlist(playlist_id):

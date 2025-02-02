@@ -14,7 +14,13 @@ def get_tracks():
             'song_path': t.song_path,
             'img_path': t.img_path,
             'producer': t.producer,
-            'writer': t.writer
+            'writer': t.writer,
+            'genre': t.genre,
+            'tiktok': t.tiktok,
+            'soundcloud': t.soundcloud,
+            'spotify': t.spotify,
+            'youtube': t.youtube,
+            'instagram': t.instagram
         })
     return jsonify(data), 200
 
@@ -30,7 +36,8 @@ def get_track(track_id):
         'song_path': track.song_path,
         'img_path': track.img_path,
         'producer': track.producer,
-        'writer': track.writer
+        'writer': track.writer,
+        'genre': track.genre,
     }), 200
 
 @track_bp.route('/tracks', methods=['POST'])
@@ -42,7 +49,9 @@ def create_track():
         song_path=req_data.get('song_path'),
         img_path=req_data.get('img_path'),
         producer=req_data.get('producer'),
-        writer=req_data.get('writer')
+        writer=req_data.get('writer'),
+        genre=req_data.get('genre'),
+
     )
     db.session.add(new_track)
     db.session.commit()
@@ -61,6 +70,7 @@ def update_track(track_id):
     track.img_path = req_data.get('img_path', track.img_path)
     track.producer = req_data.get('producer', track.producer)
     track.writer = req_data.get('writer', track.writer)
+    track.genre = req_data.get('genre', track.genre)
 
     db.session.commit()
     return jsonify({'message': 'Track updated', 'id': track.id}), 200

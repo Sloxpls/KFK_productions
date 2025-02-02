@@ -6,12 +6,13 @@ import AudioPlayer from "./AudioPlayer.jsx";
 const Layout = () => {
   const [tracks, setTracks] = useState([]); 
   const [selectedTrack, setSelectedTrack] = useState(null);
+  const [errorMessages, setErrorMessages] = useState([]);
   
   
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/api/tracks-with-playlists"); 
+        const response = await fetch("/api/tracks"); 
         if (!response.ok) {
           throw new Error(`Tracks API error: ${response.status}`);
         }

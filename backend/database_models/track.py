@@ -10,6 +10,7 @@ class Track(db.Model):
     img_path = db.Column(db.String(255), nullable=True)
     producer = db.Column(db.String(255), nullable=True)
     writer = db.Column(db.String(255), nullable=True)
+    genre = db.Column(db.String(255), nullable=True)
     tiktok = db.Column(db.Boolean, nullable=True)
     soundcloud = db.Column(db.Boolean, nullable=True)
     spotify = db.Column(db.Boolean, nullable=True)

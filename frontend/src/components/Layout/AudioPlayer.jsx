@@ -19,7 +19,7 @@ const AudioPlayer = ({ playlist, selectedTrack, setSelectedTrack }) => {
     const audio = audioRef.current;
 
     audio.pause();
-    audio.src = selectedTrack.song_path;
+    audio.src = `/uploads/${selectedTrack.song_path}`;
     audio.load();
 
     if (!isFirstLoad.current) {
@@ -101,14 +101,17 @@ const AudioPlayer = ({ playlist, selectedTrack, setSelectedTrack }) => {
     <>
       <AudioVisualizer audioRef={audioRef} />
       <div className="audio-player">
-      <audio ref={audioRef} src={selectedTrack?.song_path} />
-      <div className="track-cover-container">
+        <audio 
+          ref={audioRef} 
+          src={selectedTrack ? `/uploads/${selectedTrack.song_path}` : ""} 
+        />
+        <div className="track-cover-container">
           <img
-            src={selectedTrack?.img_path || ""}
+            src={selectedTrack ? `/uploads/${selectedTrack.img_path}` : ""}
             alt="Album Cover"
             className="track-cover"
           />
-        </div>
+      </div>
         <div className="track-info">
           <h4>{selectedTrack?.title || "No Track Selected"}</h4>
           <p>{selectedTrack?.producer || "Unknown Artist"}</p>
@@ -126,6 +129,7 @@ const AudioPlayer = ({ playlist, selectedTrack, setSelectedTrack }) => {
         <div
             className="progress-bar-container"
             onClick={(e) => {
+              if (!audioRef.current) return;
               const rect = e.currentTarget.getBoundingClientRect(); 
               const clickX = e.clientX - rect.left; 
               const newTime = (clickX / rect.width) * duration; 

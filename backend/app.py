@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 from flask import Flask
-from api import track_bp, media_bp, playlist_bp, auth_bp
+from api import track_bp, media_bp, playlist_bp, auth_bp, upload_bp
 from backend.database_models import db
 
 
@@ -9,6 +9,10 @@ def create_app():
     load_dotenv()
     app = Flask(__name__)
 
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    uploads_path = os.path.join(project_root, 'frontend', 'public', 'uploads')
+    app.config['UPLOAD_FOLDER'] = uploads_path
+    
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'defaultsecret')
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_URI')
     #app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
@@ -18,6 +22,7 @@ def create_app():
     app.register_blueprint(track_bp, url_prefix='/api')
     app.register_blueprint(playlist_bp, url_prefix='/api')
     app.register_blueprint(auth_bp, url_prefix='/api')
+    app.register_blueprint(upload_bp, url_prefix='/api')
     with app.app_context():
         db.create_all()
 

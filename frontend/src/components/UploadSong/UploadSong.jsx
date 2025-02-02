@@ -1,8 +1,9 @@
-import { useState } from "react"
-
-import "./UploadSong.css"
+import { useEffect, useState } from "react";
+import "./UploadSong.css";
 
 const UploadSong = () => {
+  const [playlists, setPlaylists] = useState([]);
+  const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -10,87 +11,128 @@ const UploadSong = () => {
     img_file: null,
     producer: "",
     writer: "",
+    genre: "",
     tiktok: false,
     soundcloud: false,
     spotify: false,
     youtube: false,
     instagram: false,
-    album_name: "",
-  })
+    playlist_option: "",
+    new_playlist_name: "",
+  });
+
+  useEffect(() => {
+    const fetchPlaylists = async () => {
+      try {
+        const response = await fetch("/api/playlists");
+        if (!response.ok) {
+          throw new Error(`Playlists API error: ${response.status}`);
+        }
+        const playlistsData = await response.json();
+        setPlaylists(playlistsData.map(playlist => playlist.name));
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setError("Failed to fetch playlists. Please try again later.");
+      }
+    };
+
+    fetchPlaylists();
+  }, []);
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target
+    const { name, value, type, checked } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: type === "checkbox" ? checked : value,
-    }))
-  }
+      [name]: type === "checkbox" ? Boolean(checked) : value,
+    }));
+  };
 
   const handleFileChange = (e) => {
     const { name, files } = e.target;
     if (files.length > 0) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        [`${name}_file`]: files[0]
+        [name]: files[0],
       }));
     }
   };
 
-
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    const formData = new FormData()
-
-    Object.keys(formData).forEach(key => {
-      if (key !== 'song_file' && key !== 'img_file') {
-        data.append(key, formData[key]);
-      }
-    });
-    
-    if (formData.song_file) {
-      data.append('song', formData.song_file);
+    e.preventDefault();
+    if (!formData.song_file) {
+      alert("Please select a song file.");
+      return;
     }
-    if (formData.img_file) {
-      data.append('image', formData.img_file);
+
+    const data = new FormData();
+    data.append("title", formData.title);
+    data.append("description", formData.description);
+    data.append("producer", formData.producer);
+    data.append("writer", formData.writer);
+    data.append("genre", formData.genre);
+
+    data.append('tiktok', formData.tiktok ? 'true' : 'false');
+    data.append('soundcloud', formData.soundcloud ? 'true' : 'false');
+    data.append('spotify', formData.spotify ? 'true' : 'false');
+    data.append('youtube', formData.youtube ? 'true' : 'false');
+    data.append('instagram', formData.instagram ? 'true' : 'false');
+
+    data.append("song_file", formData.song_file);
+    data.append("img_file", formData.img_file);
+
+    if (formData.playlist_option === "new") {
+      data.append("playlist_name", formData.new_playlist_name);
+    } else {
+      data.append("playlist_name", formData.playlist_option);
     }
 
     try {
-      console.log("Submitting form data:", formData)
-      const response = await fetch("/api/tracks", {
+      for (let [key, value] of data.entries()) {
+        console.log(key, value);
+      }
+
+      const response = await fetch("/api/upload-song", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      })
+        body: data,
+      });
 
       if (response.ok) {
-        alert("Track and album data submitted successfully!")
+        alert("Song uploaded successfully!");
         setFormData({
           title: "",
           description: "",
-          song_path: "",
-          img_path: "",
+          song_file: null,
+          img_file: null,
           producer: "",
           writer: "",
+          genre: "",
           tiktok: false,
           soundcloud: false,
           spotify: false,
           youtube: false,
           instagram: false,
-          album_name: "",
-        })
+          playlist_option: "",
+          new_playlist_name: "",
+        });
       } else {
-        alert("Failed to submit data. Please try again.")
+        alert("Failed to submit data. Please try again.");
       }
     } catch (error) {
-      console.error("Error submitting form:", error)
-      alert("An error occurred. Please try again.")
+      console.error("Error submitting form:", error);
+      alert("An error occurred. Please try again.");
     }
-  }
+  };
+
+  useEffect(() => {
+    const objectUrl = formData.img_file ? URL.createObjectURL(formData.img_file) : null;
+    return () => {
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
+  }, [formData.img_file]);
 
   return (
     <div className="container">
+      {error && <div className="error-message">{error}</div>}
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="title">Title:</label>
@@ -103,39 +145,37 @@ const UploadSong = () => {
         </div>
 
         <div className="form-group">
-        <label htmlFor="song">Song File:</label>
-        <input
-          type="file"
-          id="song"
-          name="song"
-          accept="audio/*"
-          onChange={handleFileChange}
-          required
-        />
-        {formData.song_file && (
-          <div>Selected file: {formData.song_file.name}</div>
-        )}
-      </div>
+          <label htmlFor="song_file">Song File:</label>
+          <input
+            type="file"
+            id="song_file"
+            name="song_file"
+            accept="audio/*"
+            onChange={handleFileChange}
+            required
+          />
+          {formData.song_file && <div>Selected file: {formData.song_file.name}</div>}
+        </div>
 
-      <div className="form-group">
-        <label htmlFor="image">Cover Image:</label>
-        <input
-          type="file"
-          id="image"
-          name="image"
-          accept="image/*"
-          onChange={handleFileChange}
-        />
-        {formData.img_file && (
-          <div>
-            <img 
-              src={URL.createObjectURL(formData.img_file)} 
-              alt="Preview" 
-              style={{ maxWidth: '200px' }} 
-            />
-          </div>
-        )}
-      </div>
+        <div className="form-group">
+          <label htmlFor="img_file">Cover Image:</label>
+          <input
+            type="file"
+            id="img_file"
+            name="img_file"
+            accept="image/*"
+            onChange={handleFileChange}
+          />
+          {formData.img_file && (
+            <div>
+              <img
+                src={URL.createObjectURL(formData.img_file)}
+                alt="Preview"
+                style={{ maxWidth: "200px" }}
+              />
+            </div>
+          )}
+        </div>
 
         <div className="form-group">
           <label htmlFor="producer">Producer:</label>
@@ -145,6 +185,11 @@ const UploadSong = () => {
         <div className="form-group">
           <label htmlFor="writer">Writer:</label>
           <input type="text" id="writer" name="writer" value={formData.writer} onChange={handleChange} />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="genre">Genre:</label>
+          <input type="text" id="genre" name="genre" value={formData.genre} onChange={handleChange} />
         </div>
 
         <div className="form-group">
@@ -174,15 +219,43 @@ const UploadSong = () => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="album_name">Album Name:</label>
-          <input type="text" id="album_name" name="album_name" value={formData.album_name} onChange={handleChange} />
+          <label htmlFor="playlist_option">Playlist:</label>
+            <select
+              name="playlist_option"
+              value={formData.playlist_option}
+              onChange={handleChange}
+            >
+              <option value="" disabled>
+                Select a playlist
+              </option>
+              {playlists.map((playlistName) => (
+                <option key={playlistName} value={playlistName}>
+                  {playlistName}
+                </option>
+              ))}
+              <option value="new">Create New Playlist</option>
+            </select>
         </div>
 
-        <button type="submit" className="upload-button">Submit</button>
+        {formData.playlist_option === "new" && (
+          <div className="form-group">
+            <label htmlFor="new_playlist_name">New Playlist Name:</label>
+            <input
+              type="text"
+              id="new_playlist_name"
+              name="new_playlist_name"
+              value={formData.new_playlist_name}
+              onChange={handleChange}
+            />
+          </div>
+        )}
+
+        <button type="submit" className="upload-button">
+          Submit
+        </button>
       </form>
     </div>
-  )
-}
+  );
+};
 
 export default UploadSong;
-
