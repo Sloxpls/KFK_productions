@@ -39,7 +39,7 @@ def login():
     print(password, username)
 
     if not validate_credentials(username, password):
-        return jsonify({"error": "Invalid credentials"}), 401
+        return jsonify({"message": "Invalid credentials"}), 401
 
     token = jwt.encode({
         'sub': 'admin',
