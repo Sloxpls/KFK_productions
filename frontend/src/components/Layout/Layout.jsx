@@ -1,13 +1,12 @@
 import { Outlet } from "react-router-dom";
 import { useState, useEffect } from "react";
-import Navbar from "./Navbar.jsx";
 import AudioPlayer from "./AudioPlayer.jsx";
+import "./Layout.css";
+import Header from "./Header.jsx";
 
 const Layout = () => {
   const [tracks, setTracks] = useState([]); 
   const [selectedTrack, setSelectedTrack] = useState(null);
-  const [errorMessages, setErrorMessages] = useState([]);
-  
   
   useEffect(() => {
     const fetchData = async () => {
@@ -17,10 +16,10 @@ const Layout = () => {
           throw new Error(`Tracks API error: ${response.status}`);
         }
         const tracksData = await response.json();
-        setTracks(tracksData); // Update state with real tracks
+        setTracks(tracksData); 
       } catch (error) {
         console.error("Error fetching data:", error);
-        setErrorMessages(["An error occurred while fetching tracks."]);
+        alert("Error fetching data. Please try again later.");
       }
     };
 
@@ -30,9 +29,19 @@ const Layout = () => {
 
   return (
     <>
-      <Navbar />
-      <Outlet context={{ tracks, setSelectedTrack, selectedTrack }} />
-      <AudioPlayer playlist={tracks} selectedTrack={selectedTrack} setSelectedTrack={setSelectedTrack}/>
+      <div className="layout">
+          <header className="layout-header">
+            <Header />
+          </header>
+
+          <main className="layout-main">
+            <Outlet context={{ tracks, setSelectedTrack, selectedTrack }} />
+          </main>
+
+          <footer className="layout-footer">
+            <AudioPlayer playlist={tracks} selectedTrack={selectedTrack} setSelectedTrack={setSelectedTrack}/>
+          </footer>
+      </div>
     </>
   );
 };
