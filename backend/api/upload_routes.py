@@ -44,6 +44,7 @@ def upload_song():
             img_path='',    
             genre=genre,
             tiktok=tiktok,
+            soundcloud=soundcloud,
             youtube=youtube,
             spotify=spotify,
             instagram=instagram

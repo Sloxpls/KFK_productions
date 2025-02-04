@@ -8,7 +8,7 @@ def get_media():
     results = [
         {
             'id': item.id,
-            'filename': item.filename,
+            'name': item.name,
             'file_path': item.file_path,
             'description': item.description,
             'uploaded_at': item.uploaded_at
@@ -20,11 +20,11 @@ def get_media():
 @media_bp.route('/media', methods=['POST'])
 def create_media():
     data = request.get_json() or {}
-    if not data.get('filename') or not data.get('file_path'):
-        return jsonify({'error': 'Filename and file_path are required'}), 400
+    if not data.get('name') or not data.get('file_path'):
+        return jsonify({'error': 'name and file_path are required'}), 400
 
     new_media = Media(
-        filename=data.get('filename'),
+        name=data.get('name'),
         file_path=data.get('file_path'),
         description=data.get('description')
     )
@@ -40,7 +40,7 @@ def get_media_item(media_id):
 
     return jsonify({
         'id': media_item.id,
-        'filename': media_item.filename,
+        'name': media_item.name,
         'file_path': media_item.file_path,
         'description': media_item.description,
         'uploaded_at': media_item.uploaded_at
@@ -53,7 +53,7 @@ def update_media(media_id):
         return jsonify({'message': 'Media not found'}), 404
 
     data = request.get_json() or {}
-    media_item.filename = data.get('filename', media_item.filename)
+    media_item.name = data.get('name', media_item.name)
     media_item.file_path = data.get('file_path', media_item.file_path)
     media_item.description = data.get('description', media_item.description)
 

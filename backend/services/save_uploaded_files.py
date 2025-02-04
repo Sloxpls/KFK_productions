@@ -3,8 +3,8 @@ from flask import current_app
 
 def save_uploaded_files(song_file, img_file, track_id):
     # retrieve the upload folder from the app configuration 
-    # if it doesn't exist, create one called 'uploads'
-    upload_folder = current_app.config.get('UPLOAD_FOLDER', 'uploads')
+    # if it doesn't exist, create one called second argument
+    upload_folder = current_app.config.get('TRACKS_FOLDER', 'tracks')
     if not os.path.exists(upload_folder):
         os.makedirs(upload_folder)
 

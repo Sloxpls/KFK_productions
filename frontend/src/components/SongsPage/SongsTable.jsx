@@ -13,12 +13,13 @@ import {
 } from "@mui/material";
 
 import EditTrack from "./EditTrack";
+import useTrackStore from "../../hooks/useTrackStore";
 import "./SongsTable.css";
 
-const SongsTable = ({ tracks, onTrackSelect}) => {
+const SongsTable = ({ tracks }) => {
   const [sortConfig, setSortConfig] = useState({ key: 'title', direction: 'asc' });
+  const { selectedTrack, setSelectedTrack } = useTrackStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedTrack, setSelectedTrack] = useState(null);
 
 
   const getComparator = (key, direction) => {
@@ -40,7 +41,7 @@ const SongsTable = ({ tracks, onTrackSelect}) => {
   }, [sortConfig, tracks]);
 
   const handlePlay = (track) => {
-    onTrackSelect(track);
+    setSelectedTrack(track);
   };
 
   const handleEdit = (track) => {
@@ -152,7 +153,7 @@ const SongsTable = ({ tracks, onTrackSelect}) => {
                   <div style={{ display: "flex", alignItems: "center" }}>
                     
                     <img
-                      src={`/uploads/${track.img_path}`}
+                      src={`/tracks/${track.img_path}`}
                       alt="Track"
                       style={{ width: "50px", height: "50px", objectFit: "cover", marginLeft: "10px" }}
                     />
@@ -190,7 +191,6 @@ const SongsTable = ({ tracks, onTrackSelect}) => {
 
 SongsTable.propTypes = {
   tracks: PropTypes.array.isRequired,
-  onTrackSelect: PropTypes.func.isRequired,
 };
 
 export default SongsTable;

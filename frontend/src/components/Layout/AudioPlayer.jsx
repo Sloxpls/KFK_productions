@@ -1,11 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
-import AudioVisualizer from "./AudioVisualizer";
 import Slider from "@mui/material/Slider";
 
+import AudioVisualizer from "./AudioVisualizer";
+import useTrackStore from "../../hooks/useTrackStore";
 import "./AudioPlayer.css";
 
-const AudioPlayer = ({ playlist, selectedTrack, setSelectedTrack }) => {
+const AudioPlayer = ({ playlist }) => {
+  const { selectedTrack, setSelectedTrack } = useTrackStore();
   const audioRef = useRef(null);
   const isFirstLoad = useRef(true);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -19,7 +21,7 @@ const AudioPlayer = ({ playlist, selectedTrack, setSelectedTrack }) => {
     const audio = audioRef.current;
 
     audio.pause();
-    audio.src = `/uploads/${selectedTrack.song_path}`;
+    audio.src = `/tracks/${selectedTrack.song_path}`;
     audio.load();
 
     if (!isFirstLoad.current) {
@@ -48,14 +50,6 @@ const AudioPlayer = ({ playlist, selectedTrack, setSelectedTrack }) => {
     return () => audio.removeEventListener("timeupdate", updateProgress);
   }, []);
 
-  useEffect(() => {
-    if (!audioRef.current) return;
-
-    const handleEnded = () => handleNext();
-    audioRef.current.addEventListener("ended", handleEnded);
-    return () => audioRef.current.removeEventListener("ended", handleEnded);
-  }, [selectedTrack]);
-
 
   // Controller functions
   const handlePrevious = () => {
@@ -82,14 +76,6 @@ const AudioPlayer = ({ playlist, selectedTrack, setSelectedTrack }) => {
     setIsPlaying(!isPlaying);
   };
 
-  const handleSeek = (e) => {
-    if (!audioRef.current || !duration) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    const newTime = (clickX / rect.width) * duration;
-    audioRef.current.currentTime = newTime;
-    setCurrentTime(newTime);
-  };
 
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
@@ -103,11 +89,11 @@ const AudioPlayer = ({ playlist, selectedTrack, setSelectedTrack }) => {
       <div className="audio-player">
         <audio 
           ref={audioRef} 
-          src={selectedTrack ? `/uploads/${selectedTrack.song_path}` : ""} 
+          src={selectedTrack ? `/tracks/${selectedTrack.song_path}` : ""} 
         />
         <div className="track-cover-container">
           <img
-            src={selectedTrack ? `/uploads/${selectedTrack.img_path}` : ""}
+            src={selectedTrack ? `/tracks/${selectedTrack.img_path}` : ""}
             alt="Album Cover"
             className="track-cover"
           />
@@ -165,8 +151,6 @@ const AudioPlayer = ({ playlist, selectedTrack, setSelectedTrack }) => {
 
 AudioPlayer.propTypes = {
   playlist: PropTypes.array.isRequired,
-  selectedTrack: PropTypes.object,
-  setSelectedTrack: PropTypes.func.isRequired,
 };
 
 export default AudioPlayer;

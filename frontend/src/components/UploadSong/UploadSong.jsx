@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { useOutletContext } from "react-router-dom";
+
 import "./UploadSong.css";
 
 const UploadSong = () => {
+  const {refreshTracks} = useOutletContext();
   const [playlists, setPlaylists] = useState([]);
   const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
@@ -38,6 +42,15 @@ const UploadSong = () => {
 
     fetchPlaylists();
   }, []);
+
+  useEffect(() => {
+    const objectUrl = formData.img_file ? URL.createObjectURL(formData.img_file) : null;
+    return () => {
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
+  }, [formData.img_file]);
+
+  
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -123,12 +136,12 @@ const UploadSong = () => {
     }
   };
 
-  useEffect(() => {
-    const objectUrl = formData.img_file ? URL.createObjectURL(formData.img_file) : null;
-    return () => {
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
-    };
-  }, [formData.img_file]);
+  const mutation = useMutation({
+    mutationFn: handleSubmit,
+    onSuccess: () => {
+      refreshTracks();
+    },
+  });
 
   return (
     <div className="container">
@@ -201,7 +214,7 @@ const UploadSong = () => {
             </label>
             <label>
               <input type="checkbox" name="soundcloud" checked={formData.soundcloud} onChange={handleChange} />
-              SoundCloud
+              Soundcloud
             </label>
             <label>
               <input type="checkbox" name="spotify" checked={formData.spotify} onChange={handleChange} />
