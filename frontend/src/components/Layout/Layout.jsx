@@ -1,8 +1,10 @@
 import { Outlet } from "react-router-dom";
-import AudioPlayer from "./AudioPlayer.jsx";
 import { useQuery } from "@tanstack/react-query";
-import "./Layout.css";
+
+import AudioPlayer from "./AudioPlayer.jsx";
+
 import Header from "./Header.jsx";
+import "./Layout.css";
 
 const fetchTracks = async () => {
   try {

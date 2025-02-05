@@ -98,3 +98,26 @@ def get_tracks_in_playlist(playlist_id):
 
     return jsonify(tracks), 200
 
+@playlist_bp.route('/playlists-with-tracks', methods=['GET'])
+def get_playlists_with_tracks():
+    try:
+        playlists = Playlist.query.all()
+        result = []
+        
+        for playlist in playlists:
+            playlist_tracks = playlist.tracks.all()
+            
+            playlist_data = {
+                'id': playlist.id,
+                'name': playlist.name,
+                'tracks': [{
+                    'id': track.id,
+                    'title': track.title,
+                    'song_path': track.song_path,
+                } for track in playlist_tracks]
+            }
+            result.append(playlist_data)
+            
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
