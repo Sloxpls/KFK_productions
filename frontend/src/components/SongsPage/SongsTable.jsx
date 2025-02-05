@@ -153,7 +153,7 @@ const SongsTable = ({ tracks }) => {
                   <div style={{ display: "flex", alignItems: "center" }}>
                     
                     <img
-                      src={`/tracks/${track.img_path}`}
+                      src={`${track.img_path}`}
                       alt="Track"
                       style={{ width: "50px", height: "50px", objectFit: "cover", marginLeft: "10px" }}
                     />

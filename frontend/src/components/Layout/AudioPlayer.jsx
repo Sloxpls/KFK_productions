@@ -6,7 +6,7 @@ import AudioVisualizer from "./AudioVisualizer";
 import useTrackStore from "../../hooks/useTrackStore";
 import "./AudioPlayer.css";
 
-const AudioPlayer = ({ playlist }) => {
+const AudioPlayer = ({playlist}) => {
   const { selectedTrack, setSelectedTrack } = useTrackStore();
   const audioRef = useRef(null);
   const isFirstLoad = useRef(true);
@@ -15,13 +15,12 @@ const AudioPlayer = ({ playlist }) => {
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
 
-  // Måste trycka på låt sen byta låt i tabellen för att det ska fungera, problem för en annan dag
   useEffect(() => {
     if (!selectedTrack || !audioRef.current) return;
     const audio = audioRef.current;
 
     audio.pause();
-    audio.src = `/tracks/${selectedTrack.song_path}`;
+    audio.src = `${selectedTrack.song_path}`;
     audio.load();
 
     if (!isFirstLoad.current) {
@@ -51,7 +50,6 @@ const AudioPlayer = ({ playlist }) => {
   }, []);
 
 
-  // Controller functions
   const handlePrevious = () => {
     if (!selectedTrack || playlist.length === 0) return;
     const currentIndex = playlist.findIndex((track) => track.id === selectedTrack.id);
@@ -89,11 +87,11 @@ const AudioPlayer = ({ playlist }) => {
       <div className="audio-player">
         <audio 
           ref={audioRef} 
-          src={selectedTrack ? `/tracks/${selectedTrack.song_path}` : ""} 
+          src={selectedTrack ? `${selectedTrack.song_path}` : ""} 
         />
         <div className="track-cover-container">
           <img
-            src={selectedTrack ? `/tracks/${selectedTrack.img_path}` : ""}
+            src={selectedTrack ? `${selectedTrack.img_path}` : ""}
             alt="Album Cover"
             className="track-cover"
           />

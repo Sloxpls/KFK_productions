@@ -17,8 +17,8 @@ def save_uploaded_files(song_file, img_file, track_id):
     song_filename = os.path.join(unique_dir, song_file.filename)
     img_filename = os.path.join(unique_dir, img_file.filename)
 
-    song_path = os.path.join(str(track_id), song_file.filename)
-    img_path = os.path.join(str(track_id), img_file.filename)
+    song_path = os.path.join('tracks', str(track_id), song_file.filename)
+    img_path = os.path.join('tracks', str(track_id), img_file.filename)
 
     song_file.save(song_filename)
     img_file.save(img_filename)
