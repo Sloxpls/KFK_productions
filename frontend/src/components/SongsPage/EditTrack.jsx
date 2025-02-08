@@ -20,9 +20,10 @@ const EditTrack = ({ open, onClose, track }) => {
   const [editedTrack, setEditedTrack] = useState({ ...track } ||{id: 1 });
   const queryClient = useQueryClient();
 
-  const mutation = useMutation(updateTrack, {
+  const { mutate } = useMutation({
+    mutationFn: updateTrack,
     onSuccess: () => {
-      queryClient.invalidateQueries(['tracks']);
+      queryClient.invalidateQueries({ queryKey: ['tracks'] });
       onClose();
     },
     onError: (error) => {
@@ -39,7 +40,7 @@ const EditTrack = ({ open, onClose, track }) => {
   };
 
   const handleSave = () => {
-    mutation.mutate(editedTrack);
+    mutate(editedTrack);
   };
 
   return (

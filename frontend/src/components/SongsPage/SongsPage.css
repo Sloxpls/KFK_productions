@@ -1,0 +1,16 @@
+.songs-page {
+    display: grid;
+    grid-template-columns: 1fr 250px;
+    gap: 20px;
+    padding: 20px;
+    height: 100%;
+  }
+  
+  .songs-content {
+    overflow-x: auto;
+  }
+  
+  .songs-sidebar {
+    border-left: 1px solid #ccc;
+    padding-left: 20px;
+  }

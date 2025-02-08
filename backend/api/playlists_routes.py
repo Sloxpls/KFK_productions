@@ -121,3 +121,35 @@ def get_playlists_with_tracks():
         return jsonify(result)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+@playlist_bp.route('/playlists-minimal', methods=['GET'])
+def get_playlists_minimal():
+    try:
+        playlists = Playlist.query.all()
+        result = []
+        
+        for playlist in playlists:
+            playlist_tracks = playlist.tracks.with_entities(
+                Track.id,
+                Track.title,
+                Track.song_path,
+                Track.img_path,
+                Track.writer
+            ).all()
+            
+            playlist_data = {
+                'id': playlist.id,
+                'name': playlist.name,
+                'tracks': [{
+                    'id': track.id,
+                    'title': track.title,
+                    'song_path': track.song_path,
+                    'img_path': track.img_path,
+                    'writer': track.writer
+                } for track in playlist_tracks]
+            }
+            result.append(playlist_data)
+            
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500

@@ -14,13 +14,14 @@ import {
 
 import EditTrack from "./EditTrack";
 import useTrackStore from "../../hooks/useTrackStore";
+import { useAudioContext } from "../../contexts/AudioContext";
 import "./SongsTable.css";
 
 const SongsTable = ({ tracks }) => {
   const [sortConfig, setSortConfig] = useState({ key: 'title', direction: 'asc' });
   const { selectedTrack, setSelectedTrack } = useTrackStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+	const { isPlaying, togglePlayPause } = useAudioContext();
 
   const getComparator = (key, direction) => {
     return (a, b) => {
@@ -41,11 +42,18 @@ const SongsTable = ({ tracks }) => {
   }, [sortConfig, tracks]);
 
   const handlePlay = (track) => {
-    setSelectedTrack(track);
+    if (selectedTrack?.id === track.id) {
+      // If same track, just toggle play/pause
+      togglePlayPause();
+    } else {
+      // If different track, set it and ensure it starts playing
+      setSelectedTrack(track);
+      togglePlayPause();
+    }
   };
 
   const handleEdit = (track) => {
-    setSelectedTrack(track)
+    setSelectedTrack(track);
     setIsModalOpen(true);
     console.log(`Editing row with ID: ${track.id}`);
   };
@@ -80,15 +88,17 @@ const SongsTable = ({ tracks }) => {
           throw new Error("Failed to update tracks data.");
         }
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.error("Error updating tracks data:", error);
     }
   };
 
   return (
     <div className={"container"}>
-      <TableContainer component={Paper} style={{ backgroundColor: "rgba(242, 242, 242, 0.3)" }}>
+      <TableContainer
+        component={Paper}
+        style={{ backgroundColor: "rgba(242, 242, 242, 0.3)" }}
+      >
         <Table>
           <TableHead>
             <TableRow>
@@ -147,15 +157,21 @@ const SongsTable = ({ tracks }) => {
             {sortedTracks.map((track) => (
               <TableRow key={track.id}>
                 <TableCell>
-                <Button id='playbtn' onClick={() => handlePlay(track)}>PLAY</Button>
+                  <Button id="playbtn" onClick={() => handlePlay(track)}>
+										{selectedTrack?.id === track.id && isPlaying ? "Pause" : "Play"}
+									</Button>
                 </TableCell>
                 <TableCell>
                   <div style={{ display: "flex", alignItems: "center" }}>
-                    
                     <img
                       src={`${track.img_path}`}
                       alt="Track"
-                      style={{ width: "50px", height: "50px", objectFit: "cover", marginLeft: "10px" }}
+                      style={{
+                        width: "50px",
+                        height: "50px",
+                        objectFit: "cover",
+                        marginLeft: "10px",
+                      }}
                     />
                   </div>
                 </TableCell>
@@ -165,11 +181,11 @@ const SongsTable = ({ tracks }) => {
                 <TableCell>{track.producer}</TableCell>
                 <TableCell>{track.writer}</TableCell>
                 <TableCell>
-                  {track.tiktok && 'tiktok'}
-                  {track.soundcloud && 'soundcloud'}
-                  {track.spotify && 'spotify'}
-                  {track.youtube && 'youtube'}
-                  {track.instagram && 'instagram'}
+                  {track.tiktok && "tiktok"}
+                  {track.soundcloud && "soundcloud"}
+                  {track.spotify && "spotify"}
+                  {track.youtube && "youtube"}
+                  {track.instagram && "instagram"}
                 </TableCell>
                 <TableCell>
                   <Button onClick={() => handleEdit(track)}>Edit</Button>

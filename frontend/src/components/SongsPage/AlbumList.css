@@ -79,28 +79,47 @@
   }
   
   .track-item {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr 24px;
     align-items: center;
-    padding: 10px 15px;
-    border-top: 1px solid #3a3a3a;
-    transition: background-color 0.2s ease;
-    cursor: pointer;
     padding: 8px;
     transition: background-color 0.3s ease;
+    cursor: pointer;
   }
   
   .track-item:hover {
-    background-color: #577480;
+    background-color: #34647944;
   }
   
   .track-title {
+    display: flex;
+    align-items: center;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 80%;
+    
+  }
+
+  .indicator-container {
+    width: 24px;
+    text-align: center;
+    flex-shrink: 0;
   }
   
+  
+  .playing-indicator {
+    color: #236f92;
+    width: 24px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .track-item.playing {
+    background-color: #ffffff34; /* Change to your desired highlight color */
+    font-weight: bold; /* Optional: makes the text bold */
+  }
+  
+
   .sidebar-loader,
   .sidebar-error {
     display: flex;
@@ -110,5 +129,3 @@
     font-size: 18px;
     color: #b3b3b3;
   }
-  
-  

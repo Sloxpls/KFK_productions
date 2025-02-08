@@ -3,77 +3,63 @@ import PropTypes from "prop-types";
 import Slider from "@mui/material/Slider";
 
 import AudioVisualizer from "./AudioVisualizer";
+import { useAudioContext } from "../../contexts/AudioContext";
 import useTrackStore from "../../hooks/useTrackStore";
 import "./AudioPlayer.css";
 
-const AudioPlayer = ({playlist}) => {
-  const { selectedTrack, setSelectedTrack } = useTrackStore();
-  const audioRef = useRef(null);
+const AudioPlayer = ({ playlist }) => {
+  const { selectedTrack, setSelectedTrack, volume, setVolume} = useTrackStore();
+  const { audioRef, isPlaying, togglePlayPause,  } = useAudioContext();
   const isFirstLoad = useRef(true);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolume] = useState(1.0);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
 
   useEffect(() => {
     if (!selectedTrack || !audioRef.current) return;
-    const audio = audioRef.current;
 
-    audio.pause();
-    audio.src = `${selectedTrack.song_path}`;
+    const audio = audioRef.current;
+    audio.src = selectedTrack.song_path;
     audio.load();
 
-    if (!isFirstLoad.current) {
-      audio.play().then(() => setIsPlaying(true)).catch((err) => console.log("Auto-play failed", err));
+    if (isFirstLoad.current) {
+      isFirstLoad.current = false;
     } else {
-      isFirstLoad.current = false; 
+      togglePlayPause();
     }
   }, [selectedTrack]);
 
+
+
   useEffect(() => {
     if (audioRef.current) {
-      audioRef.current.volume = parseFloat(volume);
+      audioRef.current.volume = volume;
     }
   }, [volume]);
 
   useEffect(() => {
     if (!audioRef.current) return;
-
     const audio = audioRef.current;
     const updateProgress = () => {
       setCurrentTime(audio.currentTime);
       setDuration(audio.duration || 0);
     };
-
     audio.addEventListener("timeupdate", updateProgress);
     return () => audio.removeEventListener("timeupdate", updateProgress);
   }, []);
 
-
-  const handlePrevious = () => {
+  const handleTrackChange = (direction) => {
     if (!selectedTrack || playlist.length === 0) return;
-    const currentIndex = playlist.findIndex((track) => track.id === selectedTrack.id);
-    const prevIndex = (currentIndex - 1 + playlist.length) % playlist.length;
-    setSelectedTrack(playlist[prevIndex]);
-  };
-  
-  const handleNext = () => {
-    if (!selectedTrack || playlist.length === 0) return;
-    const currentIndex = playlist.findIndex((track) => track.id === selectedTrack.id);
-    const nextIndex = (currentIndex + 1) % playlist.length;
-    setSelectedTrack(playlist[nextIndex]);
+    const currentIndex = playlist.findIndex(
+      (track) => track.id === selectedTrack.id
+    );
+    const newIndex =
+      (currentIndex + direction + playlist.length) % playlist.length;
+    setSelectedTrack(playlist[newIndex]);
+    togglePlayPause();
   };
 
-  const handlePlayPause = () => {
-    if (!audioRef.current) return;
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play();
-    }
-    setIsPlaying(!isPlaying);
-  };
-
+  const handlePrevious = () => handleTrackChange(-1);
+  const handleNext = () => handleTrackChange(1);
 
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
@@ -83,19 +69,19 @@ const AudioPlayer = ({playlist}) => {
 
   return (
     <>
-      <AudioVisualizer audioRef={audioRef} />
+      {/* <AudioVisualizer audioRef={audioRef} /> */}
       <div className="audio-player">
-        <audio 
-          ref={audioRef} 
-          src={selectedTrack ? `${selectedTrack.song_path}` : ""} 
+        <audio
+          ref={audioRef}
+          src={selectedTrack ? selectedTrack.song_path : ""}
         />
         <div className="track-cover-container">
           <img
-            src={selectedTrack ? `${selectedTrack.img_path}` : ""}
+            src={selectedTrack ? selectedTrack.img_path : ""}
             alt="Album Cover"
             className="track-cover"
           />
-      </div>
+        </div>
         <div className="track-info">
           <h4>{selectedTrack?.title || "No Track Selected"}</h4>
           <p>{selectedTrack?.producer || "Unknown Artist"}</p>
@@ -103,46 +89,43 @@ const AudioPlayer = ({playlist}) => {
 
         <div className="controls">
           <button onClick={handlePrevious}>⏮</button>
-          <button onClick={handlePlayPause}>
+          <button onClick={togglePlayPause}>
             {isPlaying ? "⏸" : "▶️"}
           </button>
           <button onClick={handleNext}>⏭</button>
         </div>
         <div className="progress">
-        <span>{formatTime(currentTime)}</span>
-        <div
+          <span>{formatTime(currentTime)}</span>
+          <div
             className="progress-bar-container"
             onClick={(e) => {
               if (!audioRef.current) return;
-              const rect = e.currentTarget.getBoundingClientRect(); 
-              const clickX = e.clientX - rect.left; 
-              const newTime = (clickX / rect.width) * duration; 
-              audioRef.current.currentTime = newTime; 
-              setCurrentTime(newTime); 
+              const rect = e.currentTarget.getBoundingClientRect();
+              const clickX = e.clientX - rect.left;
+              const newTime = (clickX / rect.width) * duration;
+              audioRef.current.currentTime = newTime;
+              setCurrentTime(newTime);
             }}
-        >
-          <div
+          >
+            <div
               className="progress-bar"
-              style={{
-                width: `${(currentTime / duration) * 100}%`, 
-              }}
-          ></div>
+              style={{ width: `${(currentTime / duration) * 100}%` }}
+            ></div>
+          </div>
+          <span id="duration">{formatTime(duration)}</span>
         </div>
-        <span id='duration'>{formatTime(duration)}</span>
-      </div>
-      <div className="volume-control">
-        <label htmlFor="volume">Volume: </label>
-        <Slider
+        <div className="volume-control">
+          <label htmlFor="volume">Volume: </label>
+          <Slider
             id="volume"
             value={volume}
             min={0}
             max={1}
             step={0.01}
             onChange={(e, newValue) => setVolume(newValue)}
-            
           />
+        </div>
       </div>
-    </div>
     </>
   );
 };
