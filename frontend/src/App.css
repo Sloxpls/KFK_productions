@@ -49,3 +49,19 @@ button:hover {
   height: 100vh;
   z-index: 99999;
 }
+
+/* For WebKit browsers (Chrome, Safari, Opera) */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* For Firefox */
+html, body {
+  scrollbar-width: none; /* Firefox */
+}
+
+/* For IE and Edge */
+html, body {
+  -ms-overflow-style: none;  /* IE and Edge */
+}
