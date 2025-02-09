@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import PropTypes from "prop-types";
 import {
   Table,
@@ -12,86 +12,40 @@ import {
   TableSortLabel,
 } from "@mui/material";
 
-import EditTrack from "./EditTrack";
-import useTrackStore from "../../hooks/useTrackStore";
-import { useAudioContext } from "../../contexts/AudioContext";
+import EditTrack from "../EditTrack"
+import useTrackStore from "../../../hooks/useTrackStore";
+import { useAudioContext } from "../../../contexts/AudioContext";
+import { useTrackFiltering } from "../../../hooks/useTrackFiltering";
 import "./SongsTable.css";
 
-const SongsTable = ({ tracks }) => {
+const SongsTable = ({ tracks, searchTerm }) => {
   const [sortConfig, setSortConfig] = useState({ key: 'title', direction: 'asc' });
   const { selectedTrack, setSelectedTrack } = useTrackStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTrack, setEditingTrack] = useState(null);
   const { isPlaying, togglePlayPause } = useAudioContext();
-
-  const getComparator = (key, direction) => {
-    return (a, b) => {
-      const aValue = a[key]?.toLowerCase() || '';
-      const bValue = b[key]?.toLowerCase() || '';
-      if (aValue < bValue) {
-        return direction === 'asc' ? -1 : 1;
-      }
-      if (aValue > bValue) {
-        return direction === 'asc' ? 1 : -1;
-      }
-      return 0;
-    };
-  };
-
-  const sortedTracks = useMemo(() => {
-    return [...tracks].sort(getComparator(sortConfig.key, sortConfig.direction));
-  }, [sortConfig, tracks]);
+  const { filteredAndSortedTracks } = useTrackFiltering(tracks, searchTerm, sortConfig);
 
   const handlePlay = (track) => {
     if (selectedTrack?.id === track.id) {
-      // If same track, just toggle play/pause
       togglePlayPause();
     } else {
-      // If different track, set it and ensure it starts playing
       setSelectedTrack(track);
       togglePlayPause();
     }
   };
 
   const handleEdit = (track) => {
-    setEditingTrack({...track}); // Make a copy of the track data to avoid interfering with streaming
+    setEditingTrack({ ...track }); // Make a copy of the track data to avoid interfering with streaming
     setIsModalOpen(true);
   };
 
-  const handleSort = (column) => {
-    if (sortConfig.key === column) {
-      // Toggle direction if the same column is clicked
-      setSortConfig((prevConfig) => ({
-        key: column,
-        direction: prevConfig.direction === 'asc' ? 'desc' : 'asc',
-      }));
-    } else {
-      // If a different column is clicked, default to the opposite of the current direction
-      setSortConfig({
-        key: column,
-        direction: sortConfig.direction === 'asc' ? 'desc' : 'asc',
-      });
-    }
-  };
-
-  const handleSave = async (id, tracksData) => {
-    try {
-      if (Object.keys(tracksData).length > 0) {
-        const tracksResponse = await fetch(`/api/tracks/${id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(tracksData),
-        });
-        if (!tracksResponse.ok) {
-          throw new Error("Failed to update tracks data.");
-        }
-      }
-    } catch (error) {
-      console.error("Error updating tracks data:", error);
-    }
-  };
+  const handleSort = (key) => {
+    setSortConfig((prevConfig) => ({
+      key,
+      direction: prevConfig.key === key && prevConfig.direction === "asc" ? "desc" : "asc",
+    }))
+  }
 
   return (
     <div className={"container"}>
@@ -124,15 +78,6 @@ const SongsTable = ({ tracks }) => {
               </TableCell>
               <TableCell>
                 <TableSortLabel
-                  active={sortConfig.key === 'album'}
-                  direction={sortConfig.direction}
-                  onClick={() => handleSort('album')}
-                >
-                  Album
-                </TableSortLabel>
-              </TableCell>
-              <TableCell>
-                <TableSortLabel
                   active={sortConfig.key === 'producer'}
                   direction={sortConfig.direction}
                   onClick={() => handleSort('producer')}
@@ -154,12 +99,12 @@ const SongsTable = ({ tracks }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {sortedTracks.map((track) => (
+            {filteredAndSortedTracks.map((track) => (
               <TableRow key={track.id}>
                 <TableCell>
                   <Button id="playbtn" onClick={() => handlePlay(track)}>
-										{selectedTrack?.id === track.id && isPlaying ? "Pause" : "Play"}
-									</Button>
+                    {selectedTrack?.id === track.id && isPlaying ? "Pause" : "Play"}
+                  </Button>
                 </TableCell>
                 <TableCell>
                   <div style={{ display: "flex", alignItems: "center" }}>
@@ -177,7 +122,6 @@ const SongsTable = ({ tracks }) => {
                 </TableCell>
                 <TableCell>{track.title}</TableCell>
                 <TableCell>{track.description}</TableCell>
-                <TableCell>{track.album}</TableCell>
                 <TableCell>{track.producer}</TableCell>
                 <TableCell>{track.writer}</TableCell>
                 <TableCell>
@@ -210,6 +154,7 @@ const SongsTable = ({ tracks }) => {
 
 SongsTable.propTypes = {
   tracks: PropTypes.array.isRequired,
+  searchTerm: PropTypes.string
 };
 
 export default SongsTable;

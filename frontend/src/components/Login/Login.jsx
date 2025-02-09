@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate} from "react-router-dom"
 import { Box } from "@mui/material"
 import { useAuth } from "../../hooks/useAuth"
 import "./Login.css"
@@ -15,7 +15,7 @@ export const Login = () => {
     if (isAuthenticated) {
       navigate("/site/songs")
     }
-  }, [isAuthenticated, navigate])
+  }, [isAuthenticated, navigate,])
 
   const handleSubmit = async (event) => {
     event.preventDefault()

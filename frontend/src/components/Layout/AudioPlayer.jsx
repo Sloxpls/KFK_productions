@@ -82,7 +82,7 @@ const AudioPlayer = ({ playlist }) => {
             className="track-cover"
           />
         </div>
-        <div className="track-info">
+        <div className="player-info">
           <h4>{selectedTrack?.title || "No Track Selected"}</h4>
           <p>{selectedTrack?.producer || "Unknown Artist"}</p>
         </div>

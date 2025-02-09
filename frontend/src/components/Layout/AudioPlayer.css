@@ -15,7 +15,7 @@
 
 }
 
-.track-info {
+.player-info {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -24,7 +24,7 @@
   margin: 0 1rem;
 }
 
-.track-info h4 {
+.player-info h4 {
   margin: 0;
   font-size: 1.2rem;
   font-weight: bold;
@@ -34,7 +34,7 @@
   text-overflow: ellipsis;
 }
 
-.track-info p {
+.player-info p {
   margin: 0;
   font-size: 1rem;
   color: #ccc;
