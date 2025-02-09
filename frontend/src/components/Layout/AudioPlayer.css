@@ -110,3 +110,11 @@
 #duration {
   margin: 1em;
 }
+
+.player-control {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+}

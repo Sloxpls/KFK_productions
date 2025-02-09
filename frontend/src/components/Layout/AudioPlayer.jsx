@@ -88,11 +88,11 @@ const AudioPlayer = ({ playlist }) => {
         </div>
 
         <div className="controls">
-          <button onClick={handlePrevious}>⏮</button>
-          <button onClick={togglePlayPause}>
+          <button className="player-control" onClick={handlePrevious}>⏮</button>
+          <button className="player-control" onClick={togglePlayPause}>
             {isPlaying ? "⏸" : "▶️"}
           </button>
-          <button onClick={handleNext}>⏭</button>
+          <button className="player-control" onClick={handleNext}>⏭</button>
         </div>
         <div className="progress">
           <span>{formatTime(currentTime)}</span>
