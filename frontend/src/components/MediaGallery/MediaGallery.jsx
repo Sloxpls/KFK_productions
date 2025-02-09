@@ -14,48 +14,6 @@ const MediaGallery = () => {
         description: "Cover image for Gammal Norrlands",
         uploaded_at: "2021-10-01T12:00:00Z",
       },
-      {
-        id: 1,
-        filename: "Gammal",
-        file_path: "/gammal.webp",
-        description: "Cover image for Gammal Norrlands",
-        uploaded_at: "2021-10-01T12:00:00Z",
-      },
-      {
-        id: 1,
-        filename: "Gammal",
-        file_path: "/gammal.webp",
-        description: "Cover image for Gammal Norrlands",
-        uploaded_at: "2021-10-01T12:00:00Z",
-      },
-      {
-        id: 1,
-        filename: "Gammal",
-        file_path: "/gammal.webp",
-        description: "Cover image for Gammal Norrlands",
-        uploaded_at: "2021-10-01T12:00:00Z",
-      },
-      {
-        id: 1,
-        filename: "Gammal",
-        file_path: "/gammal.webp",
-        description: "Cover image for Gammal Norrlands",
-        uploaded_at: "2021-10-01T12:00:00Z",
-      },
-      {
-        id: 1,
-        filename: "Gammal",
-        file_path: "/gammal.webp",
-        description: "Cover image for Gammal Norrlands",
-        uploaded_at: "2021-10-01T12:00:00Z",
-      },
-      {
-        id: 1,
-        filename: "Gammal",
-        file_path: "/gammal.webp",
-        description: "Cover image for Gammal Norrlands",
-        uploaded_at: "2021-10-01T12:00:00Z",
-      }
     ])
   }, [])
   
