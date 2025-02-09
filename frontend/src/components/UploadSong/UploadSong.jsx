@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useOutletContext } from "react-router-dom";
-
+import "../../styles/forms.css";
 import "./UploadSong.css";
 
 const UploadSong = () => {
+  const queryClient = useQueryClient();
   const {refreshTracks} = useOutletContext();
   const [playlists, setPlaylists] = useState([]);
   const [error, setError] = useState(null);
@@ -70,6 +71,44 @@ const UploadSong = () => {
     }
   };
 
+  const uploadSongMutation = useMutation({
+    mutationFn: async (formData) => {
+      const response = await fetch("/api/upload-song", {
+        method: "POST",
+        body: formData,
+      });
+      if (!response.ok) {
+        throw new Error("Failed to upload song");
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      // Invalidate and refetch tracks query
+      queryClient.invalidateQueries({ queryKey: ["tracks"] });
+      alert("Song uploaded successfully!");
+      setFormData({
+        title: "",
+        description: "",
+        song_file: null,
+        img_file: null,
+        producer: "",
+        writer: "",
+        genre: "",
+        tiktok: false,
+        soundcloud: false,
+        spotify: false,
+        youtube: false,
+        instagram: false,
+        playlist_option: "",
+        new_playlist_name: "",
+      });
+    },
+    onError: (error) => {
+      console.error("Error uploading song:", error);
+      alert("Failed to upload song. Please try again.");
+    }
+  });
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.song_file) {
@@ -99,54 +138,14 @@ const UploadSong = () => {
       data.append("playlist_name", formData.playlist_option);
     }
 
-    try {
-      for (let [key, value] of data.entries()) {
-        console.log(key, value);
-      }
-
-      const response = await fetch("/api/upload-song", {
-        method: "POST",
-        body: data,
-      });
-
-      if (response.ok) {
-        alert("Song uploaded successfully!");
-        setFormData({
-          title: "",
-          description: "",
-          song_file: null,
-          img_file: null,
-          producer: "",
-          writer: "",
-          genre: "",
-          tiktok: false,
-          soundcloud: false,
-          spotify: false,
-          youtube: false,
-          instagram: false,
-          playlist_option: "",
-          new_playlist_name: "",
-        });
-      } else {
-        alert("Failed to submit data. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error submitting form:", error);
-      alert("An error occurred. Please try again.");
-    }
+    uploadSongMutation.mutate(data);
   };
 
-  const mutation = useMutation({
-    mutationFn: handleSubmit,
-    onSuccess: () => {
-      refreshTracks();
-    },
-  });
-
   return (
-    <div className="container">
+    <div className="form-container">
       {error && <div className="error-message">{error}</div>}
-      <form onSubmit={handleSubmit}>
+      <h1>Upload Song</h1>
+      <form onSubmit={handleSubmit} className="form-base">
         <div className="form-group">
           <label htmlFor="title">Title:</label>
           <input type="text" id="title" name="title" value={formData.title} onChange={handleChange} required />
@@ -210,7 +209,7 @@ const UploadSong = () => {
           <div className="checkbox-group">
             <label>
               <input type="checkbox" name="tiktok" checked={formData.tiktok} onChange={handleChange} />
-              TikTok
+              <span className="platform-label">TikTok</span>
             </label>
             <label>
               <input type="checkbox" name="soundcloud" checked={formData.soundcloud} onChange={handleChange} />
@@ -263,8 +262,8 @@ const UploadSong = () => {
           </div>
         )}
 
-        <button type="submit" className="upload-button">
-          Submit
+        <button type="submit" className="btn btn-success">
+          Upload Song
         </button>
       </form>
     </div>

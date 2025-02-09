@@ -1,0 +1,22 @@
+.left-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+    color: #fff;
+    margin: 0.5em;
+}
+
+.left-sidebar .sidebar-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #000000;
+}
+
+.left-sidebar .sidebar-content {
+    border-radius: 8px;
+    padding: 15px;
+    color: #fff;
+    height: 100%;
+}

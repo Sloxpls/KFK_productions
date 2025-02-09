@@ -6,21 +6,22 @@ const usePlaylists = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("/api/playlists-with-tracks")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
+    const fetchPlaylists = async () => {
+      try {
+        const response = await fetch("/api/playlists-minimal");
+        if (!response.ok) throw new Error("Failed to fetch playlists");
+        const data = await response.json();
         setPlaylists(data);
         setLoading(false);
-      })
-      .catch((error) => {
+      } catch (error) {
         setError(error);
         setLoading(false);
-      });
+      }
+    };
+
+    fetchPlaylists();
+
+    return () => {};
   }, []);
 
   return { playlists, loading, error };

@@ -24,6 +24,9 @@ const Layout = () => {
     queryKey: ["tracks"],
     queryFn: fetchTracks,
     initialData: [],
+    refetchOnWindowFocus: false, 
+    refetchOnMount: true,       
+    refetchOnReconnect: true,   
   });
 
   return (

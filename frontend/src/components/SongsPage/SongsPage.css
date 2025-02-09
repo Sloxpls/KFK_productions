@@ -1,0 +1,51 @@
+.songs-page {
+    display: grid;
+    margin-top: 0.5%;
+    grid-template-columns: 300px 1fr 300px;
+    height: calc(100vh - 150px); /* Account for header and footer */
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+  
+.songs-content {
+    overflow-x: auto;
+    overflow-y: auto;
+    padding: 0 20px;
+    min-width: 0; 
+}
+
+.songs-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 20px;
+}
+
+.songs-search {
+    flex: 1;
+    max-width: 400px;
+    padding: 12px 20px;
+    border: 2px solid #236f92;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.songs-search:focus {
+    outline: none;
+    border-color: #1a5270;
+    box-shadow: 0 0 5px rgba(35, 111, 146, 0.3);
+}
+  
+.songs-sidebar, .songs-left-sidebar {
+  height: 100%;
+  color: #fff;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: none;
+  width: 100%;
+ 
+}

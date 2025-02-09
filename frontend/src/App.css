@@ -7,14 +7,14 @@ body, h1, h2, h3, p, ul, ol, table, th, td {
 
 body {
   font-family: Arial, sans-serif;
-  background: rgb(2,0,36);
-  background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+  background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9, 9, 121, 0.507) 35%, rgba(255, 0, 0, 0.733) 100%);
   color: #333;
   margin: 0;
   padding: 0;
 }
 
 .container {
+  display: flex;
   max-width: fit-content;
   background-color: rgba(255, 255, 255, 0.3);
   border-radius: 10px;
@@ -25,8 +25,6 @@ body {
   border: 1px solid;
   align-content: center;
   margin-top: 1%;
-  display: flex;
-
 }
 
 button {
@@ -49,4 +47,21 @@ button:hover {
   width: 100vw;
   height: 100vh;
   z-index: 99999;
+}
+
+/* For WebKit browsers (Chrome, Safari, Opera) */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+.songs-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* For Firefox */
+html, body, .songs-container {
+  scrollbar-width: none; /* Firefox */
+}
+
+/* For IE and Edge */
+html, body, .songs-container {
+  -ms-overflow-style: none;  /* IE and Edge */
 }
