@@ -1,16 +1,26 @@
 .songs-page {
     display: grid;
-    grid-template-columns: 1fr 250px;
-    gap: 20px;
-    padding: 20px;
-    height: 100%;
-  }
+    margin-top: 0.5%;
+    grid-template-columns: 300px 1fr 300px;
+    height: calc(100vh - 150px); /* Account for header and footer */
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
   
-  .songs-content {
+.songs-content {
     overflow-x: auto;
-  }
+    overflow-y: auto;
+    padding: 0 20px;
+    min-width: 0; 
+}
   
-  .songs-sidebar {
-    border-left: 1px solid #ccc;
-    padding-left: 20px;
-  }
+.songs-sidebar, .songs-left-sidebar {
+  height: 100%;
+  color: #fff;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: none;
+  width: 100%;
+ 
+}

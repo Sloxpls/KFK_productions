@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import {
   Table,
@@ -21,7 +21,8 @@ const SongsTable = ({ tracks }) => {
   const [sortConfig, setSortConfig] = useState({ key: 'title', direction: 'asc' });
   const { selectedTrack, setSelectedTrack } = useTrackStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
-	const { isPlaying, togglePlayPause } = useAudioContext();
+  const [editingTrack, setEditingTrack] = useState(null);
+  const { isPlaying, togglePlayPause } = useAudioContext();
 
   const getComparator = (key, direction) => {
     return (a, b) => {
@@ -53,9 +54,8 @@ const SongsTable = ({ tracks }) => {
   };
 
   const handleEdit = (track) => {
-    setSelectedTrack(track);
+    setEditingTrack({...track}); // Make a copy of the track data to avoid interfering with streaming
     setIsModalOpen(true);
-    console.log(`Editing row with ID: ${track.id}`);
   };
 
   const handleSort = (column) => {
@@ -196,11 +196,14 @@ const SongsTable = ({ tracks }) => {
         </Table>
       </TableContainer>
 
-      {/* <EditTrack
+      <EditTrack
         open={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        track={selectedTrack}
-      /> */}
+        onClose={() => {
+          setIsModalOpen(false);
+          setTimeout(() => setEditingTrack(null), 200);
+        }}
+        track={editingTrack}
+      />
     </div>
   );
 };
