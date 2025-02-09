@@ -24,10 +24,9 @@ const Layout = () => {
     queryKey: ["tracks"],
     queryFn: fetchTracks,
     initialData: [],
-    refetchOnWindowFocus: true, // refetch when window regains focus
-    refetchOnMount: true,       // refetch when component mounts
-    refetchOnReconnect: true,   // refetch when internet reconnects
-    staleTime: 30000,          // consider data fresh for 30 seconds
+    refetchOnWindowFocus: false, 
+    refetchOnMount: true,       
+    refetchOnReconnect: true,   
   });
 
   return (
