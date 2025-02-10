@@ -28,7 +28,17 @@ const AudioPlayer = ({ playlist }) => {
     }
   }, [selectedTrack]);
 
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      if (e.code === 'Space' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        togglePlayPause();
+      }
+    };
 
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [togglePlayPause]);
 
   useEffect(() => {
     if (audioRef.current) {
@@ -70,7 +80,7 @@ const AudioPlayer = ({ playlist }) => {
   return (
     <>
       {/* <AudioVisualizer audioRef={audioRef} /> */}
-      <div className="audio-player">
+      <div className="audio-player" role="region" aria-label="Audio player">
         <audio
           ref={audioRef}
           src={selectedTrack ? selectedTrack.song_path : ""}
@@ -89,7 +99,7 @@ const AudioPlayer = ({ playlist }) => {
 
         <div className="controls">
           <button className="player-control" onClick={handlePrevious}>⏮</button>
-          <button className="player-control" onClick={togglePlayPause}>
+          <button className="player-control" data-control="play" onClick={togglePlayPause}>
             {isPlaying ? "⏸" : "▶️"}
           </button>
           <button className="player-control" onClick={handleNext}>⏭</button>
