@@ -20,6 +20,12 @@ const SearchBar = ({
     onSearch("")
   }
 
+  const handleKeyDown = (e) => {
+    if (e.code === 'Space') {
+      e.stopPropagation(); // Prevent space from triggering the audio player
+    }
+  }
+
   return (
     <>
     <input
@@ -27,6 +33,7 @@ const SearchBar = ({
       placeholder={placeholder}
       value={searchTerm}
       onChange={handleSearch}
+      onKeyDown={handleKeyDown}
       className={className}
     />
 
