@@ -18,11 +18,11 @@ def create_app():
     #app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
-    app.register_blueprint(media_bp, url_prefix='/api')
-    app.register_blueprint(track_bp, url_prefix='/api')
-    app.register_blueprint(playlist_bp, url_prefix='/api')
-    app.register_blueprint(auth_bp, url_prefix='/api')
-    app.register_blueprint(upload_bp, url_prefix='/api')
+    app.register_blueprint(media_bp)
+    app.register_blueprint(track_bp)
+    app.register_blueprint(playlist_bp)
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(upload_bp )
     with app.app_context():
         db.create_all()
 
