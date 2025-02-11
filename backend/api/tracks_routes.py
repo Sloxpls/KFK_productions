@@ -1,5 +1,11 @@
-from flask import Blueprint, jsonify, request
+import os
+from flask import Blueprint, jsonify, request, send_file
+from werkzeug.utils import secure_filename
+
 from backend.database_models import Track, db
+UPLOAD_FOLDER = os.environ.get("UPLOAD_FOLDER", "/app/uploads")
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
 track_bp = Blueprint('track_bp', __name__)
 
 @track_bp.route('/tracks', methods=['GET'])
@@ -84,3 +90,33 @@ def delete_track(track_id):
     db.session.delete(track)
     db.session.commit()
     return jsonify({'message': 'Track deleted', 'id': track.id}), 200
+
+
+@track_bp.route('/tracks/<int:track_id>/song', methods=['GET'])
+def get_song(track_id):
+    track = Track.query.get(track_id)
+    if not track or not track.song_path:
+        return jsonify({'error': 'Song not found'}), 404
+
+    full_path = os.path.join(UPLOAD_FOLDER, track.song_path)
+    if not os.path.exists(full_path):
+        return jsonify({'error': 'Song file does not exist'}), 404
+
+    return send_file(full_path, mimetype='audio/mpeg')
+
+
+#
+# 7) SERVE THE IMAGE FILE
+#
+@track_bp.route('/tracks/<int:track_id>/image', methods=['GET'])
+def get_image(track_id):
+    track = Track.query.get(track_id)
+    if not track or not track.img_path:
+        return jsonify({'error': 'Image not found'}), 404
+
+    full_path = os.path.join(UPLOAD_FOLDER, track.img_path)
+    if not os.path.exists(full_path):
+        return jsonify({'error': 'Image file does not exist'}), 404
+
+    # Use an appropriate MIME type or guess it
+    return send_file(full_path, mimetype='image/jpeg')
