@@ -35,8 +35,8 @@ const SongsGrid = ({ tracks, searchTerm }) => {
   }
 
   return (
-    <div className="songs-grid-container">
-      <div className="songs-grid-header">
+    <div className="songs-container">
+      {/* <div className="songs-grid-header">
         <div className="sort-button" onClick={() => handleSort("title")}>
           Title {sortConfig.key === "title" && (sortConfig.direction === "asc" ? "▲" : "▼")}
         </div>
@@ -46,7 +46,7 @@ const SongsGrid = ({ tracks, searchTerm }) => {
         <div className="sort-button" onClick={() => handleSort("writer")}>
           Writer {sortConfig.key === "writer" && (sortConfig.direction === "asc" ? "▲" : "▼")}
         </div>
-      </div>
+      </div> */}
       <div className="songs-grid">
         {filteredAndSortedTracks.map((track) => (
           <div key={track.id} className="song-card">
@@ -55,7 +55,7 @@ const SongsGrid = ({ tracks, searchTerm }) => {
               <h3>{track.title}</h3>
               <p>{track.producer}</p>
               <p>{track.writer}</p>
-              <p>{track.description}</p>
+              <p className="description">{track.description}</p>
             </div>
             <div className="song-actions">
               <button onClick={() => handlePlay(track)}>

@@ -10,7 +10,7 @@
   z-index: 1000;
   padding: 10px 15px;
   border-radius: 40px;
-  background-color: #13131093;
+  background-color: var(--transparent-dark);
   align-items: center;
 
 }
@@ -56,10 +56,13 @@
   color: white;
   font-size: 1.5rem;
   cursor: pointer;
+  transition: var(--hover-transition);
 }
 
 .controls button:hover {
   color: #f90;
+  transform: var(--hover-scale);
+  box-shadow: var(--hover-shadow);
 }
 
 .progress {
@@ -117,4 +120,10 @@
   color: white;
   font-size: 1.5rem;
   cursor: pointer;
+  transition: var(--hover-transition);
+}
+
+.player-control:hover {
+  transform: var(--hover-scale);
+  color: #f90;
 }

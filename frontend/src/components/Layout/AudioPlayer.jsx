@@ -53,8 +53,22 @@ const AudioPlayer = ({ playlist }) => {
       setCurrentTime(audio.currentTime);
       setDuration(audio.duration || 0);
     };
+
+    // auto play next track dum lösning
+    const handleTrackEnd = () => {
+      handleNext(); 
+      setTimeout(() => {
+        togglePlayPause();
+      }, 1000);
+    };
+
     audio.addEventListener("timeupdate", updateProgress);
-    return () => audio.removeEventListener("timeupdate", updateProgress);
+    audio.addEventListener("ended", handleTrackEnd);
+    
+    return () => {
+      audio.removeEventListener("timeupdate", updateProgress);
+      audio.removeEventListener("ended", handleTrackEnd);
+    };
   }, []);
 
   const handleTrackChange = (direction) => {
@@ -70,7 +84,7 @@ const AudioPlayer = ({ playlist }) => {
 
   const handlePrevious = () => handleTrackChange(-1);
   const handleNext = () => handleTrackChange(1);
-
+  
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
