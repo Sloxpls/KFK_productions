@@ -169,3 +169,15 @@ def get_image(track_id):
     if not os.path.exists(full_path):
         return jsonify({'error': 'Image file does not exist'}), 404
     return send_file(full_path, mimetype='image/jpeg')
+
+@track_bp.route("/tracks/<int:track_id>/stream", methods=["GET"])
+def stream_track(track_id):
+    track = Track.query.get(track_id)
+    if not track or not track.song_path:
+        return jsonify({'error': 'No song file specified'}), 404
+
+    full_path = os.path.join(UPLOAD_FOLDER, track.song_path)
+    if not os.path.exists(full_path):
+        return jsonify({'error': 'File not found on server'}), 404
+
+    return send_file(full_path, mimetype='audio/mpeg')
