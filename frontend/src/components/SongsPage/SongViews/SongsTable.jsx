@@ -48,7 +48,7 @@ const SongsTable = ({ tracks, searchTerm }) => {
   }
 
   return (
-    <div className={"container"}>
+    <div className={"songs-container"}>
       <TableContainer
         component={Paper}
         style={{ backgroundColor: "rgba(242, 242, 242, 0.3)" }}
@@ -121,7 +121,7 @@ const SongsTable = ({ tracks, searchTerm }) => {
                   </div>
                 </TableCell>
                 <TableCell>{track.title}</TableCell>
-                <TableCell>{track.description}</TableCell>
+                <TableCell className="description-cell">{track.description}</TableCell>
                 <TableCell>{track.producer}</TableCell>
                 <TableCell>{track.writer}</TableCell>
                 <TableCell>

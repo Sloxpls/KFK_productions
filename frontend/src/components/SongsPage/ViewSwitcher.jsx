@@ -2,11 +2,10 @@ import React from 'react';
 import './ViewSwitcher.css';
 
 const ViewSwitcher = ({ currentView, onViewChange }) => {
-  const views = ['table', 'grid', 'list'];
+  const views = ['table', 'grid'];
   const viewNames = {
     table: 'Table View',
     grid: 'Grid View',
-    list: 'List View'
   };
 
   return (

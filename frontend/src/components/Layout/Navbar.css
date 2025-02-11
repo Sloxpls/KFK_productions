@@ -1,5 +1,5 @@
 .navbar {
-    background-color: rgba(51, 51, 51, 0.3);
+    background-color: var(--transparent-dark);
     padding: 10px;
     display: flex;
     justify-content: center;
@@ -23,15 +23,16 @@
     align-items: center !important;
     justify-content: center !important;
     text-align: center !important;
+    transition: var(--hover-transition);
 }
 
 .nav-link:hover {
-    background-color: rgba(241, 241, 241, 0.26) !important;
+    background-color: var(--hover-bg-color) !important;
 }
 
-/* Style for dropdown menu */
+
 .MuiMenu-paper {
-    background-color: rgba(51, 51, 51, 0.719) !important;
+    background-color: var(--transparent-dark) !important;
     border-radius: 5px !important;
     margin-top: 5px !important;
 }
@@ -46,8 +47,9 @@
     padding: 8px 16px;
     width: 100%;
     display: block;
+    transition: var(--hover-transition);
 }
 
 .dropdown-item:hover {
-    background-color: rgba(241, 241, 241, 0.26);
+    background-color: var(--hover-bg-color);
 }

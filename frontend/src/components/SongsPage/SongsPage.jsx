@@ -4,7 +4,6 @@ import SongsTable from "./SongViews/SongsTable.jsx";
 import AlbumList from "./AlbumList.jsx";
 import LeftSidebar from "./LeftSidebar.jsx";
 import SongsGrid from "./SongViews/SongsGrid.jsx";
-import SongsList from "./SongViews/SongsList.jsx";
 import ViewSwitcher from "./ViewSwitcher.jsx";
 import SearchBar from "./SearchBar.jsx";
 import "./SongsPage.css";
@@ -33,8 +32,6 @@ const SongsPage = () => {
         return <SongsTable {...props} />;
       case 'grid':
         return <SongsGrid {...props} />;
-      case 'list':
-        return <SongsList {...props} />;
       default:
         return <SongsList {...props} />;
     }
@@ -45,23 +42,23 @@ const SongsPage = () => {
       <div className="songs-left-sidebar">
         <LeftSidebar />
       </div>
-
-      <div className="songs-content">
-        <div className="songs-header">
-          <ViewSwitcher 
-            currentView={currentView} 
-            onViewChange={setCurrentView} 
-          />
-          <SearchBar 
-            onSearch={handleSearch}
-            placeholder="Search tracks by title, producer, or writer..."
-            className="songs-search"
-          />
+      
+        <div className="songs-content">
+          <div className="songs-header">
+            <ViewSwitcher 
+              currentView={currentView} 
+              onViewChange={setCurrentView} 
+            />
+            <SearchBar 
+              onSearch={handleSearch}
+              placeholder="Search tracks by title, producer, or writer..."
+              className="songs-search"
+            />
+          </div>
+          {renderContent()}
         </div>
-        {renderContent()}
-      </div>
-
-      <div className="songs-sidebar">
+      
+      <div className="songs-right-sidebar">
         <AlbumList />
       </div>
     </div>

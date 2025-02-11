@@ -1,4 +1,13 @@
 /* General Reset */
+:root {
+  --hover-bg-color: rgba(241, 241, 241, 0.26);
+  --hover-transition: background-color 0.3s ease;
+  --hover-scale: scale(1.02);
+  --hover-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  --transparent-light: rgba(255, 255, 255, 0.3);
+  --transparent-dark: rgba(0, 0, 0, 0.4);
+}
+
 body, h1, h2, h3, p, ul, ol, table, th, td {
   margin: 0;
   padding: 0;
@@ -16,7 +25,7 @@ body {
 .container {
   display: flex;
   max-width: fit-content;
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: var(--transparent-light);
   border-radius: 10px;
   padding: 2em;
   margin: auto;
@@ -34,10 +43,13 @@ button {
   padding: 10px 15px;
   border-radius: 5px;
   cursor: pointer;
+  transition: var(--hover-transition);
 }
 
 button:hover {
   background-color: #0056b3;
+  transform: var(--hover-scale);
+  box-shadow: var(--hover-shadow);
 }
 
 #canvas {
@@ -52,16 +64,17 @@ button:hover {
 /* For WebKit browsers (Chrome, Safari, Opera) */
 html::-webkit-scrollbar,
 body::-webkit-scrollbar,
+.songs-container::-webkit-scrollbar,
 .songs-container::-webkit-scrollbar {
   display: none;
 }
 
 /* For Firefox */
-html, body, .songs-container {
+html, body, .songs-container, .songs-content {
   scrollbar-width: none; /* Firefox */
 }
 
 /* For IE and Edge */
-html, body, .songs-container {
+html, body, .songs-container, .songs-content {
   -ms-overflow-style: none;  /* IE and Edge */
 }
