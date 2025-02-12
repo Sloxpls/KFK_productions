@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Modal, Box, Typography, TextField, Button, FormGroup, FormControlLabel, Checkbox } from "@mui/material";
+import usePlaylists from "../../hooks/usePlaylists";
 
 const updateTrack = async (trackData) => {
   const response = await fetch(`/api/tracks/${trackData.id}`, {
@@ -8,29 +9,48 @@ const updateTrack = async (trackData) => {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(trackData),
+    body: JSON.stringify(trackData.trackDetails),
   });
   if (!response.ok) {
     throw new Error("Failed to update track data.");
   }
+
+  const playlistUpdates = trackData.selectedPlaylists.map(playlistId =>
+    fetch(`/api/playlists/${playlistId}/tracks/${trackData.id}`, {
+      method: "POST",
+    }).then(res => {
+      if (!res.ok) throw new Error(`Failed to add track to playlist ${playlistId}`);
+      return res.json();
+    })
+  );
+
+  await Promise.all(playlistUpdates);
   return response.json();
 };
 
 const EditTrack = ({ open, onClose, track }) => {
   const [editedTrack, setEditedTrack] = useState(null);
+  const [selectedPlaylists, setSelectedPlaylists] = useState([]);
   const queryClient = useQueryClient();
+  const { playlists, isLoadingPlaylists } = usePlaylists();
 
   // Update internal state when track prop changes or modal opens
   useEffect(() => {
     if (track && open) {
       setEditedTrack({...track});
+      // Get the playlists that contain this track
+      const trackPlaylists = playlists
+        .filter(playlist => playlist.tracks.some(t => t.id === track.id))
+        .map(playlist => playlist.id);
+      setSelectedPlaylists(trackPlaylists);
     }
-  }, [track, open]);
+  }, [track, open, playlists]);
 
   const editTrackMutation = useMutation({
     mutationFn: updateTrack,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tracks'] });
+      queryClient.invalidateQueries({ queryKey: ['playlists'] });
       alert("Track updated successfully!");
       onClose();
     },
@@ -40,7 +60,6 @@ const EditTrack = ({ open, onClose, track }) => {
     },
   });
 
-  // Don't render the form content if no track is being edited
   if (!editedTrack) {
     return null;
   }
@@ -53,9 +72,23 @@ const EditTrack = ({ open, onClose, track }) => {
     }));
   };
 
+  const handlePlaylistChange = (playlistId) => {
+    setSelectedPlaylists(prev => {
+      if (prev.includes(playlistId)) {
+        return prev.filter(id => id !== playlistId);
+      } else {
+        return [...prev, playlistId];
+      }
+    });
+  };
+
   const handleSave = (e) => {
     e.preventDefault();
-    editTrackMutation.mutate(editedTrack);
+    editTrackMutation.mutate({
+      id: editedTrack.id,
+      trackDetails: editedTrack,
+      selectedPlaylists
+    });
   };
 
   return (
@@ -66,6 +99,8 @@ const EditTrack = ({ open, onClose, track }) => {
         left: "50%",
         transform: "translate(-50%, -50%)",
         width: 400,
+        maxHeight: "90vh",
+        overflow: "auto",
         bgcolor: "background.paper",
         boxShadow: 24,
         p: 4,
@@ -161,6 +196,28 @@ const EditTrack = ({ open, onClose, track }) => {
               }
               label="Instagram"
             />
+          </FormGroup>
+          <FormGroup sx={{ mt: 2 }}>
+            <Typography variant="subtitle1" gutterBottom>
+              Playlists
+            </Typography>
+            {isLoadingPlaylists ? (
+              <Typography>Loading playlists...</Typography>
+            ) : (
+              playlists.map((playlist) => (
+                <FormControlLabel
+                  key={playlist.id}
+                  control={
+                    <Checkbox
+                      checked={selectedPlaylists.includes(playlist.id)}
+                      onChange={() => handlePlaylistChange(playlist.id)}
+                      name={`playlist-${playlist.id}`}
+                    />
+                  }
+                  label={playlist.name}
+                />
+              ))
+            )}
           </FormGroup>
           <Button 
             type="submit" 
