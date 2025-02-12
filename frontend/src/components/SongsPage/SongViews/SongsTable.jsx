@@ -16,7 +16,7 @@ import EditTrack from "../EditTrack"
 import useTrackStore from "../../../hooks/useTrackStore";
 import { useAudioContext } from "../../../contexts/AudioContext";
 import { useTrackFiltering } from "../../../hooks/useTrackFiltering";
-import useTracks from "../../../hooks/useTracks"; 
+import useTracks from "../../../hooks/useTracks";
 import "./SongsTable.css";
 
 const SongsTable = ({ tracks, searchTerm }) => {
@@ -72,7 +72,7 @@ const SongsTable = ({ tracks, searchTerm }) => {
                   Title
                 </TableSortLabel>
               </TableCell>
-              {/* <TableCell>
+              <TableCell>
                 <TableSortLabel
                   active={sortConfig.key === 'description'}
                   direction={sortConfig.direction}
@@ -80,7 +80,7 @@ const SongsTable = ({ tracks, searchTerm }) => {
                 >
                   Description
                 </TableSortLabel>
-              </TableCell> */}
+              </TableCell>
               <TableCell>
                 <TableSortLabel
                   active={sortConfig.key === 'producer'}
@@ -109,7 +109,15 @@ const SongsTable = ({ tracks, searchTerm }) => {
               <TableRow key={track.id}>
                 <TableCell>
                   <Button id="playbtn" onClick={() => handlePlay(track)}>
-                    {selectedTrack?.id === track.id && isPlaying ? "Pause" : "Play"}
+                    <img
+                      src={
+                        selectedTrack?.id === track.id && isPlaying
+                          ? "/icons/pause.svg"
+                          : "/icons/play.svg"
+                      }
+                      alt={selectedTrack?.id === track.id && isPlaying ? "Pause" : "Play"}
+                      style={{ width: "20px", height: "20px" }}
+                    />
                   </Button>
                 </TableCell>
                 <TableCell>
