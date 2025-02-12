@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Modal, Box, Typography, TextField, Button, FormGroup, FormControlLabel, Checkbox } from "@mui/material";
 import usePlaylists from "../../hooks/usePlaylists";
+import "./EditTrack.css";
 
 const updateTrack = async (trackData) => {
   const response = await fetch(`/api/tracks/${trackData.id}`, {
@@ -51,7 +52,6 @@ const EditTrack = ({ open, onClose, track }) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tracks'] });
       queryClient.invalidateQueries({ queryKey: ['playlists'] });
-      alert("Track updated successfully!");
       onClose();
     },
     onError: (error) => {
@@ -98,7 +98,7 @@ const EditTrack = ({ open, onClose, track }) => {
         top: "50%",
         left: "50%",
         transform: "translate(-50%, -50%)",
-        width: 400,
+        width: 600,
         maxHeight: "90vh",
         overflow: "auto",
         bgcolor: "background.paper",
@@ -142,83 +142,88 @@ const EditTrack = ({ open, onClose, track }) => {
             fullWidth
             margin="normal"
           />
-          <FormGroup sx={{ mt: 2 }}>
-            <Typography variant="subtitle1" gutterBottom>
-              Platforms
-            </Typography>
-            <FormControlLabel
-              control={
-                <Checkbox 
-                  checked={editedTrack.tiktok || false}
-                  onChange={handleChange}
-                  name="tiktok"
-                />
-              }
-              label="TikTok"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox 
-                  checked={editedTrack.soundcloud || false}
-                  onChange={handleChange}
-                  name="soundcloud"
-                />
-              }
-              label="Soundcloud"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox 
-                  checked={editedTrack.spotify || false}
-                  onChange={handleChange}
-                  name="spotify"
-                />
-              }
-              label="Spotify"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox 
-                  checked={editedTrack.youtube || false}
-                  onChange={handleChange}
-                  name="youtube"
-                />
-              }
-              label="YouTube"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox 
-                  checked={editedTrack.instagram || false}
-                  onChange={handleChange}
-                  name="instagram"
-                />
-              }
-              label="Instagram"
-            />
-          </FormGroup>
-          <FormGroup sx={{ mt: 2 }}>
-            <Typography variant="subtitle1" gutterBottom>
-              Playlists
-            </Typography>
-            {isLoadingPlaylists ? (
-              <Typography>Loading playlists...</Typography>
-            ) : (
-              playlists.map((playlist) => (
-                <FormControlLabel
-                  key={playlist.id}
-                  control={
-                    <Checkbox
-                      checked={selectedPlaylists.includes(playlist.id)}
-                      onChange={() => handlePlaylistChange(playlist.id)}
-                      name={`playlist-${playlist.id}`}
-                    />
-                  }
-                  label={playlist.name}
-                />
-              ))
-            )}
-          </FormGroup>
+          
+          <div className="form-sections-container">
+            <FormGroup className="form-section">
+              <Typography variant="subtitle1" className="section-title">
+                Platforms
+              </Typography>
+              <FormControlLabel
+                control={
+                  <Checkbox 
+                    checked={editedTrack.tiktok || false}
+                    onChange={handleChange}
+                    name="tiktok"
+                  />
+                }
+                label="TikTok"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox 
+                    checked={editedTrack.soundcloud || false}
+                    onChange={handleChange}
+                    name="soundcloud"
+                  />
+                }
+                label="Soundcloud"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox 
+                    checked={editedTrack.spotify || false}
+                    onChange={handleChange}
+                    name="spotify"
+                  />
+                }
+                label="Spotify"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox 
+                    checked={editedTrack.youtube || false}
+                    onChange={handleChange}
+                    name="youtube"
+                  />
+                }
+                label="YouTube"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox 
+                    checked={editedTrack.instagram || false}
+                    onChange={handleChange}
+                    name="instagram"
+                  />
+                }
+                label="Instagram"
+              />
+            </FormGroup>
+
+            <FormGroup className="form-section">
+              <Typography variant="subtitle1" className="section-title">
+                Playlists
+              </Typography>
+              {isLoadingPlaylists ? (
+                <Typography>Loading playlists...</Typography>
+              ) : (
+                playlists.map((playlist) => (
+                  <FormControlLabel
+                    key={playlist.id}
+                    control={
+                      <Checkbox
+                        checked={selectedPlaylists.includes(playlist.id)}
+                        onChange={() => handlePlaylistChange(playlist.id)}
+                        name={`playlist-${playlist.id}`}
+                      />
+                    }
+                    label={playlist.name}
+                  />
+                ))
+              )}
+            </FormGroup>
+          </div>
+
           <Button 
             type="submit" 
             variant="contained" 

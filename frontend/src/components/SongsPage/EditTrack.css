@@ -1,0 +1,13 @@
+.form-sections-container {
+  display: flex;
+  gap: 24px;
+  margin-top: 16px;
+}
+
+.form-section {
+  flex: 1;
+}
+
+.section-title {
+  margin-bottom: 16px !important;
+}
