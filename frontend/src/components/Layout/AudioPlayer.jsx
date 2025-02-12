@@ -18,7 +18,7 @@ const AudioPlayer = ({ playlist }) => {
     if (!selectedTrack || !audioRef.current) return;
 
     const audio = audioRef.current;
-    audio.src = selectedTrack.song_path;
+    audio.src = `/api/tracks/${selectedTrack.id}/stream`;
     audio.load();
 
     if (isFirstLoad.current) {
@@ -97,11 +97,11 @@ const AudioPlayer = ({ playlist }) => {
       <div className="audio-player" role="region" aria-label="Audio player">
         <audio
           ref={audioRef}
-          src={selectedTrack ? selectedTrack.song_path : ""}
+          src={selectedTrack ? `/api/tracks/${selectedTrack.id}/stream` : ""}
         />
         <div className="track-cover-container">
           <img
-            src={selectedTrack ? selectedTrack.img_path : ""}
+            src={selectedTrack ? `/api/tracks/${selectedTrack.id}/image` : ""}
             alt="Album Cover"
             className="track-cover"
           />
