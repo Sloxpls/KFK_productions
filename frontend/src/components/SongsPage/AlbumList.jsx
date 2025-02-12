@@ -1,10 +1,22 @@
 import usePlaylists from "../../hooks/usePlaylists";
 import "./AlbumList.css";
 import { useState } from "react";
+import { Button, TextField } from "@mui/material";
 
 const AlbumList = ({ onPlaylistSelect }) => {
-  const { playlists, isLoadingPlaylists, playlistsError } = usePlaylists();
+  const { playlists, isLoadingPlaylists, playlistsError, createPlaylist, isCreating: isCreatingPlaylist } = usePlaylists();
   const [selectedId, setSelectedId] = useState(null);
+  const [isCreating, setIsCreating] = useState(false);
+  const [newPlaylistName, setNewPlaylistName] = useState("");
+
+  const handleCreatePlaylist = (e) => {
+    e.preventDefault();
+    if (newPlaylistName.trim()) {
+      createPlaylist({ name: newPlaylistName });
+      setNewPlaylistName("");
+      setIsCreating(false);
+    }
+  };
 
   if (isLoadingPlaylists) {
     return <div className="sidebar-loader">Loading...</div>;
@@ -41,6 +53,39 @@ const AlbumList = ({ onPlaylistSelect }) => {
             </div>
           </div>
         ))}
+        <div className="playlist-item">
+          {isCreating ? (
+            <form onSubmit={handleCreatePlaylist} style={{ display: 'flex', gap: '8px' }}>
+              <TextField
+                size="small"
+                value={newPlaylistName}
+                onChange={(e) => setNewPlaylistName(e.target.value)}
+                placeholder="Playlist name"
+                autoFocus
+                sx={{
+                  input: { color: 'white' }
+                }}
+              />
+              <Button 
+                variant="contained" 
+                color="primary" 
+                type="submit"
+                disabled={isCreatingPlaylist}
+              >
+                {isCreatingPlaylist ? 'Creating...' : 'Create'}
+              </Button>
+            </form>
+          ) : (
+            <Button 
+              variant="outlined" 
+              color="primary" 
+              onClick={() => setIsCreating(true)}
+              fullWidth
+            >
+              Create new playlist
+            </Button>
+          )}
+        </div>
       </div>
     </aside>
   );
