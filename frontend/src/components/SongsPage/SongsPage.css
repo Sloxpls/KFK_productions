@@ -9,15 +9,16 @@
 }
   
 .songs-content {
+    
     overflow-x: auto;
     overflow-y: auto;
-    padding: 0 20px;
-    min-width: 0; 
+    padding: 20px;
+    min-width: 0;
+    
 }
 
 .songs-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     margin-bottom: 0.5em;
     margin-top: 0.5em;
@@ -35,7 +36,6 @@
     font-size: 16px;
     transition: all 0.3s ease;
     background-color: var(--transparent-light);
-    margin-left: auto; 
 }
 
 .songs-search:focus {
@@ -55,5 +55,7 @@
 }
 
 .view-switcher {
-  margin-right: auto; 
+    display: flex;
+    align-items: center;
+    margin-right: 0;
 }
