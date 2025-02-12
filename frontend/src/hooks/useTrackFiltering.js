@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-export const useTrackFiltering = (tracks, searchTerm, sortConfig) => {
+export const useTrackFiltering = (tracks, searchTerm, sortConfig, socialFilters = {}) => {
   const getComparator = (key, direction) => {
     return (a, b) => {
       const aValue = a[key]?.toLowerCase() || '';
@@ -26,8 +26,19 @@ export const useTrackFiltering = (tracks, searchTerm, sortConfig) => {
         track.writer?.toLowerCase().includes(searchLower)
       );
     }
+
+    const activeFilters = Object.entries(socialFilters)
+      .filter(([_, isActive]) => isActive)
+      .map(([platform]) => platform);
+
+    if (activeFilters.length > 0) {
+      filtered = filtered.filter(track =>
+        activeFilters.every(platform => track[platform])
+      );
+    }
+
     return [...filtered].sort(getComparator(sortConfig.key, sortConfig.direction));
-  }, [tracks, searchTerm, sortConfig]);
+  }, [tracks, searchTerm, sortConfig, socialFilters]);
 
   return { filteredAndSortedTracks };
 };
