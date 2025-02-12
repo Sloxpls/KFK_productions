@@ -1,30 +1,38 @@
 from flask import Blueprint, jsonify, request
-from backend.database_models import Playlist, db, Track
+from backend.database_models import Playlist, Track, db
 
 playlist_bp = Blueprint('playlist_bp', __name__)
 
 @playlist_bp.route('/playlists', methods=['GET'])
 def get_playlists():
     playlists = Playlist.query.all()
-    if not playlists:
-        # Return static dummy data if the database is empty.
-        dummy_albums = [
-            {'id': 1, 'name': 'Album One'},
-            {'id': 2, 'name': 'Album Two'},
-            {'id': 3, 'name': 'Album Three'}
-        ]
-        return jsonify(dummy_albums), 200
-    else:
-        # Return the data from the database if it exists.
-        data = [{'id': p.id, 'name': p.name} for p in playlists]
-        return jsonify(data), 200
+    return jsonify([{
+        'id': p.id,
+        'name': p.name,
+    } for p in playlists])
+
+@playlist_bp.route('/playlists-with-tracks', methods=['GET'])
+def get_playlists_with_tracks():
+    try:
+        playlists = Playlist.query.all()
+        return jsonify([{
+            'id': playlist.id,
+            'name': playlist.name,
+            'tracks': [track.to_dict() for track in playlist.tracks]
+        } for playlist in playlists])
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @playlist_bp.route('/playlists/<int:playlist_id>', methods=['GET'])
 def get_playlist(playlist_id):
     playlist = Playlist.query.get(playlist_id)
     if not playlist:
         return jsonify({'error': 'Playlist not found'}), 404
-    return jsonify({'id': playlist.id, 'name': playlist.name}), 200
+    return jsonify({
+        'id': playlist.id,
+        'name': playlist.name,
+        'tracks': [t.to_dict() for t in playlist.tracks]
+    })
 
 @playlist_bp.route('/playlists', methods=['POST'])
 def create_playlist():
@@ -84,72 +92,4 @@ def get_tracks_in_playlist(playlist_id):
     if not playlist:
         return jsonify({'error': 'Playlist not found'}), 404
 
-    tracks = [
-        {
-            'id': track.id,
-            'title': track.title,
-            'description': track.description,
-            'song_path': track.song_path,
-            'img_path': track.img_path,
-            'producer': track.producer,
-            'writer': track.writer
-        } for track in playlist.tracks
-    ]
-
-    return jsonify(tracks), 200
-
-@playlist_bp.route('/playlists-with-tracks', methods=['GET'])
-def get_playlists_with_tracks():
-    try:
-        playlists = Playlist.query.all()
-        result = []
-        
-        for playlist in playlists:
-            playlist_tracks = playlist.tracks.all()
-            
-            playlist_data = {
-                'id': playlist.id,
-                'name': playlist.name,
-                'tracks': [{
-                    'id': track.id,
-                    'title': track.title,
-                    'song_path': track.song_path,
-                } for track in playlist_tracks]
-            }
-            result.append(playlist_data)
-            
-        return jsonify(result)
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-    
-@playlist_bp.route('/playlists-minimal', methods=['GET'])
-def get_playlists_minimal():
-    try:
-        playlists = Playlist.query.all()
-        result = []
-        
-        for playlist in playlists:
-            playlist_tracks = playlist.tracks.with_entities(
-                Track.id,
-                Track.title,
-                Track.song_path,
-                Track.img_path,
-                Track.writer
-            ).all()
-            
-            playlist_data = {
-                'id': playlist.id,
-                'name': playlist.name,
-                'tracks': [{
-                    'id': track.id,
-                    'title': track.title,
-                    'song_path': track.song_path,
-                    'img_path': track.img_path,
-                    'writer': track.writer
-                } for track in playlist_tracks]
-            }
-            result.append(playlist_data)
-            
-        return jsonify(result)
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    return jsonify([track.to_dict() for track in playlist.tracks]), 200
