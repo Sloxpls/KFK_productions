@@ -1,12 +1,12 @@
 import os
 from dotenv import load_dotenv
+load_dotenv()
 from flask import Flask
 from api import track_bp, media_bp, playlist_bp, auth_bp, upload_bp
 from backend.database_models import db
 
 
 def create_app():
-    load_dotenv()
     app = Flask(__name__)
 
     project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
