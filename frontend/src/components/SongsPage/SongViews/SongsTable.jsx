@@ -72,7 +72,7 @@ const SongsTable = ({ tracks, searchTerm }) => {
                   Title
                 </TableSortLabel>
               </TableCell>
-              <TableCell>
+              {/* <TableCell>
                 <TableSortLabel
                   active={sortConfig.key === 'description'}
                   direction={sortConfig.direction}
@@ -80,7 +80,7 @@ const SongsTable = ({ tracks, searchTerm }) => {
                 >
                   Description
                 </TableSortLabel>
-              </TableCell>
+              </TableCell> */}
               <TableCell>
                 <TableSortLabel
                   active={sortConfig.key === 'producer'}
