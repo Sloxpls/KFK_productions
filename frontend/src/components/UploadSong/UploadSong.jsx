@@ -1,14 +1,20 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useOutletContext } from "react-router-dom";
+import usePlaylists from "../../hooks/usePlaylists";
 import "../../styles/forms.css";
 import "./UploadSong.css";
 
 const UploadSong = () => {
   const queryClient = useQueryClient();
   const {refreshTracks} = useOutletContext();
-  const [playlists, setPlaylists] = useState([]);
-  const [error, setError] = useState(null);
+  const { 
+    playlistNames, 
+    isLoading: playlistsLoading, 
+    error: playlistsError,
+    createPlaylist,
+    isCreating: isCreatingPlaylist 
+  } = usePlaylists();
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -25,24 +31,6 @@ const UploadSong = () => {
     playlist_option: "",
     new_playlist_name: "",
   });
-
-  useEffect(() => {
-    const fetchPlaylists = async () => {
-      try {
-        const response = await fetch("/api/playlists");
-        if (!response.ok) {
-          throw new Error(`Playlists API error: ${response.status}`);
-        }
-        const playlistsData = await response.json();
-        setPlaylists(playlistsData.map(playlist => playlist.name));
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setError("Failed to fetch playlists. Please try again later.");
-      }
-    };
-
-    fetchPlaylists();
-  }, []);
 
   useEffect(() => {
     const objectUrl = formData.img_file ? URL.createObjectURL(formData.img_file) : null;
@@ -73,6 +61,11 @@ const UploadSong = () => {
 
   const uploadSongMutation = useMutation({
     mutationFn: async (formData) => {
+      // If creating a new playlist, create it first
+      if (formData.get("playlist_option") === "new") {
+        await createPlaylist({ name: formData.get("playlist_name") });
+      }
+
       const response = await fetch("/api/upload-song", {
         method: "POST",
         body: formData,
@@ -83,8 +76,8 @@ const UploadSong = () => {
       return response.json();
     },
     onSuccess: () => {
-      // Invalidate and refetch tracks query
       queryClient.invalidateQueries({ queryKey: ["tracks"] });
+      queryClient.invalidateQueries({ queryKey: ["playlists"] });
       alert("Song uploaded successfully!");
       setFormData({
         title: "",
@@ -143,7 +136,7 @@ const UploadSong = () => {
 
   return (
     <div className="form-container">
-      {error && <div className="error-message">{error}</div>}
+      {playlistsError && <div className="error-message">{playlistsError}</div>}
       <h1>Upload Song</h1>
       <form onSubmit={handleSubmit} className="form-base">
         <div className="form-group">
@@ -232,23 +225,28 @@ const UploadSong = () => {
 
         <div className="form-group">
           <label htmlFor="playlist_option">Playlist:</label>
+          {playlistsLoading ? (
+            <div>Loading playlists...</div>
+          ) : (
             <select
               name="playlist_option"
               value={formData.playlist_option}
               onChange={handleChange}
+              disabled={isCreatingPlaylist}
             >
               <option value="" disabled>
                 Select a playlist
               </option>
-              {playlists.map((playlistName) => (
+              {playlistNames.map((playlistName) => (
                 <option key={playlistName} value={playlistName}>
                   {playlistName}
                 </option>
               ))}
               <option value="new">Create New Playlist</option>
             </select>
+          )}
         </div>
-
+        
         {formData.playlist_option === "new" && (
           <div className="form-group">
             <label htmlFor="new_playlist_name">New Playlist Name:</label>
@@ -258,6 +256,8 @@ const UploadSong = () => {
               name="new_playlist_name"
               value={formData.new_playlist_name}
               onChange={handleChange}
+              disabled={isCreatingPlaylist}
+              required
             />
           </div>
         )}
