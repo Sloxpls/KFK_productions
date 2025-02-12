@@ -16,6 +16,7 @@ import EditTrack from "../EditTrack"
 import useTrackStore from "../../../hooks/useTrackStore";
 import { useAudioContext } from "../../../contexts/AudioContext";
 import { useTrackFiltering } from "../../../hooks/useTrackFiltering";
+import useTracks from "../../../hooks/useTracks"; 
 import "./SongsTable.css";
 
 const SongsTable = ({ tracks, searchTerm }) => {
@@ -24,19 +25,23 @@ const SongsTable = ({ tracks, searchTerm }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTrack, setEditingTrack] = useState(null);
   const { isPlaying, togglePlayPause } = useAudioContext();
-  const { filteredAndSortedTracks } = useTrackFiltering(tracks, searchTerm, sortConfig);
+  const { filteredAndSortedTracks } = useTrackFiltering(tracks || [], searchTerm, sortConfig);
+  const { streamTrack, downloadSong } = useTracks();
 
   const handlePlay = (track) => {
     if (selectedTrack?.id === track.id) {
       togglePlayPause();
     } else {
-      setSelectedTrack(track);
+      setSelectedTrack({
+        ...track,
+        song_path: streamTrack(track.id),
+      });
       togglePlayPause();
     }
   };
 
   const handleEdit = (track) => {
-    setEditingTrack({ ...track }); // Make a copy of the track data to avoid interfering with streaming
+    setEditingTrack({ ...track });
     setIsModalOpen(true);
   };
 
@@ -44,8 +49,8 @@ const SongsTable = ({ tracks, searchTerm }) => {
     setSortConfig((prevConfig) => ({
       key,
       direction: prevConfig.key === key && prevConfig.direction === "asc" ? "desc" : "asc",
-    }))
-  }
+    }));
+  };
 
   return (
     <div className={"songs-container"}>
@@ -67,7 +72,7 @@ const SongsTable = ({ tracks, searchTerm }) => {
                   Title
                 </TableSortLabel>
               </TableCell>
-              <TableCell>
+              {/* <TableCell>
                 <TableSortLabel
                   active={sortConfig.key === 'description'}
                   direction={sortConfig.direction}
@@ -75,7 +80,7 @@ const SongsTable = ({ tracks, searchTerm }) => {
                 >
                   Description
                 </TableSortLabel>
-              </TableCell>
+              </TableCell> */}
               <TableCell>
                 <TableSortLabel
                   active={sortConfig.key === 'producer'}
@@ -95,6 +100,7 @@ const SongsTable = ({ tracks, searchTerm }) => {
                 </TableSortLabel>
               </TableCell>
               <TableCell>Socials</TableCell>
+              <TableCell>Download</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -109,7 +115,7 @@ const SongsTable = ({ tracks, searchTerm }) => {
                 <TableCell>
                   <div style={{ display: "flex", alignItems: "center" }}>
                     <img
-                      src={`${track.img_path}`}
+                      src={`/api/tracks/${track.id}/image`}
                       alt="Track"
                       style={{
                         width: "50px",
@@ -121,15 +127,20 @@ const SongsTable = ({ tracks, searchTerm }) => {
                   </div>
                 </TableCell>
                 <TableCell>{track.title}</TableCell>
-                <TableCell className="description-cell">{track.description}</TableCell>
+                {/* <TableCell className="description-cell">{track.description}</TableCell> */}
                 <TableCell>{track.producer}</TableCell>
                 <TableCell>{track.writer}</TableCell>
                 <TableCell>
-                  {track.tiktok && "tiktok"}
-                  {track.soundcloud && "soundcloud"}
-                  {track.spotify && "spotify"}
-                  {track.youtube && "youtube"}
-                  {track.instagram && "instagram"}
+                  {track.tiktok && <img className="social-icon" src="/icons/tiktok.svg" alt="tiktok" />}
+                  {track.soundcloud && <img className="social-icon" src="/icons/soundcloud.svg" alt="soundcloud" />}
+                  {track.spotify && <img className="social-icon" src="/icons/spotify.svg" alt="spotify" />}
+                  {track.youtube && <img className="social-icon" src="/icons/youtube.svg" alt="youtube" />}
+                  {track.instagram && <img className="social-icon" src="/icons/instagram.svg" alt="instagram" />}
+                </TableCell>
+                <TableCell>
+                  <Button href={downloadSong(track.id)} download>
+                    <u> ↓ </u>
+                  </Button>
                 </TableCell>
                 <TableCell>
                   <Button onClick={() => handleEdit(track)}>Edit</Button>

@@ -94,12 +94,6 @@
   background-color: #f0f0f0;
 }
 
-.social-icon {
-  margin: 0 5px;
-  font-size: 12px;
-  color: #666;
-}
-
 .description-cell {
   max-width: 20vw;
   word-wrap: break-word;
@@ -107,3 +101,8 @@
   line-height: 1.4;
 }
 
+.social-icon {
+  width: 16px;
+  height: 16px;       
+  margin: 0 3px;
+}

@@ -3,6 +3,7 @@ import EditTrack from "../EditTrack"
 import useTrackStore from "../../../hooks/useTrackStore"
 import { useAudioContext } from "../../../contexts/AudioContext"
 import { useTrackFiltering } from "../../../hooks/useTrackFiltering"
+import useTracks from "../../../hooks/useTracks"; 
 import "./SongsGrid.css"
 
 const SongsGrid = ({ tracks, searchTerm }) => {
@@ -12,12 +13,16 @@ const SongsGrid = ({ tracks, searchTerm }) => {
   const [editingTrack, setEditingTrack] = useState(null)
   const { isPlaying, togglePlayPause } = useAudioContext()
   const { filteredAndSortedTracks } = useTrackFiltering(tracks, searchTerm, sortConfig)
+  const { streamTrack, downloadSong } = useTracks()
 
   const handlePlay = (track) => {
     if (selectedTrack?.id === track.id) {
       togglePlayPause()
     } else {
-      setSelectedTrack(track)
+      setSelectedTrack({
+        ...track,
+        song_path: streamTrack(track.id),
+      })
       togglePlayPause()
     }
   }
@@ -27,30 +32,12 @@ const SongsGrid = ({ tracks, searchTerm }) => {
     setIsModalOpen(true)
   }
 
-  const handleSort = (column) => {
-    setSortConfig((prevConfig) => ({
-      key: column,
-      direction: prevConfig.key === column && prevConfig.direction === "asc" ? "desc" : "asc",
-    }))
-  }
-
   return (
     <div className="songs-container">
-      {/* <div className="songs-grid-header">
-        <div className="sort-button" onClick={() => handleSort("title")}>
-          Title {sortConfig.key === "title" && (sortConfig.direction === "asc" ? "▲" : "▼")}
-        </div>
-        <div className="sort-button" onClick={() => handleSort("producer")}>
-          Producer {sortConfig.key === "producer" && (sortConfig.direction === "asc" ? "▲" : "▼")}
-        </div>
-        <div className="sort-button" onClick={() => handleSort("writer")}>
-          Writer {sortConfig.key === "writer" && (sortConfig.direction === "asc" ? "▲" : "▼")}
-        </div>
-      </div> */}
       <div className="songs-grid">
         {filteredAndSortedTracks.map((track) => (
           <div key={track.id} className="song-card">
-            <img src={track.img_path || "/placeholder.svg"} alt={track.title} className="song-image" />
+            <img src={`/api/tracks/${track.id}/image`} alt={track.title} className="song-image" />
             <div className="song-info">
               <h3>{track.title}</h3>
               <p>{track.producer}</p>
@@ -61,14 +48,17 @@ const SongsGrid = ({ tracks, searchTerm }) => {
               <button onClick={() => handlePlay(track)}>
                 {selectedTrack?.id === track.id && isPlaying ? "Pause" : "Play"}
               </button>
+              <button href={downloadSong(track.id)} download>
+                <u> ↓ </u>
+              </button>
               <button onClick={() => handleEdit(track)}>Edit</button>
             </div>
             <div className="song-socials">
-              {track.tiktok && <span className="social-icon">TikTok</span>}
-              {track.soundcloud && <span className="social-icon">SoundCloud</span>}
-              {track.spotify && <span className="social-icon">Spotify</span>}
-              {track.youtube && <span className="social-icon">YouTube</span>}
-              {track.instagram && <span className="social-icon">Instagram</span>}
+              {track.tiktok && <img className="social-icon" src="/icons/tiktok.svg" alt="tiktok" />}
+              {track.soundcloud && <img className="social-icon" src="/icons/soundcloud.svg" alt="soundcloud" />}
+              {track.spotify && <img className="social-icon" src="/icons/spotify.svg" alt="spotify" />}
+              {track.youtube && <img className="social-icon" src="/icons/youtube.svg" alt="youtube" />}
+              {track.instagram && <img className="social-icon" src="/icons/instagram.svg" alt="instagram" />}
             </div>
           </div>
         ))}
