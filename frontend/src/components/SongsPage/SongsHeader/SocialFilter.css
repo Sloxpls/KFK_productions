@@ -1,0 +1,52 @@
+.social-filter {
+    display: flex;
+    align-items: center;
+    background-color: var(--transparent-light);
+    padding: 8px 16px;
+    border-radius: 6px;
+    margin: 0 10px;
+}
+
+.filter-checkboxes {
+    display: flex;
+    gap: 2vh;
+    align-items: center;
+    
+}
+
+.filter-checkboxes label {
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 2vh;
+    -webkit-text-stroke: 0.2px rgb(0, 0, 0, 0.8);
+    letter-spacing: 1.5px;
+    
+}
+
+.service-tiktok {
+  background: linear-gradient(to right, #4a8d92, #b31640);
+}
+
+.service-soundcloud {
+  background: linear-gradient(to right, #cc4400, #cc7000);
+}
+
+.service-spotify {
+  background: linear-gradient(to right, #158c41, #158c41);
+}
+
+.service-youtube {
+  background: linear-gradient(to right, #cc0000, #990000);
+}
+
+.service-instagram {
+  background: linear-gradient(45deg, #d17b2b, #c35632, #b31f37, #991b4e, #8f1368);
+}
+
+.filter-checkboxes input[type="checkbox"] {
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+    accent-color: #236f92;
+}
