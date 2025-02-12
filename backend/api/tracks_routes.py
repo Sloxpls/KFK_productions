@@ -114,6 +114,11 @@ def update_track(track_id):
         track.producer = request.form.get('producer', track.producer)
         track.writer = request.form.get('writer', track.writer)
         track.genre = request.form.get('genre', track.genre)
+        track.tiktok = request.form.get('tiktok', track.tiktok)
+        track.soundcloud = request.form.get('soundcloud', track.soundcloud)
+        track.spotify = request.form.get('spotify', track.spotify)
+        track.youtube = request.form.get('youtube', track.youtube)
+        track.instagram = request.form.get('instagram', track.instagram)
 
         if song_file:
             new_song_filename = secure_filename(song_file.filename)
@@ -138,6 +143,12 @@ def update_track(track_id):
         track.producer = req_data.get('producer', track.producer)
         track.writer = req_data.get('writer', track.writer)
         track.genre = req_data.get('genre', track.genre)
+        track.tiktok = req_data.get('tiktok', track.tiktok)
+        track.soundcloud = req_data.get('soundcloud', track.soundcloud)
+        track.spotify = req_data.get('spotify', track.spotify)
+        track.youtube = req_data.get('youtube', track.youtube)
+        track.instagram = req_data.get('instagram', track.instagram)
+    
         db.session.commit()
         return jsonify({'message': 'Track updated', 'id': track.id}), 200
 
@@ -150,8 +161,8 @@ def delete_track(track_id):
     db.session.commit()
     return jsonify({'message': 'Track deleted', 'id': track.id}), 200
 
-@track_bp.route('/tracks/<int:track_id>/song', methods=['GET'])
-def get_song(track_id):
+@track_bp.route('/tracks/<int:track_id>/download', methods=['GET'])
+def download_song(track_id):
     track = Track.query.get(track_id)
     if not track or not track.song_path:
         return jsonify({'error': 'Song not found'}), 404
