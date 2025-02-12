@@ -26,7 +26,7 @@ const SongsTable = ({ tracks, searchTerm }) => {
   const [editingTrack, setEditingTrack] = useState(null);
   const { isPlaying, togglePlayPause } = useAudioContext();
   const { filteredAndSortedTracks } = useTrackFiltering(tracks || [], searchTerm, sortConfig);
-  const { streamTrack, downloadSong } = useTracks();
+  const { streamTrack } = useTracks();
 
   const handlePlay = (track) => {
     if (selectedTrack?.id === track.id) {
@@ -146,7 +146,7 @@ const SongsTable = ({ tracks, searchTerm }) => {
                   {track.instagram && <img className="social-icon" src="/icons/instagram.svg" alt="instagram" />}
                 </TableCell>
                 <TableCell>
-                  <Button href={downloadSong(track.id)} download>
+                  <Button href={`/api/tracks/${track.id}/download`} download>
                     <u> ↓ </u>
                   </Button>
                 </TableCell>

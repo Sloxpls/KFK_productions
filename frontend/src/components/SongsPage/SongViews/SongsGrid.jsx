@@ -5,6 +5,7 @@ import { useAudioContext } from "../../../contexts/AudioContext"
 import { useTrackFiltering } from "../../../hooks/useTrackFiltering"
 import useTracks from "../../../hooks/useTracks"; 
 import "./SongsGrid.css"
+import {Button} from "@mui/material";
 
 const SongsGrid = ({ tracks, searchTerm }) => {
   const [sortConfig, setSortConfig] = useState({ key: "title", direction: "asc" })
@@ -13,7 +14,7 @@ const SongsGrid = ({ tracks, searchTerm }) => {
   const [editingTrack, setEditingTrack] = useState(null)
   const { isPlaying, togglePlayPause } = useAudioContext()
   const { filteredAndSortedTracks } = useTrackFiltering(tracks, searchTerm, sortConfig)
-  const { streamTrack, downloadSong } = useTracks()
+  const { streamTrack } = useTracks()
 
   const handlePlay = (track) => {
     if (selectedTrack?.id === track.id) {
@@ -48,9 +49,9 @@ const SongsGrid = ({ tracks, searchTerm }) => {
               <button onClick={() => handlePlay(track)}>
                 {selectedTrack?.id === track.id && isPlaying ? "Pause" : "Play"}
               </button>
-              <button href={downloadSong(track.id)} download>
+              <Button href={`/api/tracks/${track.id}/download`} Download>
                 <u> ↓ </u>
-              </button>
+              </Button>
               <button onClick={() => handleEdit(track)}>Edit</button>
             </div>
             <div className="song-socials">

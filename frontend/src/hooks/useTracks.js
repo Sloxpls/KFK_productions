@@ -37,7 +37,7 @@ const uploadSong = async (formData) => {
   return response.json();
 };
 
-const downloadSong = async (trackId) => {
+/*const downloadSong = async (trackId) => {
   try {
     const response = await fetch(`/api/tracks/${trackId}/download`);
     if (!response.ok) {
@@ -49,7 +49,7 @@ const downloadSong = async (trackId) => {
     console.error("Error downloading song:", error);
     throw error;
   }
-};
+};*/
 
 export const useTracks = () => {
   const queryClient = useQueryClient();
@@ -75,7 +75,7 @@ export const useTracks = () => {
     uploadSong: uploadSongMutation.mutate,
     isUploading: uploadSongMutation.isLoading,
     uploadError: uploadSongMutation.error,
-    downloadSong,
+    /*downloadSong,*/
     streamTrack,
   };
 };
