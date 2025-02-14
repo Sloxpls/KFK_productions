@@ -1,5 +1,7 @@
 import { useOutletContext } from "react-router-dom";
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+
 import SongsTable from "./SongViews/SongsTable.jsx";
 import AlbumList from "./AlbumList.jsx";
 import LeftSidebar from "./LeftSidebar.jsx";
@@ -7,10 +9,10 @@ import SongsGrid from "./SongViews/SongsGrid.jsx";
 import ViewSwitcher from "./SongsHeader/ViewSwitcher.jsx";
 import SearchBar from "./SongsHeader/SearchBar.jsx";
 import SocialFilter from "./SongsHeader/SocialFilter.jsx";
-import { useTrackFiltering } from "../../hooks/useTrackFiltering";
-import "./SongsPage.css";
 
+import { useTrackFiltering } from "../../hooks/useTrackFiltering";
 import useTrackStore from "../../hooks/useTrackStore.js";
+import "./SongsPage.css";
 
 const SongsPage = () => {
   const { tracks } = useOutletContext(); 
@@ -42,6 +44,26 @@ const SongsPage = () => {
     socialFilters
   );
 
+  const viewVariants = {
+    initial: {
+      rotateY: 90,  
+      opacity: 1    
+    },
+    in: {
+      rotateY: 0,   
+      opacity: 1
+    },
+    out: {
+      rotateY: -90, 
+      opacity: 0
+    }
+  };
+
+  const viewTransition = {
+    duration: 0.4,
+    ease: "easeInOut"
+  };
+
   const renderContent = () => {
     const props = {
       tracks: filteredAndSortedTracks,
@@ -49,14 +71,24 @@ const SongsPage = () => {
       searchTerm
     };
 
-    switch (currentView) {
-      case 'table':
-        return <SongsTable {...props} />;
-      case 'grid':
-        return <SongsGrid {...props} />;
-      default:
-        return null;
-    }
+    return (
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentView}
+          variants={viewVariants}
+          initial="initial"
+          animate="in"
+          exit="out"
+          transition={{ viewTransition}}
+        >
+          {currentView === 'table' ? (
+            <SongsTable {...props} />
+          ) : (
+            <SongsGrid {...props} />
+          )}
+        </motion.div>
+      </AnimatePresence>
+    );
   };
 
   return (
