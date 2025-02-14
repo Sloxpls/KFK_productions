@@ -17,6 +17,8 @@ import useTrackStore from "../../../hooks/useTrackStore";
 import { useAudioContext } from "../../../contexts/AudioContext";
 import { useTrackFiltering } from "../../../hooks/useTrackFiltering";
 import useTracks from "../../../hooks/useTracks";
+import { downloadTrack } from "../../../utils/downloadUtils";
+
 import "./SongsTable.css";
 
 const SongsTable = ({ tracks, searchTerm }) => {
@@ -146,7 +148,7 @@ const SongsTable = ({ tracks, searchTerm }) => {
                   {track.instagram && <img className="social-icon" src="/icons/instagram.svg" alt="instagram" />}
                 </TableCell>
                 <TableCell>
-                  <Button href={`/api/tracks/${track.id}/download`} download>
+                  <Button onClick={() => downloadTrack(track.id, `${track.title}.mp3`)}>
                     <u> ↓ </u>
                   </Button>
                 </TableCell>

@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react"
+import Button from "@mui/material/Button"
+import { downloadMedia } from "../../utils/downloadUtils"
 import "./MediaGallery.css"
 
 const MediaGallery = () => {
@@ -9,9 +11,9 @@ const MediaGallery = () => {
     setMedia([
       {
         id: 1,
-        filename: "Gammal",
-        file_path: "/gammal.webp",
-        description: "Cover image for Gammal Norrlands",
+        name: "Gammal",
+        file_path: "/flugsvamp.webp",
+        description: "Cover image for Flugsvamp",
         uploaded_at: "2021-10-01T12:00:00Z",
       },
     ])
@@ -65,13 +67,9 @@ const MediaGallery = () => {
             <h2>Filename: {selectedMedia.filename}</h2>
             <p>Description: {selectedMedia.description}</p>
             <p>Uploaded on: {new Date(selectedMedia.uploaded_at).toLocaleString()}</p>
-            <a 
-              href={selectedMedia.file_path} 
-              download={selectedMedia.filename}
-              className="download-button"
-            >
+            <Button onClick={() => downloadMedia(selectedMedia.id, selectedMedia.filename)}>
               Download
-            </a>
+            </Button>
           </div>
         </div>
       )}

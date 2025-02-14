@@ -44,3 +44,18 @@
   border-color: #236f92;
   box-shadow: 0 0 0 2px rgba(35, 111, 146, 0.2);
 }
+
+.view-select.active {
+    background-color: #236f92;
+    color: white;
+}
+
+.view-select option {
+  background-color: #ffffff00;
+  color: #000000;
+}
+
+.view-select option:hover {
+  background-color: #236f92;
+  color: white;
+}
