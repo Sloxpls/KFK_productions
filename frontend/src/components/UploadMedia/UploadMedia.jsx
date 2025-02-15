@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import useMedia from '../../hooks/useMedia';
 import '../../styles/forms.css';
 import './UploadMedia.css';
 
@@ -10,6 +11,7 @@ const UploadMedia = () => {
   });
   const [dragActive, setDragActive] = useState(false);
   const [preview, setPreview] = useState(null);
+  const { uploadMedia, isUploading} = useMedia();
 
   const handleFile = (e) => {
     const file = e.target.files[0];
@@ -51,17 +53,13 @@ const UploadMedia = () => {
     formDataToSend.append('description', formData.description);
     formDataToSend.append('file', formData.file);
 
-    const response = await fetch('/api/media', {
-      method: 'POST',
-      body: formDataToSend,
-    });
-
-    if (response.ok) {
-      alert('Media uploaded successfully!');
+    try {
+      uploadMedia(formDataToSend);
       setFormData({ name: '', description: '', file: null });
       setPreview(null);
-    } else {
-      alert('Failed to upload media.');
+      alert('Media uploaded successfully!');
+    } catch (error) {
+      alert(`Failed to upload media: ${error.message}`);
     }
   };
 
@@ -113,9 +111,13 @@ const UploadMedia = () => {
             onChange={handleChange}
           />
         </div>
-        <button type="submit" className="btn btn-primary">
-          Upload
-        </button>
+        <button 
+        type="submit" 
+        className="btn btn-primary"
+        disabled={isUploading}
+      >
+        {isUploading ? 'Uploading...' : 'Upload'}
+      </button>
       </form>
     </div>
   );

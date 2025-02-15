@@ -17,7 +17,6 @@ import useTrackStore from "../../../hooks/useTrackStore";
 import { useAudioContext } from "../../../contexts/AudioContext";
 import { useTrackFiltering } from "../../../hooks/useTrackFiltering";
 import useTracks from "../../../hooks/useTracks";
-import { downloadTrack } from "../../../utils/downloadUtils";
 
 import "./SongsTable.css";
 
@@ -28,7 +27,7 @@ const SongsTable = ({ tracks, searchTerm }) => {
   const [editingTrack, setEditingTrack] = useState(null);
   const { isPlaying, togglePlayPause } = useAudioContext();
   const { filteredAndSortedTracks } = useTrackFiltering(tracks || [], searchTerm, sortConfig);
-  const { streamTrack } = useTracks();
+  const { streamTrack, downloadTrack } = useTracks();
 
   const handlePlay = (track) => {
     if (selectedTrack?.id === track.id) {

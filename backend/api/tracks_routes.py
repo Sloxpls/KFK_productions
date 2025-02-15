@@ -3,8 +3,8 @@ from flask import Blueprint, jsonify, request, send_file
 from werkzeug.utils import secure_filename
 
 from backend.database_models import Track, db
-UPLOAD_FOLDER = os.environ.get("UPLOAD_FOLDER", "/app/uploads")
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+TRACK_FOLDER = os.environ.get("TRACK_FOLDER", "/app/track_uploads")
+os.makedirs(TRACK_FOLDER, exist_ok=True)
 
 track_bp = Blueprint('track_bp', __name__)
 
@@ -63,12 +63,12 @@ def create_track():
         song_filename = None
         if song_file:
             song_filename = secure_filename(song_file.filename)
-            song_file.save(os.path.join(UPLOAD_FOLDER, song_filename))
+            song_file.save(os.path.join(TRACK_FOLDER, song_filename))
 
         img_filename = None
         if image_file:
             img_filename = secure_filename(image_file.filename)
-            image_file.save(os.path.join(UPLOAD_FOLDER, img_filename))
+            image_file.save(os.path.join(TRACK_FOLDER, img_filename))
 
         new_track = Track(
             title=title or 'Untitled',
@@ -122,12 +122,12 @@ def update_track(track_id):
 
         if song_file:
             new_song_filename = secure_filename(song_file.filename)
-            song_file.save(os.path.join(UPLOAD_FOLDER, new_song_filename))
+            song_file.save(os.path.join(TRACK_FOLDER, new_song_filename))
             track.song_path = new_song_filename
 
         if image_file:
             new_img_filename = secure_filename(image_file.filename)
-            image_file.save(os.path.join(UPLOAD_FOLDER, new_img_filename))
+            image_file.save(os.path.join(TRACK_FOLDER, new_img_filename))
             track.img_path = new_img_filename
 
         db.session.commit()
@@ -166,7 +166,7 @@ def download_song(track_id):
     track = Track.query.get(track_id)
     if not track or not track.song_path:
         return jsonify({'error': 'Song not found'}), 404
-    full_path = os.path.join(UPLOAD_FOLDER, track.song_path)
+    full_path = os.path.join(TRACK_FOLDER, track.song_path)
     if not os.path.exists(full_path):
         return jsonify({'error': 'Song file does not exist'}), 404
     return send_file(full_path, mimetype='audio/mpeg')
@@ -176,7 +176,7 @@ def get_image(track_id):
     track = Track.query.get(track_id)
     if not track or not track.img_path:
         return jsonify({'error': 'Image not found'}), 404
-    full_path = os.path.join(UPLOAD_FOLDER, track.img_path)
+    full_path = os.path.join(TRACK_FOLDER, track.img_path)
     if not os.path.exists(full_path):
         return jsonify({'error': 'Image file does not exist'}), 404
     return send_file(full_path, mimetype='image/jpeg')
@@ -187,7 +187,7 @@ def stream_track(track_id):
     if not track or not track.song_path:
         return jsonify({'error': 'No song file specified'}), 404
 
-    full_path = os.path.join(UPLOAD_FOLDER, track.song_path)
+    full_path = os.path.join(TRACK_FOLDER, track.song_path)
     if not os.path.exists(full_path):
         return jsonify({'error': 'File not found on server'}), 404
 

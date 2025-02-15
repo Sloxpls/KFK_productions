@@ -4,7 +4,7 @@ from werkzeug.utils import secure_filename
 import os
 
 upload_bp = Blueprint('upload_bp', __name__)
-UPLOAD_FOLDER = os.environ.get("UPLOAD_FOLDER", "/app/uploads")
+UPLOAD_FOLDER = os.environ.get("TRACK_FOLDER", "/app/track_uploads")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @upload_bp.route('/upload-song', methods=['POST'])

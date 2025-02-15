@@ -8,10 +8,6 @@ from backend.database_models import db
 
 def create_app():
     app = Flask(__name__)
-
-    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    tracks_path = os.path.join(project_root, 'frontend', 'public', 'tracks')
-    app.config['TRACKS_FOLDER'] = tracks_path
     
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'defaultsecret')
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_URI')

@@ -1,5 +1,11 @@
-from flask import Blueprint, jsonify, request
+import os
+from flask import Blueprint, jsonify, request, current_app, send_file
+from werkzeug.utils import secure_filename
+import mimetypes
+
 from backend.database_models import Media, db
+MEDIA_FOLDER = os.environ.get("MEDIA_FOLDER", "/app/media_uploads")
+
 media_bp = Blueprint('media_bp', __name__)
 
 @media_bp.route('/media', methods=['GET'])
@@ -19,18 +25,48 @@ def get_media():
 
 @media_bp.route('/media', methods=['POST'])
 def create_media():
-    data = request.get_json() or {}
-    if not data.get('name') or not data.get('file_path'):
-        return jsonify({'error': 'name and file_path are required'}), 400
+    try:
+        name = request.form.get('name')
+        description = request.form.get('description')
+        media_file = request.files.get('file')
+    
+        missing_fields = []
+        if name is None:
+            missing_fields.append('name')
+        if media_file is None:
+            missing_fields.append('file')
+        
+        if missing_fields:
+            return jsonify({
+                'error': 'Missing required fields',
+                'missing_fields': missing_fields
+            }), 400
+        
+        media_filename = secure_filename(media_file.filename)
+        media_file.save(os.path.join(MEDIA_FOLDER, media_filename))
+        filepath = os.path.join(MEDIA_FOLDER, media_filename)
 
-    new_media = Media(
-        name=data.get('name'),
-        file_path=data.get('file_path'),
-        description=data.get('description')
-    )
-    db.session.add(new_media)
-    db.session.commit()
-    return jsonify({'message': 'Media created successfully!', 'id': new_media.id}), 201
+
+        new_media = Media(
+            name=name,
+            file_path=media_filename,
+            description=description
+        )
+        db.session.add(new_media)
+        db.session.commit()
+        return jsonify({
+            'message': 'Media created successfully!',
+            'id': new_media.id
+        }), 201
+    
+    except Exception as e:
+        db.session.rollback() 
+        current_app.logger.error(f"Error uploading song: {e}")
+        return jsonify({
+            'error': 'An error occurred while uploading the song'
+        }), 500
+
+
 
 @media_bp.route('/media/<int:media_id>', methods=['GET'])
 def get_media_item(media_id):
@@ -62,10 +98,74 @@ def update_media(media_id):
 
 @media_bp.route('/media/<int:media_id>', methods=['DELETE'])
 def delete_media(media_id):
-    media_item = Media.query.get(media_id)
-    if not media_item:
-        return jsonify({'message': 'Media not found'}), 404
+    try:
+        media_item = Media.query.get(media_id)
+        if not media_item:
+            return jsonify({'error': 'Media not found'}), 404
 
-    db.session.delete(media_item)
-    db.session.commit()
-    return jsonify({'message': f'Media {media_id} deleted successfully'}), 200
+        file_path = os.path.join(MEDIA_FOLDER, media_item.file_path)
+
+        if os.path.exists(file_path):
+            os.remove(file_path)
+        
+        db.session.delete(media_item)
+        db.session.commit()
+
+        return jsonify({
+            'message': f'Media {media_id} and associated file deleted successfully'
+        }), 200
+
+    except OSError as e:
+        db.session.rollback()
+        current_app.logger.error(f"Error deleting file: {e}")
+        return jsonify({
+            'error': 'Failed to delete file',
+            'details': str(e)
+        }), 500
+    
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"Error deleting media: {e}")
+        return jsonify({
+            'error': 'An error occurred while deleting the media'
+        }), 500
+
+@media_bp.route("/media/<int:media_id>/serve", methods=["GET"])
+def serve_media(media_id):
+    media_item = Media.query.get(media_id)
+    if not media_item or not media_item.file_path:
+        return jsonify({'error': 'Media not found'}), 404
+
+    try:
+        mime_type, _ = mimetypes.guess_type(media_item.file_path)
+        if not mime_type:
+            mime_type = 'application/octet-stream'
+        
+        full_path = os.path.join(MEDIA_FOLDER, media_item.file_path)
+
+        return send_file(
+            full_path,
+            mimetype=mime_type
+        )
+    except Exception as e:
+        current_app.logger.error(f"Error streaming media: {e}")
+        return jsonify({'error': 'File not found on server'}), 404
+
+@media_bp.route('/media/<int:media_id>/download', methods=['GET'])
+def download_media(media_id):
+    media_item = Media.query.get(media_id)
+    if not media_item or not media_item.file_path:
+        return jsonify({'error': 'Media not found'}), 404
+    
+    full_path = os.path.join(MEDIA_FOLDER, media_item.file_path)
+    file_name = os.path.basename(media_item.file_path)
+
+    try:
+        return send_file(
+            full_path,
+            as_attachment=True,
+            download_name=os.path.basename(media_item.file_path)
+        )
+    except Exception as e:
+        current_app.logger.error(f"Error downloading media: {e}")
+        return jsonify({'error': 'File not found on server'}), 404

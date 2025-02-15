@@ -14,7 +14,7 @@ const SongsGrid = ({ tracks, searchTerm }) => {
   const [editingTrack, setEditingTrack] = useState(null)
   const { isPlaying, togglePlayPause } = useAudioContext()
   const { filteredAndSortedTracks } = useTrackFiltering(tracks, searchTerm, sortConfig)
-  const { streamTrack } = useTracks()
+  const { streamTrack, downloadTrack } = useTracks()
 
   const handlePlay = (track) => {
     if (selectedTrack?.id === track.id) {
@@ -49,9 +49,9 @@ const SongsGrid = ({ tracks, searchTerm }) => {
               <button onClick={() => handlePlay(track)}>
                 {selectedTrack?.id === track.id && isPlaying ? "Pause" : "Play"}
               </button>
-              <Button href={`/api/tracks/${track.id}/download`} Download>
-                <u> ↓ </u>
-              </Button>
+                <Button onClick={() => downloadTrack(track.id, `${track.title}.mp3`)}>
+                  <u> ↓ </u>
+                </Button>
               <button onClick={() => handleEdit(track)}>Edit</button>
             </div>
             <div className="song-socials">

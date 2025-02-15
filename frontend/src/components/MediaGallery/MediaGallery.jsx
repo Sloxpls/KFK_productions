@@ -1,81 +1,98 @@
-import { useState, useEffect } from "react"
-import Button from "@mui/material/Button"
-import { downloadMedia } from "../../utils/downloadUtils"
-import "./MediaGallery.css"
+import { useState } from "react";
+import Button from "@mui/material/Button";
+import MediaRenderer from "./MediaRenderer";
+import ConfirmDialog from "../Common/ConfirmDialog";
+import useMedia from "../../hooks/useMedia"; 
+import "./MediaGallery.css";
 
 const MediaGallery = () => {
-  const [media, setMedia] = useState([])
-  const [selectedMedia, setSelectedMedia] = useState(null)
+  const { media, deleteMedia, loading, error, downloadMedia } = useMedia();
 
-  useEffect(() => {
-    setMedia([
-      {
-        id: 1,
-        name: "Gammal",
-        file_path: "/flugsvamp.webp",
-        description: "Cover image for Flugsvamp",
-        uploaded_at: "2021-10-01T12:00:00Z",
-      },
-    ])
-  }, [])
-  
-  /* useEffect(() => {
-    const fetchMedia = async () => {
-      try {
-        const response = await fetch("/api/media");
-        if (!response.ok) {
-          throw new Error(`Media API error:", ${response.status}`);
-        }
-        const mediaData = await response.json();
-        setMedia(mediaData);
-      } catch (error) {
-        console.error("Error fetching media:", error);
-      }
-    };
-    fetchMedia();
-  }, []); */
+  const [selectedMedia, setSelectedMedia] = useState(null);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [mediaToDelete, setMediaToDelete] = useState(null);
 
   const handleMediaClick = (mediaItem) => {
-    setSelectedMedia(mediaItem)
-  }
+    setSelectedMedia(mediaItem);
+  };
 
   const closeModal = () => {
-    setSelectedMedia(null)
-  }
+    setSelectedMedia(null);
+  };
+
+  const handleDeleteClick = (mediaItem) => {
+    setMediaToDelete(mediaItem);
+    setDeleteConfirmOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (mediaToDelete) {
+      deleteMedia(mediaToDelete.id);
+      setDeleteConfirmOpen(false);
+      setMediaToDelete(null);
+      closeModal();
+    }
+  };
+
+  if (loading) return <p>Loading media...</p>;
+  if (error) return <p>Error fetching media: {error.message}</p>;
 
   return (
     <div className="media-gallery">
       <h1>Media Gallery</h1>
+
       <div className="media-grid">
         {media.map((item) => (
-          <div key={item.id} className="media-item" onClick={() => handleMediaClick(item)}>
-            <img src={item.file_path || "/placeholder.svg"} alt={item.description} />
+          <div
+            key={item.id}
+            className="media-item"
+            onClick={() => handleMediaClick(item)}
+          >
+            <MediaRenderer mediaItem={item} isPreview={true} />
             <div className="media-info">
-              <p className="filename">{item.filename}</p>
-              <p className="upload-date">{new Date(item.uploaded_at).toLocaleDateString()}</p>
+              <p className="filename">{item.name}</p>
+              <p className="upload-date">
+                {new Date(item.uploaded_at).toLocaleDateString()}
+              </p>
             </div>
           </div>
         ))}
       </div>
+
       {selectedMedia && (
         <div className="modal" onClick={closeModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <span className="close" onClick={closeModal}>
               &times;
             </span>
-            <img src={selectedMedia.file_path || "/placeholder.svg"} alt={selectedMedia.description} />
-            <h2>Filename: {selectedMedia.filename}</h2>
+            <MediaRenderer mediaItem={selectedMedia} isPreview={false} />
+            <h2>Name: {selectedMedia.name}</h2>
             <p>Description: {selectedMedia.description}</p>
-            <p>Uploaded on: {new Date(selectedMedia.uploaded_at).toLocaleString()}</p>
-            <Button onClick={() => downloadMedia(selectedMedia.id, selectedMedia.filename)}>
+            <p>
+              Uploaded on: {new Date(selectedMedia.uploaded_at).toLocaleString()}
+            </p>
+            <Button
+              onClick={() => downloadMedia(selectedMedia.id, selectedMedia.name)}
+            >
               Download
             </Button>
+            <Button onClick={() => handleDeleteClick(selectedMedia)}>Delete</Button>
           </div>
         </div>
       )}
+
+      <ConfirmDialog
+        isOpen={deleteConfirmOpen}
+        onClose={() => setDeleteConfirmOpen(false)}
+        onConfirm={handleDeleteConfirm}
+        title="Delete Media"
+        message={`Are you sure you want to delete ${
+          mediaToDelete?.filename || "this item"
+        }?`}
+        confirmText="Delete"
+      />
     </div>
-  )
-}
+  );
+};
 
 export default MediaGallery;
-
