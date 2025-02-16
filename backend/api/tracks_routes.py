@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, jsonify, request, send_file
+from flask import Blueprint, jsonify, request, send_file, current_app
 from werkzeug.utils import secure_filename
 
 from backend.database_models import Track, db
@@ -152,14 +152,37 @@ def update_track(track_id):
         db.session.commit()
         return jsonify({'message': 'Track updated', 'id': track.id}), 200
 
+
 @track_bp.route('/tracks/<int:track_id>', methods=['DELETE'])
 def delete_track(track_id):
-    track = Track.query.get(track_id)
-    if not track:
-        return jsonify({'error': 'Track not found'}), 404
-    db.session.delete(track)
-    db.session.commit()
-    return jsonify({'message': 'Track deleted', 'id': track.id}), 200
+    try:
+        track = Track.query.get(track_id)
+        if not track:
+            return jsonify({'error': 'Track not found'}), 404
+        
+        file_path = os.path.join(TRACK_FOLDER, track.song_path)
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
+        db.session.delete(track)
+        db.session.commit()
+
+        return jsonify({
+            'message': f'Track {track_id} has been deleted'
+            }), 200
+    
+    except OSError as e:
+        db.session.rollback()
+        current_app.logger.error(f"Error deleting track: {e}")
+        return jsonify({
+            'error': 'An error occurred while deleting the track'
+            }), 500
+    
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'error': 'An error occurred while deleting the track'
+            }), 500 
 
 @track_bp.route('/tracks/<int:track_id>/download', methods=['GET'])
 def download_song(track_id):

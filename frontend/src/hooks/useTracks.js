@@ -37,6 +37,41 @@ const uploadSong = async (formData) => {
   return response.json();
 };
 
+const deleteTrack = async (trackId) => {
+  try {
+    const response = await fetch(`/api/tracks/${trackId}`, {
+      method: "DELETE",
+    });
+    if (!response.ok) {
+      throw new Error("Failed to delete track: ", response.status);
+    }
+  } catch (error) {
+    console.error("Error deleting track:", error);
+    throw error;
+  }
+};
+
+const downloadTrack = async (trackId, fileName) => {
+  try {
+    const response = await fetch(`/api/tracks/${trackId}/download`);
+    if (!response.ok) {
+      throw new Error("Failed to download song");
+    }
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Download error:", error);
+    throw error;
+  }
+};
+
 export const useTracks = () => {
   const queryClient = useQueryClient();
 
@@ -55,26 +90,12 @@ export const useTracks = () => {
     },
   });
 
-  const downloadTrack = async (trackId, fileName) => {
-    try {
-      const response = await fetch(`/api/tracks/${trackId}/download`);
-      if (!response.ok) {
-        throw new Error("Failed to download song");
-      }
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = fileName;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("Download error:", error);
-      throw error;
-    }
-  };
+  const deleteTrackMutation = useMutation({
+    mutationFn: deleteTrack,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tracks"] });
+    },
+  });
 
   return {
     tracks,
@@ -84,9 +105,8 @@ export const useTracks = () => {
     uploadError: uploadSongMutation.error,
     streamTrack,
     downloadTrack,
+    deleteTrack: deleteTrackMutation.mutate,
   };
 };
 
 export default useTracks;
-
-

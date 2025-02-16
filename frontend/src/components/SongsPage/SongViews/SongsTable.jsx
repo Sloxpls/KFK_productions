@@ -19,15 +19,18 @@ import { useTrackFiltering } from "../../../hooks/useTrackFiltering";
 import useTracks from "../../../hooks/useTracks";
 
 import "./SongsTable.css";
+import ConfirmDialog from "../../Common/ConfirmDialog";
 
 const SongsTable = ({ tracks, searchTerm }) => {
   const [sortConfig, setSortConfig] = useState({ key: 'title', direction: 'asc' });
   const { selectedTrack, setSelectedTrack } = useTrackStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [trackToDelete, setTrackToDelete] = useState(null);
   const [editingTrack, setEditingTrack] = useState(null);
   const { isPlaying, togglePlayPause } = useAudioContext();
   const { filteredAndSortedTracks } = useTrackFiltering(tracks || [], searchTerm, sortConfig);
-  const { streamTrack, downloadTrack } = useTracks();
+  const { streamTrack, downloadTrack, deleteTrack } = useTracks();
 
   const handlePlay = (track) => {
     if (selectedTrack?.id === track.id) {
@@ -44,6 +47,25 @@ const SongsTable = ({ tracks, searchTerm }) => {
   const handleEdit = (track) => {
     setEditingTrack({ ...track });
     setIsModalOpen(true);
+  };
+
+  const handleDeleteClick = (track) => {
+    setTrackToDelete(track);
+    setDeleteConfirmOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (trackToDelete) {
+      deleteTrack(trackToDelete.id);
+      setDeleteConfirmOpen(false);
+      setTrackToDelete(null);
+      closeModal();
+    }
+  };
+
+  const closeModal = () => {
+    setEditingTrack(null);
+    setIsModalOpen(false);
   };
 
   const handleSort = (key) => {
@@ -153,6 +175,7 @@ const SongsTable = ({ tracks, searchTerm }) => {
                 </TableCell>
                 <TableCell>
                   <Button onClick={() => handleEdit(track)}>Edit</Button>
+                  <Button onClick={() => handleDeleteClick(track)}>Delete</Button>
                 </TableCell>
               </TableRow>
             ))}
@@ -167,6 +190,13 @@ const SongsTable = ({ tracks, searchTerm }) => {
           setTimeout(() => setEditingTrack(null), 200);
         }}
         track={editingTrack}
+      />
+      <ConfirmDialog
+        isOpen={deleteConfirmOpen}
+        onClose={() => setDeleteConfirmOpen(false)}
+        onConfirm={handleDeleteConfirm}
+        title="Delete Track"
+        message="Are you sure you want to delete this track?"
       />
     </div>
   );
