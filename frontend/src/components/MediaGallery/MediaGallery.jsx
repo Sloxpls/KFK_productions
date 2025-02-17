@@ -48,7 +48,7 @@ const MediaGallery = () => {
             className="media-item"
             onClick={() => handleMediaClick(item)}
           >
-            <MediaRenderer mediaItem={item} isPreview={true} />
+            <MediaRenderer mediaItemId={item.id} isPreview={true} />
             <div className="media-info">
               <p className="filename">{item.name}</p>
               <p className="upload-date">
@@ -65,7 +65,7 @@ const MediaGallery = () => {
             <span className="close" onClick={closeModal}>
               &times;
             </span>
-            <MediaRenderer mediaItem={selectedMedia} isPreview={false} />
+            <MediaRenderer mediaItemId={selectedMedia.id} isPreview={false} />
             <h2>Name: {selectedMedia.name}</h2>
             <p>Description: {selectedMedia.description}</p>
             <p>

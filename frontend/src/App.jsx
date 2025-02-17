@@ -1,15 +1,16 @@
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom"
-import { AuthProvider } from "./contexts/AuthContext"
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
 import { AudioProvider } from "./contexts/AudioContext";
-import Layout from "./components/Layout/Layout.jsx"
-import Login from "./components/Login/Login.jsx"
-import SongsPage from "./components/SongsPage/SongsPage.jsx"
-import MediaGallery from "./components/MediaGallery/MediaGallery.jsx"
-import UploadSong from "./components/UploadSong/UploadSong.jsx"
-import UploadMedia from "./components/UploadMedia/UploadMedia.jsx"
-import PrivateRoute from "./components/PrivateRoute"
+import Login from "./components/Login/Login";
+import SongsPage from "./components/SongsPage/SongsPage";
+import UploadSong from "./components/UploadSong/UploadSong";
+import UploadMedia from "./components/UploadMedia/UploadMedia";
+import MediaGallery from "./components/MediaGallery/MediaGallery";
+import Layout from "./components/Layout/Layout";
+import PrivateRoute from "./components/PrivateRoute";
+import PublicRoute from "./components/PublicRoute";
 
-import "./App.css"
+import "./App.css";
 
 function App() {
   return (
@@ -17,7 +18,14 @@ function App() {
       <AudioProvider>
         <Router>
           <Routes>
-            <Route path="/" element={<Login />} />
+            <Route
+              path="/login"
+              element={
+                <PublicRoute>
+                  <Login />
+                </PublicRoute>
+              }
+            />
             <Route
               path="/site"
               element={
@@ -26,20 +34,17 @@ function App() {
                 </PrivateRoute>
               }
             >
-              
               <Route path="songs" element={<SongsPage />} />
               <Route path="upload-song" element={<UploadSong />} />
               <Route path="upload-media" element={<UploadMedia />} />
               <Route path="media-gallery" element={<MediaGallery />} />
-              
             </Route>
-            <Route path="*" element={<Navigate to="/" />} />
+            <Route path="*" element={<Navigate to="/site/songs" />} />
           </Routes>
         </Router>
       </AudioProvider>
     </AuthProvider>
-  )
+  );
 }
 
-export default App
-
+export default App;

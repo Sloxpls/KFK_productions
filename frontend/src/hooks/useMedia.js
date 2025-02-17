@@ -1,7 +1,35 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useCallback } from 'react';
+
 
 const useMedia = () => {
   const queryClient = useQueryClient();
+
+  const authFetch = async (url, options = {}) => {
+    const token = sessionStorage.getItem("token");
+    const headers = {
+      ...options.headers,
+      Authorization: `Bearer ${token}`,
+    };
+    const response = await fetch(url, { ...options, headers });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to fetch');
+    }
+    return response;
+  };
+  
+  const serveMedia = useCallback(async (id) => {
+    const response = await authFetch(`/api/media/${id}/serve`);
+    if (!response.ok) throw new Error('Failed to fetch media item');
+
+    
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const mimeType = response.headers.get("Content-Type");
+
+    return { url, mimeType };
+  }, []);
 
   // QUERY: Fetch all media
   const {
@@ -11,7 +39,7 @@ const useMedia = () => {
   } = useQuery({
     queryKey: ['media'],
     queryFn: async () => {
-      const response = await fetch('/api/media');
+      const response = await authFetch('/api/media');
       if (!response.ok) throw new Error('Failed to fetch media');
       return response.json();
     },
@@ -53,7 +81,7 @@ const useMedia = () => {
 
   const downloadMedia = async (mediaId, fileName) => {
     try {
-      const response = await fetch(`/api/media/${mediaId}/download`);
+      const response = await authFetch(`/api/media/${mediaId}/download`);
       if (!response.ok) throw new Error("Failed to download media");
       
       const blob = await response.blob();
@@ -78,7 +106,8 @@ const useMedia = () => {
     deleteMedia,
     uploadMedia,
     isUploading,
-    downloadMedia
+    downloadMedia,
+    serveMedia,
   };
 };
 

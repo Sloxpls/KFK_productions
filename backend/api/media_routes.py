@@ -4,11 +4,14 @@ from werkzeug.utils import secure_filename
 import mimetypes
 
 from backend.database_models import Media, db
+from backend.utils.token_validator import token_required
+
 MEDIA_FOLDER = os.environ.get("MEDIA_FOLDER", "/app/media_uploads")
 
 media_bp = Blueprint('media_bp', __name__)
 
 @media_bp.route('/media', methods=['GET'])
+@token_required
 def get_media():
     media_items = Media.query.all()
     results = [
@@ -69,6 +72,7 @@ def create_media():
 
 
 @media_bp.route('/media/<int:media_id>', methods=['GET'])
+@token_required
 def get_media_item(media_id):
     media_item = Media.query.get(media_id)
     if not media_item:
@@ -131,6 +135,7 @@ def delete_media(media_id):
         }), 500
 
 @media_bp.route("/media/<int:media_id>/serve", methods=["GET"])
+@token_required
 def serve_media(media_id):
     media_item = Media.query.get(media_id)
     if not media_item or not media_item.file_path:
@@ -152,6 +157,7 @@ def serve_media(media_id):
         return jsonify({'error': 'File not found on server'}), 404
 
 @media_bp.route('/media/<int:media_id>/download', methods=['GET'])
+@token_required
 def download_media(media_id):
     media_item = Media.query.get(media_id)
     if not media_item or not media_item.file_path:

@@ -1,12 +1,31 @@
-import { getMediaUrl } from '../../utils/mediaUtils';
+import { useEffect, useState } from 'react';
+import useMedia from '../../hooks/useMedia';
 
-const MediaRenderer = ({ mediaItem, isPreview = false }) => {
+const MediaRenderer = ({ mediaItemId, isPreview = false }) => {
+  const { serveMedia } = useMedia();
+  const [mediaItem, setMediaItem] = useState(null);
+
+  useEffect(() => {
+    const fetchMediaItem = async () => {
+      try {
+        const item = await serveMedia(mediaItemId);
+        setMediaItem(item);
+      } catch (error) {
+        console.error("Failed to fetch media item:", error);
+      }
+    };
+
+    if (mediaItemId) {
+      fetchMediaItem();
+    }
+  }, [mediaItemId, serveMedia]);
+
   if (!mediaItem) {
     return <div className="media-renderer error">No media item provided</div>;
   }
 
   const renderMedia = () => {
-    const { url, mimeType } = getMediaUrl(mediaItem);
+    const { url, mimeType } = mediaItem;
   
     switch (mimeType?.split('/')[0]) {
       case 'image':

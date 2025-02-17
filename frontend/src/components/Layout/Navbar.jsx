@@ -1,14 +1,18 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+
+import { useAuth } from '../../hooks/useAuth';
 import './Navbar.css';
 
 
 const Navbar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -20,11 +24,13 @@ const Navbar = () => {
 
   const handleLogout = () => {
     try {
-      sessionStorage.removeItem('logged_in');
-      window.location.href = "/";
+      logout(); 
     }
     catch (error) {
       console.error("Error logging out:", error);
+    }
+    finally {
+      navigate('/login');
     }
   };
 
@@ -68,9 +74,6 @@ const Navbar = () => {
       </div>
       <NavLink to="/site/media-gallery" className="nav-link" activeclassname="active">
         Media Gallery
-      </NavLink>
-      <NavLink to="/site/laboratory" className="nav-link" activeclassname="active">
-        Laboratory
       </NavLink>
       <Button onClick={handleLogout} className="nav-link" disableRipple>
         Logout

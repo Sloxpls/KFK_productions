@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react"
-import { useNavigate} from "react-router-dom"
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { Box } from "@mui/material"
 import { useAuth } from "../../hooks/useAuth"
 import "./Login.css"
@@ -9,13 +9,7 @@ export const Login = () => {
   const [password, setPassword] = useState("")
   const [message, setMessage] = useState("")
   const navigate = useNavigate()
-  const { isAuthenticated, login } = useAuth()
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/site/songs")
-    }
-  }, [isAuthenticated, navigate,])
+  const { login } = useAuth()
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -32,7 +26,7 @@ export const Login = () => {
       const data = await response.json()
       if (response.ok) {
         setMessage(data.message)
-        login()
+        login(data.access_token)
         navigate("/site/songs")
       } else {
         setMessage(data.message)
