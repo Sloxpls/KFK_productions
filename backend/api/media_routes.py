@@ -27,6 +27,7 @@ def get_media():
     return jsonify(results), 200
 
 @media_bp.route('/media', methods=['POST'])
+@token_required
 def create_media():
     try:
         name = request.form.get('name')
@@ -87,6 +88,7 @@ def get_media_item(media_id):
     }), 200
 
 @media_bp.route('/media/<int:media_id>', methods=['PUT'])
+@token_required
 def update_media(media_id):
     media_item = Media.query.get(media_id)
     if not media_item:
@@ -101,6 +103,7 @@ def update_media(media_id):
     return jsonify({'message': f'Media {media_id} updated successfully'}), 200
 
 @media_bp.route('/media/<int:media_id>', methods=['DELETE'])
+@token_required
 def delete_media(media_id):
     try:
         media_item = Media.query.get(media_id)

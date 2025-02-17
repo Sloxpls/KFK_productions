@@ -3,11 +3,14 @@ from backend.database_models import Track, Playlist, db
 from werkzeug.utils import secure_filename
 import os
 
+from backend.utils.token_validator import token_required
+
 upload_bp = Blueprint('upload_bp', __name__)
 UPLOAD_FOLDER = os.environ.get("TRACK_FOLDER", "/app/track_uploads")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @upload_bp.route('/upload-song', methods=['POST'])
+@token_required
 def upload_song():
     try:
         # Convert string boolean values to Python booleans

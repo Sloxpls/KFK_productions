@@ -23,6 +23,7 @@ services:
     working_dir: /app
     volumes:
       - ./backend:/app/backend
+      - media_uploads:/app/media_uploads
     environment:
       - PYTHONPATH=/app:/app/backend
     ports:
@@ -51,3 +52,4 @@ networks:
 
 volumes:
   db_data:
+  media_uploads:
