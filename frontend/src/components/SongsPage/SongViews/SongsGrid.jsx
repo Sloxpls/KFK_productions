@@ -46,13 +46,26 @@ const SongsGrid = ({ tracks, searchTerm }) => {
               <p className="description">{track.description}</p>
             </div>
             <div className="song-actions">
-              <button onClick={() => handlePlay(track)}>
-                {selectedTrack?.id === track.id && isPlaying ? "Pause" : "Play"}
-              </button>
+            <Button id="playbtn" onClick={() => handlePlay(track)}>
+                    <img
+                      src={
+                        selectedTrack?.id === track.id && isPlaying
+                          ? "/icons/pause.svg"
+                          : "/icons/play.svg"
+                      }
+                      alt={selectedTrack?.id === track.id && isPlaying ? "Pause" : "Play"}
+                      style={{ width: "20px", height: "20px" }}
+                    />
+                  </Button>
                 <Button onClick={() => downloadTrack(track.id, `${track.title}.mp3`)}>
-                  <u> ↓ </u>
+                <i className="fas fa-download"></i>
                 </Button>
-              <button onClick={() => handleEdit(track)}>Edit</button>
+                <Button onClick={() => handleDeleteClick(track)}>
+                  <i className="fas fa-trash-alt"></i>
+                </Button>
+                <Button onClick={() => handleEdit(track)}>
+                  <i className="fas fa-edit"></i>
+                </Button>
             </div>
             <div className="song-socials">
               {track.tiktok && <img className="social-icon" src="/icons/tiktok.svg" alt="tiktok" />}

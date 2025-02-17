@@ -170,12 +170,16 @@ const SongsTable = ({ tracks, searchTerm }) => {
                 </TableCell>
                 <TableCell>
                   <Button onClick={() => downloadTrack(track.id, `${track.title}.mp3`)}>
-                    <u> ↓ </u>
+                  <i className="fas fa-download"></i>
                   </Button>
                 </TableCell>
                 <TableCell>
-                  <Button onClick={() => handleEdit(track)}>Edit</Button>
-                  <Button onClick={() => handleDeleteClick(track)}>Delete</Button>
+                  <Button onClick={() => handleEdit(track)}>
+                  <i className="fas fa-edit"></i>
+                  </Button>
+                  <Button onClick={() => handleDeleteClick(track)}>
+                  <i className="fas fa-trash-alt"></i>
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
