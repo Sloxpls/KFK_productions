@@ -48,7 +48,7 @@ button {
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #0057b348;
   transform: var(--hover-scale);
   box-shadow: var(--hover-shadow);
 }
