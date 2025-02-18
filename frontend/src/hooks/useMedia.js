@@ -1,23 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
+import { authFetch } from "../utils/httpReqToken.js"
 
 
 const useMedia = () => {
   const queryClient = useQueryClient();
-
-  const authFetch = async (url, options = {}) => {
-    const token = sessionStorage.getItem("token");
-    const headers = {
-      ...options.headers,
-      Authorization: `Bearer ${token}`,
-    };
-    const response = await fetch(url, { ...options, headers });
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Failed to fetch');
-    }
-    return response;
-  };
   
   const serveMedia = useCallback(async (id) => {
     const response = await authFetch(`/api/media/${id}/serve`);
@@ -48,7 +35,7 @@ const useMedia = () => {
   // MUTATION: Delete a media item
   const { mutate: deleteMedia } = useMutation({
     mutationFn: async (id) => {
-      const response = await fetch(`/api/media/${id}`, {
+      const response = await authFetch(`/api/media/${id}`, {
         method: 'DELETE',
       });
       if (!response.ok) throw new Error('Failed to delete media');
@@ -63,7 +50,7 @@ const useMedia = () => {
   // MUTATION: Upload a new media item
   const { mutate: uploadMedia, isLoading: isUploading } = useMutation({
     mutationFn: async (formData) => {
-      const response = await fetch('/api/media', {
+      const response = await authFetch('/api/media', {
         method: 'POST',
         body: formData,
       });

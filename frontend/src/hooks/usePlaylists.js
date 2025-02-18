@@ -1,8 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { authFetch } from "../utils/httpReqToken.js"
 
 const fetchPlaylistNames = async () => {
   try {
-    const response = await fetch("/api/playlists");
+    const response = await authFetch("/api/playlists");
     if (!response.ok) {
       throw new Error(`Playlists API error: ${response.status}`);
     }
@@ -16,7 +17,7 @@ const fetchPlaylistNames = async () => {
 
 const fetchPlaylists = async () => {
   try {
-    const response = await fetch("/api/playlists-with-tracks");
+    const response = await authFetch("/api/playlists-with-tracks");
     if (!response.ok) {
       throw new Error("Failed to fetch playlists");
     }
@@ -32,7 +33,7 @@ const fetchPlaylists = async () => {
 };
 
 const createPlaylist = async ({ name }) => {
-  const response = await fetch("/api/playlists", {
+  const response = await authFetch("/api/playlists", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
