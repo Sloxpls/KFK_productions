@@ -203,7 +203,6 @@ def download_song(track_id):
     return send_file(full_path, mimetype='audio/mpeg')
 
 @track_bp.route('/tracks/<int:track_id>/image', methods=['GET'])
-@token_required
 def get_image(track_id):
     track = Track.query.get(track_id)
     if not track or not track.img_path:
