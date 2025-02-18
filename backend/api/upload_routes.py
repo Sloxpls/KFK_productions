@@ -10,7 +10,6 @@ UPLOAD_FOLDER = os.environ.get("TRACK_FOLDER", "/app/track_uploads")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @upload_bp.route('/upload-song', methods=['POST'])
-@token_required
 def upload_song():
     try:
         # Convert string boolean values to Python booleans
