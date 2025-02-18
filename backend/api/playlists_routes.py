@@ -1,9 +1,11 @@
 from flask import Blueprint, jsonify, request
 from backend.database_models import Playlist, Track, db
+from backend.utils.token_validator import token_required
 
 playlist_bp = Blueprint('playlist_bp', __name__)
 
 @playlist_bp.route('/playlists', methods=['GET'])
+@token_required
 def get_playlists():
     playlists = Playlist.query.all()
     return jsonify([{
@@ -12,6 +14,7 @@ def get_playlists():
     } for p in playlists])
 
 @playlist_bp.route('/playlists-with-tracks', methods=['GET'])
+@token_required
 def get_playlists_with_tracks():
     try:
         playlists = Playlist.query.all()
@@ -24,6 +27,7 @@ def get_playlists_with_tracks():
         return jsonify({'error': str(e)}), 500
 
 @playlist_bp.route('/playlists/<int:playlist_id>', methods=['GET'])
+@token_required
 def get_playlist(playlist_id):
     playlist = Playlist.query.get(playlist_id)
     if not playlist:
@@ -35,6 +39,7 @@ def get_playlist(playlist_id):
     })
 
 @playlist_bp.route('/playlists', methods=['POST'])
+@token_required
 def create_playlist():
     req_data = request.get_json() or {}
     name = req_data.get('name')
@@ -48,6 +53,7 @@ def create_playlist():
     return jsonify({'message': 'Playlist created', 'id': new_playlist.id}), 201
 
 @playlist_bp.route('/playlists/<int:playlist_id>', methods=['PUT'])
+@token_required
 def update_playlist(playlist_id):
     playlist = Playlist.query.get(playlist_id)
     if not playlist:
@@ -60,6 +66,7 @@ def update_playlist(playlist_id):
     return jsonify({'message': 'Playlist updated', 'id': playlist.id}), 200
 
 @playlist_bp.route('/playlists/<int:playlist_id>', methods=['DELETE'])
+@token_required
 def delete_playlist(playlist_id):
     playlist = Playlist.query.get(playlist_id)
     if not playlist:
@@ -70,6 +77,7 @@ def delete_playlist(playlist_id):
     return jsonify({'message': 'Playlist deleted', 'id': playlist.id}), 200
 
 @playlist_bp.route('/playlists/<int:playlist_id>/tracks/<int:track_id>', methods=['POST'])
+@token_required
 def add_track_to_playlist(playlist_id, track_id):
     playlist = Playlist.query.get(playlist_id)
     track = Track.query.get(track_id)
@@ -87,9 +95,29 @@ def add_track_to_playlist(playlist_id, track_id):
     return jsonify({'message': f'Track {track_id} added to Playlist {playlist_id}'}), 200
 
 @playlist_bp.route('/playlists/<int:playlist_id>/tracks', methods=['GET'])
+@token_required
 def get_tracks_in_playlist(playlist_id):
     playlist = Playlist.query.get(playlist_id)
     if not playlist:
         return jsonify({'error': 'Playlist not found'}), 404
 
     return jsonify([track.to_dict() for track in playlist.tracks]), 200
+
+
+@playlist_bp.route('/playlists/<int:playlist_id>/tracks/<int:track_id>', methods=['DELETE'])
+@token_required
+def remove_track_from_playlist(playlist_id, track_id):
+    playlist = Playlist.query.get(playlist_id)
+    track = Track.query.get(track_id)
+
+    if not playlist:
+        return jsonify({'error': 'Playlist not found'}), 404
+    if not track:
+        return jsonify({'error': 'Track not found'}), 404
+    if track not in playlist.tracks:
+        return jsonify({'error': 'Track is not in the playlist'}), 400
+
+    playlist.tracks.remove(track)
+    db.session.commit()
+
+    return jsonify({'message': f'Track {track_id} removed from Playlist {playlist_id}'}), 200

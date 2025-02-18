@@ -3,12 +3,15 @@ from flask import Blueprint, jsonify, request, send_file, current_app
 from werkzeug.utils import secure_filename
 
 from backend.database_models import Track, db
+from backend.utils.token_validator import token_required
+
 TRACK_FOLDER = os.environ.get("TRACK_FOLDER", "/app/track_uploads")
 os.makedirs(TRACK_FOLDER, exist_ok=True)
 
 track_bp = Blueprint('track_bp', __name__)
 
 @track_bp.route('/tracks', methods=['GET'])
+@token_required
 def get_tracks():
     tracks = Track.query.all()
     return jsonify([{
@@ -28,6 +31,7 @@ def get_tracks():
     } for t in tracks]), 200
 
 @track_bp.route('/tracks/<int:track_id>', methods=['GET'])
+@token_required
 def get_track(track_id):
     track = Track.query.get(track_id)
     if not track:
@@ -49,6 +53,7 @@ def get_track(track_id):
     }), 200
 
 @track_bp.route('/tracks', methods=['POST'])
+@token_required
 def create_track():
     if 'song' in request.files or 'image' in request.files:
         # Handle multipart/form-data
@@ -100,6 +105,7 @@ def create_track():
         return jsonify({'message': 'Track created', 'id': new_track.id}), 201
 
 @track_bp.route('/tracks/<int:track_id>', methods=['PUT'])
+@token_required
 def update_track(track_id):
     track = Track.query.get(track_id)
     if not track:
@@ -154,6 +160,7 @@ def update_track(track_id):
 
 
 @track_bp.route('/tracks/<int:track_id>', methods=['DELETE'])
+@token_required
 def delete_track(track_id):
     try:
         track = Track.query.get(track_id)
@@ -185,6 +192,7 @@ def delete_track(track_id):
             }), 500 
 
 @track_bp.route('/tracks/<int:track_id>/download', methods=['GET'])
+@token_required
 def download_song(track_id):
     track = Track.query.get(track_id)
     if not track or not track.song_path:
@@ -195,6 +203,7 @@ def download_song(track_id):
     return send_file(full_path, mimetype='audio/mpeg')
 
 @track_bp.route('/tracks/<int:track_id>/image', methods=['GET'])
+@token_required
 def get_image(track_id):
     track = Track.query.get(track_id)
     if not track or not track.img_path:
@@ -205,6 +214,7 @@ def get_image(track_id):
     return send_file(full_path, mimetype='image/jpeg')
 
 @track_bp.route("/tracks/<int:track_id>/stream", methods=["GET"])
+@token_required
 def stream_track(track_id):
     track = Track.query.get(track_id)
     if not track or not track.song_path:
