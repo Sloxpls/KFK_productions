@@ -16,26 +16,35 @@ const updateTrack = async (trackData) => {
     throw new Error("Failed to update track data.");
   }
 
-  const playlistUpdates = trackData.selectedPlaylists.map(playlistId =>
-    fetch(`/api/playlists/${playlistId}/tracks/${trackData.id}`, {
-      method: "POST",
-    }).then(res => {
-      if (!res.ok) throw new Error(`Failed to add track to playlist ${playlistId}`);
-      return res.json();
-    })
+  const addPromises = trackData.selectedPlaylistsToAdd.map(playlistId =>
+    fetch(`/api/playlists/${playlistId}/tracks/${trackData.id}`, { method: "POST" })
+      .then(res => {
+        if (!res.ok) throw new Error(`Failed to add track to playlist ${playlistId}`);
+        return res.json();
+      })
   );
 
-  await Promise.all(playlistUpdates);
+  const removePromises = trackData.selectedPlaylistsToRemove.map(playlistId =>
+    fetch(`/api/playlists/${playlistId}/tracks/${trackData.id}`, { method: "DELETE" })
+      .then(res => {
+        if (!res.ok) throw new Error(`Failed to remove track from playlist ${playlistId}`);
+        return res.json();
+      })
+  );
+
+  await Promise.all([...addPromises, ...removePromises]);
   return response.json();
 };
 
 const EditTrack = ({ open, onClose, track }) => {
   const [editedTrack, setEditedTrack] = useState(null);
   const [selectedPlaylists, setSelectedPlaylists] = useState([]);
+  const [initialPlaylists, setInitialPlaylists] = useState([]);
   const queryClient = useQueryClient();
   const { playlists, isLoadingPlaylists } = usePlaylists();
 
   // Update internal state when track prop changes or modal opens
+  // and store initial data for comparison
   useEffect(() => {
     if (track && open) {
       setEditedTrack({...track});
@@ -43,6 +52,7 @@ const EditTrack = ({ open, onClose, track }) => {
       const trackPlaylists = playlists
         .filter(playlist => playlist.tracks.some(t => t.id === track.id))
         .map(playlist => playlist.id);
+      setInitialPlaylists(trackPlaylists);
       setSelectedPlaylists(trackPlaylists);
     }
   }, [track, open, playlists]);
@@ -84,10 +94,14 @@ const EditTrack = ({ open, onClose, track }) => {
 
   const handleSave = (e) => {
     e.preventDefault();
+    const added = selectedPlaylists.filter(id => !initialPlaylists.includes(id));
+    const removed = initialPlaylists.filter(id => !selectedPlaylists.includes(id));
+
     editTrackMutation.mutate({
       id: editedTrack.id,
       trackDetails: editedTrack,
-      selectedPlaylists
+      selectedPlaylistsToAdd: added,
+      selectedPlaylistsToRemove: removed,
     });
   };
 
