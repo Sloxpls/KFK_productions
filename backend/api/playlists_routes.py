@@ -102,3 +102,22 @@ def get_tracks_in_playlist(playlist_id):
         return jsonify({'error': 'Playlist not found'}), 404
 
     return jsonify([track.to_dict() for track in playlist.tracks]), 200
+
+
+@playlist_bp.route('/playlists/<int:playlist_id>/tracks/<int:track_id>', methods=['DELETE'])
+@token_required
+def remove_track_from_playlist(playlist_id, track_id):
+    playlist = Playlist.query.get(playlist_id)
+    track = Track.query.get(track_id)
+
+    if not playlist:
+        return jsonify({'error': 'Playlist not found'}), 404
+    if not track:
+        return jsonify({'error': 'Track not found'}), 404
+    if track not in playlist.tracks:
+        return jsonify({'error': 'Track is not in the playlist'}), 400
+
+    playlist.tracks.remove(track)
+    db.session.commit()
+
+    return jsonify({'message': f'Track {track_id} removed from Playlist {playlist_id}'}), 200
