@@ -3,9 +3,10 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Modal, Box, Typography, TextField, Button, FormGroup, FormControlLabel, Checkbox } from "@mui/material";
 import usePlaylists from "../../hooks/usePlaylists";
 import "./EditTrack.css";
+import {authFetch} from "../../utils/httpReqToken.js";
 
 const updateTrack = async (trackData) => {
-  const response = await fetch(`/api/tracks/${trackData.id}`, {
+  const response = await authFetch(`/api/tracks/${trackData.id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

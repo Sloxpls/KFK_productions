@@ -1,8 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {authFetch} from "../utils/httpReqToken.js";
 
 const fetchTracks = async () => {
   try {
-    const response = await fetch("/api/tracks");
+    const response = await authFetch("/api/tracks");
     if (!response.ok) {
       throw new Error(`Tracks API error: ${response.status}`);
     }
@@ -15,7 +16,7 @@ const fetchTracks = async () => {
 
 const streamTrack = async (trackId) => {
   try {
-    const response = await fetch(`/api/tracks/${trackId}/stream`);
+    const response = await authFetch(`/api/tracks/${trackId}/stream`);
     if (!response.ok) {
       throw new Error("Failed to stream track");
     }
@@ -27,7 +28,7 @@ const streamTrack = async (trackId) => {
 };
 
 const uploadSong = async (formData) => {
-  const response = await fetch("/api/upload-song", {
+  const response = await authFetch("/api/upload-song", {
     method: "POST",
     body: formData,
   });
@@ -39,7 +40,7 @@ const uploadSong = async (formData) => {
 
 const deleteTrack = async (trackId) => {
   try {
-    const response = await fetch(`/api/tracks/${trackId}`, {
+    const response = await authFetch(`/api/tracks/${trackId}`, {
       method: "DELETE",
     });
     if (!response.ok) {
@@ -53,7 +54,7 @@ const deleteTrack = async (trackId) => {
 
 const downloadTrack = async (trackId, fileName) => {
   try {
-    const response = await fetch(`/api/tracks/${trackId}/download`);
+    const response = await authFetch(`/api/tracks/${trackId}/download`);
     if (!response.ok) {
       throw new Error("Failed to download song");
     }

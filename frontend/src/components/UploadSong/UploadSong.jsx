@@ -4,6 +4,7 @@ import { useOutletContext } from "react-router-dom";
 import usePlaylists from "../../hooks/usePlaylists";
 import "../../styles/forms.css";
 import "./UploadSong.css";
+import {authFetch} from "../../utils/httpReqToken.js";
 
 const UploadSong = () => {
   const queryClient = useQueryClient();
@@ -66,7 +67,7 @@ const UploadSong = () => {
         await createPlaylist({ name: formData.get("playlist_name") });
       }
 
-      const response = await fetch("/api/upload-song", {
+      const response = await authFetch("/api/upload-song", {
         method: "POST",
         body: formData,
       });

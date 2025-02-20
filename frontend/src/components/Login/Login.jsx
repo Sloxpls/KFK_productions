@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { Box } from "@mui/material"
 import { useAuth } from "../../hooks/useAuth"
 import "./Login.css"
+import {authFetch} from "../../utils/httpReqToken.js";
 
 export const Login = () => {
   const [username, setUsername] = useState("")
@@ -15,7 +16,7 @@ export const Login = () => {
     event.preventDefault()
 
     try {
-      const response = await fetch("api/login", {
+      const response = await authFetch("api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
