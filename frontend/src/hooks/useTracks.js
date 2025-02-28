@@ -1,9 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import {authFetch} from "../utils/httpReqToken.js";
+
 
 const fetchTracks = async () => {
   try {
-    const response = await authFetch("/api/tracks");
+    const response = await fetch("/api/tracks");
     if (!response.ok) {
       throw new Error(`Tracks API error: ${response.status}`);
     }
@@ -14,13 +14,21 @@ const fetchTracks = async () => {
   }
 };
 
+let currentBlobUrl = null;
+
 const streamTrack = async (trackId) => {
+
+  if (currentBlobUrl) {
+    URL.revokeObjectURL(currentBlobUrl);
+  }
+
   try {
-    const response = await authFetch(`/api/tracks/${trackId}/stream`);
+    const response = await fetch(`/api/tracks/${trackId}/stream`);
     if (!response.ok) {
       throw new Error("Failed to stream track");
     }
-    return response.blob();
+    currentBlobUrl = URL.createObjectURL(response.blob());
+    return currentBlobUrl;
   } catch (error) {
     console.error("Error streaming track:", error);
     throw error;
@@ -28,7 +36,7 @@ const streamTrack = async (trackId) => {
 };
 
 const uploadSong = async (formData) => {
-  const response = await authFetch("/api/upload-song", {
+  const response = await fetch("/api/upload-song", {
     method: "POST",
     body: formData,
   });
@@ -40,7 +48,7 @@ const uploadSong = async (formData) => {
 
 const deleteTrack = async (trackId) => {
   try {
-    const response = await authFetch(`/api/tracks/${trackId}`, {
+    const response = await fetch(`/api/tracks/${trackId}`, {
       method: "DELETE",
     });
     if (!response.ok) {
@@ -54,7 +62,7 @@ const deleteTrack = async (trackId) => {
 
 const downloadTrack = async (trackId, fileName) => {
   try {
-    const response = await authFetch(`/api/tracks/${trackId}/download`);
+    const response = await fetch(`/api/tracks/${trackId}/download`);
     if (!response.ok) {
       throw new Error("Failed to download song");
     }
@@ -72,6 +80,40 @@ const downloadTrack = async (trackId, fileName) => {
     throw error;
   }
 };
+
+const updateTrack = async (trackData) => {
+  const response = await fetch(`/api/tracks/${trackData.id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(trackData.trackDetails),
+  });
+  if (!response.ok) {
+    throw new Error("Failed to update track data.");
+  }
+
+  const addPromises = trackData.selectedPlaylistsToAdd.map((playlistId) =>
+    fetch(`/api/playlists/${playlistId}/tracks/${trackData.id}`, {
+      method: "POST",
+    }).then((res) => {
+      if (!res.ok) throw new Error(`Failed to add track to playlist ${playlistId}`);
+      return res.json();
+    })
+  );
+
+  const removePromises = trackData.selectedPlaylistsToRemove.map((playlistId) =>
+    fetch(`/api/playlists/${playlistId}/tracks/${trackData.id}`, {
+      method: "DELETE",
+    }).then((res) => {
+      if (!res.ok) throw new Error(`Failed to remove track from playlist ${playlistId}`);
+      return res.json();
+    })
+  );
+
+  await Promise.all([...addPromises, ...removePromises]);
+  return response.json();
+}
 
 export const useTracks = () => {
   const queryClient = useQueryClient();
@@ -98,6 +140,15 @@ export const useTracks = () => {
     },
   });
 
+  const updateTrackMutation = useMutation({
+    mutationFn: updateTrack,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tracks"] });
+      queryClient.invalidateQueries({ queryKey: ["playlists"] });
+      
+    },
+  });
+
   return {
     tracks,
     refreshTracks,
@@ -107,6 +158,7 @@ export const useTracks = () => {
     streamTrack,
     downloadTrack,
     deleteTrack: deleteTrackMutation.mutate,
+    updateTrack: updateTrackMutation.mutate,
   };
 };
 

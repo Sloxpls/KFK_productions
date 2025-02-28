@@ -2,12 +2,19 @@
     background-color: var(--transparent-dark);
     padding: 10px;
     display: flex;
-    justify-content: center;
     gap: 20px;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .nav-item {
     display: flex;
+    align-items: center;
+}
+
+.nav-items {
+    display: flex;
+    gap: 20px;
     align-items: center;
 }
 
@@ -52,4 +59,30 @@
 
 .dropdown-item:hover {
     background-color: var(--hover-bg-color);
+}
+
+.socials {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-right: auto;
+}
+
+.social-button {
+    padding: 5px !important;
+    min-width: unset !important;
+}
+
+.nav-items-center {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.spacer {
+    width: 0;
+    visibility: hidden;
 }

@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom"
 import { Box } from "@mui/material"
 import { useAuth } from "../../hooks/useAuth"
 import "./Login.css"
-import {authFetch} from "../../utils/httpReqToken.js";
 
 export const Login = () => {
   const [username, setUsername] = useState("")
@@ -16,7 +15,7 @@ export const Login = () => {
     event.preventDefault()
 
     try {
-      const response = await authFetch("api/login", {
+      const response = await fetch("api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -33,7 +32,7 @@ export const Login = () => {
         setMessage(data.message)
       }
     } catch (error) {
-      setMessage("An error occurred. Please try again.")
+      setMessage(error.message)
     }
   }
 

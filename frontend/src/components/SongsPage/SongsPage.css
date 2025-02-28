@@ -1,7 +1,7 @@
 .songs-page {
     display: grid;
     margin-top: 0.5%;
-    grid-template-columns: 1fr 3fr 1fr; 
+    grid-template-columns: 1fr 5fr 2fr; 
     height: calc(100vh - 150px); 
     width: 100%;
     position: relative;

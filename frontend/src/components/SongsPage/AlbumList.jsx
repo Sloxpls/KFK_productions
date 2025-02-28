@@ -1,13 +1,16 @@
-import usePlaylists from "../../hooks/usePlaylists";
-import "./AlbumList.css";
 import { useState } from "react";
 import { Button, TextField } from "@mui/material";
+import usePlaylists from "../../hooks/usePlaylists";
+import useDeleteConfirm from "../../hooks/useDeleteConfirm";
+import "./AlbumList.css";
+import ConfirmDialog from "../Common/ConfirmDialog";
 
 const AlbumList = ({ onPlaylistSelect }) => {
-  const { playlists, isLoadingPlaylists, playlistsError, createPlaylist, isCreating: isCreatingPlaylist } = usePlaylists();
+  const { playlists, isLoadingPlaylists, playlistsError, createPlaylist, isCreating: isCreatingPlaylist, deletePlaylist } = usePlaylists();
   const [selectedId, setSelectedId] = useState(null);
   const [isCreating, setIsCreating] = useState(false);
   const [newPlaylistName, setNewPlaylistName] = useState("");
+  const { itemToDelete, deleteConfirmOpen, openConfirm, confirmDeletion } = useDeleteConfirm(deletePlaylist);
 
   const handleCreatePlaylist = (e) => {
     e.preventDefault();
@@ -17,6 +20,11 @@ const AlbumList = ({ onPlaylistSelect }) => {
       setIsCreating(false);
     }
   };
+  
+  const handlePlaylistClick = (playlist) => {
+    setSelectedId(playlist?.id || null);
+    onPlaylistSelect(playlist);
+  };
 
   if (isLoadingPlaylists) {
     return <div className="sidebar-loader">Loading...</div>;
@@ -25,11 +33,6 @@ const AlbumList = ({ onPlaylistSelect }) => {
   if (playlistsError) {
     return <div className="sidebar-error">Error: {playlistsError.message}</div>;
   }
-
-  const handlePlaylistClick = (playlist) => {
-    setSelectedId(playlist?.id || null);
-    onPlaylistSelect(playlist);
-  };
 
   return (
     <aside className="sidebar">
@@ -51,6 +54,15 @@ const AlbumList = ({ onPlaylistSelect }) => {
             >
               <span className="playlist-name">{playlist.name}</span>
             </div>
+            <Button 
+              id='delete-playlist' 
+              onClick={() => openConfirm(playlist)}
+              variant="contained"
+              color="error"
+              sx={{ width: '25%', borderRadius: '15%', marginRight: '0.5em' }}
+            >
+              Delete
+            </Button>
           </div>
         ))}
         <div className="playlist-item">
@@ -62,9 +74,7 @@ const AlbumList = ({ onPlaylistSelect }) => {
                 onChange={(e) => setNewPlaylistName(e.target.value)}
                 placeholder="Playlist name"
                 autoFocus
-                sx={{
-                  input: { color: 'white' }
-                }}
+                sx={{ input: { color: 'white' } }}
               />
               <Button 
                 variant="contained" 
@@ -73,6 +83,16 @@ const AlbumList = ({ onPlaylistSelect }) => {
                 disabled={isCreatingPlaylist}
               >
                 {isCreatingPlaylist ? 'Creating...' : 'Create'}
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={() => {
+                  setIsCreating(false);
+                  setNewPlaylistName("");
+                }}
+              >
+                Cancel
               </Button>
             </form>
           ) : (
@@ -84,8 +104,19 @@ const AlbumList = ({ onPlaylistSelect }) => {
             >
               Create new playlist
             </Button>
+            
           )}
         </div>
+        <ConfirmDialog 
+          isOpen={deleteConfirmOpen}
+          onClose={() => {}}
+          onConfirm={confirmDeletion}
+          title="Delete Playlist"
+          message={`Are you sure you want to delete ${
+            itemToDelete ? itemToDelete.name : "this item"
+          }?`}
+          confirmText="Delete"
+        />
       </div>
     </aside>
   );

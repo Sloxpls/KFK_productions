@@ -1,9 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { authFetch } from "../utils/httpReqToken.js"
 
 const fetchPlaylistNames = async () => {
   try {
-    const response = await authFetch("/api/playlists");
+    const response = await fetch("/api/playlists");
     if (!response.ok) {
       throw new Error(`Playlists API error: ${response.status}`);
     }
@@ -11,15 +10,15 @@ const fetchPlaylistNames = async () => {
     return playlistsData.map(playlist => playlist.name);
   } catch (error) {
     console.error("Error fetching data:", error);
-    throw new Error("Failed to fetch playlists. Please try again later.");
+    throw new Error(`Playlists API error: ${error.message}`);
   }
 };
 
 const fetchPlaylists = async () => {
   try {
-    const response = await authFetch("/api/playlists-with-tracks");
+    const response = await fetch("/api/playlists-with-tracks");
     if (!response.ok) {
-      throw new Error("Failed to fetch playlists");
+      throw new Error(`Playlists API error: ${response.status}`);
     }
     const data = await response.json();
     return data.map(playlist => ({
@@ -33,7 +32,7 @@ const fetchPlaylists = async () => {
 };
 
 const createPlaylist = async ({ name }) => {
-  const response = await authFetch("/api/playlists", {
+  const response = await fetch("/api/playlists", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -42,6 +41,16 @@ const createPlaylist = async ({ name }) => {
   });
   if (!response.ok) {
     throw new Error("Failed to create playlist");
+  }
+  return response.json();
+};
+
+const deletePlaylist = async (playlistId) => {
+  const response = await fetch(`/api/playlists/${playlistId}`, {
+    method: "DELETE",
+  });
+  if (!response.ok) {
+    throw new Error("Failed to delete playlist");
   }
   return response.json();
 };
@@ -72,11 +81,22 @@ const usePlaylists = () => {
     refetchOnWindowFocus: false,
   });
 
+  
+
   // Mutation for creating new playlists
   const createPlaylistMutation = useMutation({
     mutationFn: createPlaylist,
     onSuccess: () => {
       // Invalidate both playlist queries to refetch the latest data
+      queryClient.invalidateQueries({ queryKey: ["playlists"] });
+      queryClient.invalidateQueries({ queryKey: ["playlist-names"] });
+    },
+  });
+
+  // Mutation for deleting playlists
+  const deletePlaylistMutation = useMutation({
+    mutationFn: deletePlaylist,
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["playlists"] });
       queryClient.invalidateQueries({ queryKey: ["playlist-names"] });
     },
@@ -95,7 +115,8 @@ const usePlaylists = () => {
     playlists,
     isLoadingPlaylists,
     playlistsError,
-    refreshPlaylists
+    refreshPlaylists,
+    deletePlaylist: deletePlaylistMutation.mutate,
   };
 };
 

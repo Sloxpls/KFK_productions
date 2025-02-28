@@ -1,41 +1,10 @@
 import { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Modal, Box, Typography, TextField, Button, FormGroup, FormControlLabel, Checkbox } from "@mui/material";
+
 import usePlaylists from "../../hooks/usePlaylists";
+import useTracks from "../../hooks/useTracks";
 import "./EditTrack.css";
-import {authFetch} from "../../utils/httpReqToken.js";
-
-const updateTrack = async (trackData) => {
-  const response = await authFetch(`/api/tracks/${trackData.id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(trackData.trackDetails),
-  });
-  if (!response.ok) {
-    throw new Error("Failed to update track data.");
-  }
-
-  const addPromises = trackData.selectedPlaylistsToAdd.map(playlistId =>
-    fetch(`/api/playlists/${playlistId}/tracks/${trackData.id}`, { method: "POST" })
-      .then(res => {
-        if (!res.ok) throw new Error(`Failed to add track to playlist ${playlistId}`);
-        return res.json();
-      })
-  );
-
-  const removePromises = trackData.selectedPlaylistsToRemove.map(playlistId =>
-    fetch(`/api/playlists/${playlistId}/tracks/${trackData.id}`, { method: "DELETE" })
-      .then(res => {
-        if (!res.ok) throw new Error(`Failed to remove track from playlist ${playlistId}`);
-        return res.json();
-      })
-  );
-
-  await Promise.all([...addPromises, ...removePromises]);
-  return response.json();
-};
 
 const EditTrack = ({ open, onClose, track }) => {
   const [editedTrack, setEditedTrack] = useState(null);
@@ -43,6 +12,7 @@ const EditTrack = ({ open, onClose, track }) => {
   const [initialPlaylists, setInitialPlaylists] = useState([]);
   const queryClient = useQueryClient();
   const { playlists, isLoadingPlaylists } = usePlaylists();
+  const { updateTrack } = useTracks();
 
   // Update internal state when track prop changes or modal opens
   // and store initial data for comparison

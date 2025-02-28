@@ -1,14 +1,11 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useOutletContext } from "react-router-dom";
 import usePlaylists from "../../hooks/usePlaylists";
 import "../../styles/forms.css";
 import "./UploadSong.css";
-import {authFetch} from "../../utils/httpReqToken.js";
 
 const UploadSong = () => {
   const queryClient = useQueryClient();
-  const {refreshTracks} = useOutletContext();
   const { 
     playlistNames, 
     isLoading: playlistsLoading, 
@@ -67,7 +64,7 @@ const UploadSong = () => {
         await createPlaylist({ name: formData.get("playlist_name") });
       }
 
-      const response = await authFetch("/api/upload-song", {
+      const response = await fetch("/api/upload-song", {
         method: "POST",
         body: formData,
       });

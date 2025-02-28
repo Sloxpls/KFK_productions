@@ -3,14 +3,14 @@ import Button from "@mui/material/Button";
 import MediaRenderer from "./MediaRenderer";
 import ConfirmDialog from "../Common/ConfirmDialog";
 import useMedia from "../../hooks/useMedia"; 
+import useDeleteConfirm from "../../hooks/useDeleteConfirm";
 import "./MediaGallery.css";
 
 const MediaGallery = () => {
   const { media, deleteMedia, loading, error, downloadMedia } = useMedia();
 
   const [selectedMedia, setSelectedMedia] = useState(null);
-  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-  const [mediaToDelete, setMediaToDelete] = useState(null);
+  const { itemToDelete, deleteConfirmOpen, openConfirm, confirmDeletion } = useDeleteConfirm(deleteMedia);
 
   const handleMediaClick = (mediaItem) => {
     setSelectedMedia(mediaItem);
@@ -20,19 +20,6 @@ const MediaGallery = () => {
     setSelectedMedia(null);
   };
 
-  const handleDeleteClick = (mediaItem) => {
-    setMediaToDelete(mediaItem);
-    setDeleteConfirmOpen(true);
-  };
-
-  const handleDeleteConfirm = async () => {
-    if (mediaToDelete) {
-      deleteMedia(mediaToDelete.id);
-      setDeleteConfirmOpen(false);
-      setMediaToDelete(null);
-      closeModal();
-    }
-  };
 
   if (loading) return <p>Loading media...</p>;
   if (error) return <p>Error fetching media: {error.message}</p>;
@@ -76,18 +63,20 @@ const MediaGallery = () => {
             >
               Download
             </Button>
-            <Button onClick={() => handleDeleteClick(selectedMedia)}>Delete</Button>
+            <Button onClick={() => openConfirm(selectedMedia)}>
+              Delete
+            </Button>
           </div>
         </div>
       )}
 
       <ConfirmDialog
         isOpen={deleteConfirmOpen}
-        onClose={() => setDeleteConfirmOpen(false)}
-        onConfirm={handleDeleteConfirm}
+        onClose={() => {}}
+        onConfirm={confirmDeletion}
         title="Delete Media"
         message={`Are you sure you want to delete ${
-          mediaToDelete?.filename || "this item"
+          itemToDelete ? itemToDelete.name : "this item"
         }?`}
         confirmText="Delete"
       />

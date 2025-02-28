@@ -12,6 +12,7 @@
     "kill": "pkill -f 'python3 app.py' && pkill -f vite"
   },
   "dependencies": {
+    "@mui/icons-material": "^6.4.5",
     "@mui/material": "^6.4.2",
     "@tanstack/react-query": "^5.66.0",
     "framer-motion": "^12.4.2",
