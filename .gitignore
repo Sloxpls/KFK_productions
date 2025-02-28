@@ -12,3 +12,8 @@ db.sqlite3
 
 tracks
 dist
+
+kfk.db
+
+uploaded_tracks
+uploaded_media
