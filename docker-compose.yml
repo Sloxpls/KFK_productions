@@ -26,10 +26,10 @@ services:
       - media_uploads:/app/media_uploads
     environment:
       - PYTHONPATH=/app:/app/backend
-    ports:
-      - "5000:5000"
     depends_on:
       - database
+    ports:
+      - "5000:5000"
     networks:
       - app_network
     command: python backend/app.py
