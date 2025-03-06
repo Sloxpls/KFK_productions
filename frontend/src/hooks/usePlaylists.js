@@ -7,13 +7,14 @@ const fetchPlaylistNames = async () => {
       throw new Error(`Playlists API error: ${response.status}`);
     }
     const playlistsData = await response.json();
-    return playlistsData.map(playlist => playlist.name);
+    return playlistsData;
   } catch (error) {
     console.error("Error fetching data:", error);
     throw new Error(`Playlists API error: ${error.message}`);
   }
 };
 
+// used to populate the table and grid views
 const fetchPlaylists = async () => {
   try {
     const response = await fetch("/api/playlists-with-tracks");
@@ -27,6 +28,20 @@ const fetchPlaylists = async () => {
     }));
   } catch (error) {
     console.error("Error fetching playlists:", error);
+    throw error;
+  }
+};
+
+// get individual playlist, used for playlistinfo
+const fetchPlaylist = async (playlistId) => {
+  try {
+    const response = await fetch(`/api/playlists/${playlistId}`);
+    if (!response.ok) {
+      throw new Error(`Playlist API error: ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching playlist:", error);
     throw error;
   }
 };
@@ -55,12 +70,32 @@ const deletePlaylist = async (playlistId) => {
   return response.json();
 };
 
+const updatePlaylist = async (playlistId, formData) => {
+  const response = await fetch(`/api/playlists/${playlistId}`, {
+    method: "PUT",
+    body: formData,
+  });
+  if (!response.ok) {
+    throw new Error("Failed to update playlist");
+  }
+  return response.json();
+};
+
+const usePlaylistDetails = (playlistId) => {
+  return useQuery({
+    queryKey: ["playlist", playlistId],
+    queryFn: () => playlistId ? fetchPlaylist(playlistId) : null,
+    enabled: !!playlistId,
+    refetchOnWindowFocus: false
+  });
+};
+
 const usePlaylists = () => {
   const queryClient = useQueryClient();
 
   // Query for playlist names (used in UploadSong)
   const { 
-    data: playlistNames = [], 
+    data: playlistData = [], 
     isLoading: isLoadingNames,
     error: namesError 
   } = useQuery({
@@ -68,6 +103,8 @@ const usePlaylists = () => {
     queryFn: fetchPlaylistNames,
     refetchOnWindowFocus: false,
   });
+
+  const playlistNames = playlistData.map(playlist => playlist.name)
 
   // Query for full playlists with tracks (used in AlbumList)
   const { 
@@ -102,6 +139,26 @@ const usePlaylists = () => {
     },
   });
 
+  const updatePlaylistMutation = useMutation({
+    mutationFn: ({ playlistId, formData }) => {
+      return updatePlaylist(playlistId, formData);
+    },
+    onSuccess: (data, variables) => {
+      // Invalidate general playlist queries
+      queryClient.invalidateQueries({ queryKey: ["playlists"] });
+      queryClient.invalidateQueries({ queryKey: ["playlist-names"] });
+      
+      // Specifically invalidate the updated playlist
+      queryClient.invalidateQueries({ queryKey: ["playlist", variables.playlistId] });
+      
+      // Immediately update the cache with new data
+      queryClient.setQueryData(["playlist", variables.playlistId], data);
+      
+      // Force refetch all playlists to ensure consistency
+      queryClient.refetchQueries({ queryKey: ["playlists"] });
+    },
+  });
+
   return {
     // For UploadSong component
     playlistNames,
@@ -117,6 +174,11 @@ const usePlaylists = () => {
     playlistsError,
     refreshPlaylists,
     deletePlaylist: deletePlaylistMutation.mutate,
+
+    // For PlaylistInfo component
+    usePlaylistDetails,
+    updatePlaylist: updatePlaylistMutation.mutate,
+    fetchPlaylist,
   };
 };
 

@@ -23,6 +23,12 @@ export const useTrackFiltering = (tracks, searchTerm, sortConfig, socialFilters 
   };
 
   const filteredAndSortedTracks = useMemo(() => {
+
+    // null check to prevent errors when tracks is not yet loaded
+    if (!tracks) {
+      return [];
+    }
+    
     // Filter tracks based on search term and active social filters
     const filtered = tracks.filter(track => {
       // Search condition

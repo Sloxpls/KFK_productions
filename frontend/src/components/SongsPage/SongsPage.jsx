@@ -12,14 +12,18 @@ import SocialFilter from "./SongsHeader/SocialFilter.jsx";
 
 import { useTrackFiltering } from "../../hooks/useTrackFiltering";
 import useTrackStore from "../../hooks/useTrackStore.js";
+import usePlaylists from "../../hooks/usePlaylists.js";
+
 import "./SongsPage.css";
 
 const SongsPage = () => {
   const { tracks } = useOutletContext(); 
+  const [selectedPlaylist, setSelectedPlaylist] = useState(null);
   const { setSelectedTrack } = useTrackStore();
   const [currentView, setCurrentView] = useState('table');
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedPlaylist, setSelectedPlaylist] = useState(null);
+  const { usePlaylistDetails } = usePlaylists();
+  const { data: currentPlaylistData } = usePlaylistDetails(selectedPlaylist?.id);
   const [socialFilters, setSocialFilters] = useState({
     tiktok: false,
     soundcloud: false,
@@ -35,10 +39,14 @@ const SongsPage = () => {
 
   const handlePlaylistSelect = (playlist) => {
     setSelectedPlaylist(playlist);
-  };
+  }
 
+  // Use the up-to-date playlist data if available
+  const currentPlaylist = currentPlaylistData || selectedPlaylist;
+  
+  // Use the updated currentPlaylist in your JSX and filtering logic
   const { filteredAndSortedTracks } = useTrackFiltering(
-    selectedPlaylist ? selectedPlaylist.tracks : tracks,
+    currentPlaylist ? currentPlaylist.tracks : tracks,
     searchTerm,
     sortConfig,
     socialFilters
@@ -93,8 +101,9 @@ const SongsPage = () => {
 
   return (
     <div className="songs-page">
+      
       <div className="songs-left-sidebar">
-        <LeftSidebar />
+        <LeftSidebar playlist={currentPlaylist} />
       </div>
       
       <div className="songs-content">
@@ -114,11 +123,15 @@ const SongsPage = () => {
           />
         </div>
         {renderContent()}
+
       </div>
       
       <div className="songs-right-sidebar">
         <AlbumList onPlaylistSelect={handlePlaylistSelect} />
       </div>
+
+      
+      
     </div>
   );
 };

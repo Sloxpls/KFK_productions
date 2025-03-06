@@ -1,12 +1,17 @@
 import { useState } from "react";
 import { Button, TextField } from "@mui/material";
+import PropTypes from "prop-types";
+
 import usePlaylists from "../../hooks/usePlaylists";
 import useDeleteConfirm from "../../hooks/useDeleteConfirm";
-import "./AlbumList.css";
+import { getStatusLabel, getStatusClass } from "../../utils/statusUtils";
+
 import ConfirmDialog from "../Common/ConfirmDialog";
 
+import "./AlbumList.css";
+
 const AlbumList = ({ onPlaylistSelect }) => {
-  const { playlists, isLoadingPlaylists, playlistsError, createPlaylist, isCreating: isCreatingPlaylist, deletePlaylist } = usePlaylists();
+  const { playlists, isLoading, error, createPlaylist, isCreating: isCreatingPlaylist, deletePlaylist } = usePlaylists();
   const [selectedId, setSelectedId] = useState(null);
   const [isCreating, setIsCreating] = useState(false);
   const [newPlaylistName, setNewPlaylistName] = useState("");
@@ -26,12 +31,12 @@ const AlbumList = ({ onPlaylistSelect }) => {
     onPlaylistSelect(playlist);
   };
 
-  if (isLoadingPlaylists) {
+  if (isLoading) {
     return <div className="sidebar-loader">Loading...</div>;
   }
 
-  if (playlistsError) {
-    return <div className="sidebar-error">Error: {playlistsError.message}</div>;
+  if (error) {
+    return <div className="sidebar-error">Error: {error.message}</div>;
   }
 
   return (
@@ -54,15 +59,9 @@ const AlbumList = ({ onPlaylistSelect }) => {
             >
               <span className="playlist-name">{playlist.name}</span>
             </div>
-            <Button 
-              id='delete-playlist' 
-              onClick={() => openConfirm(playlist)}
-              variant="contained"
-              color="error"
-              sx={{ width: '25%', borderRadius: '15%', marginRight: '0.5em' }}
-            >
-              Delete
-            </Button>
+            <span className={`playlist-status ${getStatusClass(playlist.status)}`}>
+            {getStatusLabel(playlist.status)}
+            </span>
           </div>
         ))}
         <div className="playlist-item">
@@ -120,6 +119,10 @@ const AlbumList = ({ onPlaylistSelect }) => {
       </div>
     </aside>
   );
+};
+
+AlbumList.propTypes = {
+  onPlaylistSelect: PropTypes.func.isRequired,
 };
 
 export default AlbumList;

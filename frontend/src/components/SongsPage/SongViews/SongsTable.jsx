@@ -95,15 +95,6 @@ const SongsTable = ({ tracks, searchTerm }) => {
                   Title
                 </TableSortLabel>
               </TableCell>
-              {/* <TableCell>
-                <TableSortLabel
-                  active={sortConfig.key === 'description'}
-                  direction={sortConfig.direction}
-                  onClick={() => handleSort('description')}
-                >
-                  Description
-                </TableSortLabel>
-              </TableCell> */}
               <TableCell>
                 <TableSortLabel
                   active={sortConfig.key === 'producer'}

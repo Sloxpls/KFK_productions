@@ -1,10 +1,13 @@
 import "./LeftSidebar.css";
+import PlaylistInfo from "./PlaylistInfo";
 
 
+const LeftSidebar = ({ playlist }) => {
+  if (!playlist) return null;
 
-const LeftSidebar = () => {
-  <>
-  </>
+  return (
+    <PlaylistInfo playlist={playlist} />
+  );
 };
 
 export default LeftSidebar;
