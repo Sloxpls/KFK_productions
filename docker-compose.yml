@@ -23,6 +23,9 @@ services:
     working_dir: /app
     volumes:
       - ./backend:/app/backend
+      - track_uploads:/app/track_uploads
+      - db_data:/app/db_data
+      - playlist_uploads:/app/playlist_uploads
       - media_uploads:/app/media_uploads
     environment:
       - PYTHONPATH=/app:/app/backend
@@ -52,4 +55,6 @@ networks:
 
 volumes:
   db_data:
+  track_uploads:
   media_uploads:
+  playlist_uploads:

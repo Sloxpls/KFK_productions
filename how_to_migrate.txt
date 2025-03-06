@@ -1,0 +1,10 @@
+-----------För migration ------------------------
+docker exec -it backend /bin/sh
+flask db init
+flask db migrate -m "Initial migration"
+flask db upgrade
+
+---------tita så det funka ------------
+docker exec -it database psql -U myuser -d mydb
+\dt
+\d playlists
