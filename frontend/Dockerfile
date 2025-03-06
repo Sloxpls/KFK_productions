@@ -6,9 +6,11 @@ WORKDIR /app
 COPY . .
 
 RUN npm install
+
 RUN npm run build
 
 RUN rm -rf /usr/share/nginx/html/*
+
 RUN mv /app/dist/* /usr/share/nginx/html/
 
 RUN rm /etc/nginx/conf.d/default.conf
