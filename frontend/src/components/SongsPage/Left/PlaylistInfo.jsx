@@ -4,10 +4,10 @@ import { Button } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import PropTypes from 'prop-types';
 
-import ConfirmDialog from '../Common/ConfirmDialog';
-import useDeleteConfirm from '../../hooks/useDeleteConfirm';
-import usePlaylists from '../../hooks/usePlaylists';
-import { getStatusLabel, getStatusClass } from "../../utils/statusUtils";
+import ConfirmDialog from '../../Common/ConfirmDialog';
+import useDeleteConfirm from '../../../hooks/useDeleteConfirm';
+import usePlaylists from '../../../hooks/usePlaylists';
+import { getStatusLabel, getStatusClass } from "../../../utils/statusUtils";
 
 
 import './PlaylistInfo.css';
@@ -23,10 +23,25 @@ const PlaylistInfo = ({ playlist: initialPlaylist }) => {
 
   if (!initialPlaylist) return null;
 
+  const getImageSrc = () => {
+    // For virtual "No Playlist"
+    if (initialPlaylist.isVirtual) {
+      return '/noplaylist.jpeg';
+    }
+    
+    // For normal playlists with images
+    if (initialPlaylist.img_path) {
+      return `/api/playlists/${initialPlaylist.id}/image`;
+    }
+    
+    // Default fallback for regular playlists with no image
+    return '/noplaylist.jpeg';
+  };
+
   return (
     <div className="selected-playlist-info">
       <img 
-        src={initialPlaylist.img_path ? `/api/playlists/${initialPlaylist.id}/image` : '/images/default-playlist.jpg'} 
+        src={getImageSrc()}  
         alt={initialPlaylist.name} 
         className="playlist-cover" 
       />

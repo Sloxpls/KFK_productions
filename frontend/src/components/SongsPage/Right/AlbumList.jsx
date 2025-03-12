@@ -1,12 +1,17 @@
 import { useState } from "react";
-import { Button, TextField } from "@mui/material";
+import { 
+  Button, 
+  TextField, 
+} from "@mui/material";
 import PropTypes from "prop-types";
 
-import usePlaylists from "../../hooks/usePlaylists";
-import useDeleteConfirm from "../../hooks/useDeleteConfirm";
-import { getStatusLabel, getStatusClass } from "../../utils/statusUtils";
+import usePlaylists from "../../../hooks/usePlaylists";
+import useDeleteConfirm from "../../../hooks/useDeleteConfirm";
+import { getStatusLabel, getStatusClass } from "../../../utils/statusUtils";
+import usePlaylistFiltering from "../../../hooks/usePlaylistFiltering";
 
-import ConfirmDialog from "../Common/ConfirmDialog";
+import ConfirmDialog from "../../Common/ConfirmDialog";
+import StatusFiltering from "./Statusfiltering";
 
 import "./AlbumList.css";
 
@@ -15,7 +20,32 @@ const AlbumList = ({ onPlaylistSelect }) => {
   const [selectedId, setSelectedId] = useState(null);
   const [isCreating, setIsCreating] = useState(false);
   const [newPlaylistName, setNewPlaylistName] = useState("");
-  const { itemToDelete, deleteConfirmOpen, openConfirm, confirmDeletion } = useDeleteConfirm(deletePlaylist);
+  const { itemToDelete, deleteConfirmOpen, confirmDeletion } = useDeleteConfirm(deletePlaylist);
+  const [statusFilters, setStatusFilters] = useState({
+    1: false,
+    2: false,
+    3: false,
+    4: false,
+  });
+  const filteredPlaylists = usePlaylistFiltering(playlists, statusFilters);
+
+
+  const handleStatusFilterChange = (e) => {
+    const { name, checked } = e.target;
+    setStatusFilters((prevFilters) => ({
+      ...prevFilters,
+      [name]: checked,
+    }));
+  };
+
+  const resetFilters = () => {
+    setStatusFilters({
+      1: false,
+      2: false,
+      3: false,
+      4: false,
+    });
+  };
 
   const handleCreatePlaylist = (e) => {
     e.preventDefault();
@@ -27,6 +57,11 @@ const AlbumList = ({ onPlaylistSelect }) => {
   };
   
   const handlePlaylistClick = (playlist) => {
+    if (playlist?.id === selectedId) {
+      setSelectedId(null);
+      onPlaylistSelect(null);
+      return;
+    }
     setSelectedId(playlist?.id || null);
     onPlaylistSelect(playlist);
   };
@@ -41,7 +76,16 @@ const AlbumList = ({ onPlaylistSelect }) => {
 
   return (
     <aside className="sidebar">
-      <h2 className="sidebar-title">Album collection</h2>
+      <div className="status-filters">
+      </div>
+        <div className="filters-container">
+        <StatusFiltering
+          statusFilters={statusFilters}
+          onFilterChange={handleStatusFilterChange}
+          onResetFilters={resetFilters}
+        />
+      </div>
+      
       <div className="playlist-container">
         <div className="playlist-item">
           <div 
@@ -51,17 +95,38 @@ const AlbumList = ({ onPlaylistSelect }) => {
             <span className="playlist-name">All Tracks</span>
           </div>
         </div>
-        {playlists.map((playlist) => (
-          <div key={playlist.id} className="playlist-item">
+
+        {filteredPlaylists.find(playlist => playlist.isVirtual) && (
+          <div 
+            className="playlist-item"
+            data-virtual="true"
+          >
+            <div
+              className={`playlist-header ${selectedId === 'no-playlist' ? 'selected' : ''}`}
+              onClick={() => handlePlaylistClick(filteredPlaylists.find(p => p.isVirtual))}
+            >
+              <span className="playlist-name">No Playlist</span>
+              <span className="track-count">
+                {filteredPlaylists.find(p => p.isVirtual)?.tracks?.length || 0} unassigned tracks
+              </span>
+            </div>
+          </div>
+        )}
+        
+        {filteredPlaylists.filter(playlist => !playlist.isVirtual).map((playlist) => (
+          <div 
+            key={playlist.id} 
+            className="playlist-item"
+          >
             <div
               className={`playlist-header ${selectedId === playlist.id ? 'selected' : ''}`}
               onClick={() => handlePlaylistClick(playlist)}
             >
               <span className="playlist-name">{playlist.name}</span>
+              <span className={`playlist-status ${getStatusClass(playlist.status)}`}>
+                {getStatusLabel(playlist.status)}
+              </span>
             </div>
-            <span className={`playlist-status ${getStatusClass(playlist.status)}`}>
-            {getStatusLabel(playlist.status)}
-            </span>
           </div>
         ))}
         <div className="playlist-item">

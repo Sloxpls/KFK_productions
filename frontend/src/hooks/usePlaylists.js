@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMemo } from "react";
 
 const fetchPlaylistNames = async () => {
   try {
@@ -90,6 +91,19 @@ const usePlaylistDetails = (playlistId) => {
   });
 };
 
+const fetchUnassignedTracks = async () => {
+  try {
+    const response = await fetch("/api/tracks-unassigned");
+    if (!response.ok) {
+      throw new Error(`Unassigned tracks API error: ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching unassigned tracks:", error);
+    throw error;
+  }
+};
+
 const usePlaylists = () => {
   const queryClient = useQueryClient();
 
@@ -118,7 +132,36 @@ const usePlaylists = () => {
     refetchOnWindowFocus: false,
   });
 
-  
+  // Query for all unassigned tracks
+  const { 
+    data: unassignedTracks = [],
+    isLoading: isLoadingUnassignedTracks,
+    error: unassignedTracksError
+  } = useQuery({
+    queryKey: ["tracks-unassigned"],
+    queryFn: fetchUnassignedTracks,
+    refetchOnWindowFocus: false,
+  });
+
+  const enhancedPlaylists = useMemo(() => {
+    if (!playlists) return playlists;
+
+    const result = [...playlists];
+    
+    // Add a virtual playlist for unassigned tracks
+    result.push({
+      id: 'no-playlist', 
+      name: 'No Playlist',
+      status: 4, 
+      description: 'Tracks not assigned to any playlist',
+      img_path: null,
+      isVirtual: true,
+      tracks: unassignedTracks || []
+    });
+    
+    return result;
+  }, [playlists, unassignedTracks]);
+
 
   // Mutation for creating new playlists
   const createPlaylistMutation = useMutation({
@@ -136,6 +179,8 @@ const usePlaylists = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["playlists"] });
       queryClient.invalidateQueries({ queryKey: ["playlist-names"] });
+      queryClient.refetchQueries({ queryKey: ["tracks-unassigned"] });
+
     },
   });
 
@@ -150,12 +195,14 @@ const usePlaylists = () => {
       
       // Specifically invalidate the updated playlist
       queryClient.invalidateQueries({ queryKey: ["playlist", variables.playlistId] });
-      
-      // Immediately update the cache with new data
+
+      //  update the cache with new data
       queryClient.setQueryData(["playlist", variables.playlistId], data);
       
       // Force refetch all playlists to ensure consistency
       queryClient.refetchQueries({ queryKey: ["playlists"] });
+
+      queryClient.refetchQueries({ queryKey: ["tracks-unassigned"] });
     },
   });
 
@@ -169,7 +216,7 @@ const usePlaylists = () => {
     createError: createPlaylistMutation.error,
 
     // For AlbumList component
-    playlists,
+    playlists: enhancedPlaylists,
     isLoadingPlaylists,
     playlistsError,
     refreshPlaylists,
@@ -179,6 +226,9 @@ const usePlaylists = () => {
     usePlaylistDetails,
     updatePlaylist: updatePlaylistMutation.mutate,
     fetchPlaylist,
+    isLoadingUnassignedTracks,
+    unassignedTracksError
+
   };
 };
 

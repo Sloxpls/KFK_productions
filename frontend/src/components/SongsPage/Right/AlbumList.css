@@ -70,3 +70,8 @@
     overflow-y: auto;
     
 }
+
+.playlist-first-row {
+    display: flex;
+    justify-content: space-between;
+}

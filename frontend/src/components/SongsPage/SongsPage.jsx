@@ -3,8 +3,8 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import SongsTable from "./SongViews/SongsTable.jsx";
-import AlbumList from "./AlbumList.jsx";
-import LeftSidebar from "./LeftSidebar.jsx";
+import AlbumList from "./Right/AlbumList.jsx";
+import LeftSidebar from "./Left/LeftSidebar.jsx";
 import SongsGrid from "./SongViews/SongsGrid.jsx";
 import ViewSwitcher from "./SongsHeader/ViewSwitcher.jsx";
 import SearchBar from "./SongsHeader/SearchBar.jsx";

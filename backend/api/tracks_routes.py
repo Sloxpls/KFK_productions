@@ -2,7 +2,7 @@ import os
 from flask import Blueprint, jsonify, request, send_file, current_app
 from werkzeug.utils import secure_filename
 
-from backend.database_models import Track, db
+from backend.database_models import Track, db, PlaylistTrack
 from backend.utils.token_validator import token_required
 
 TRACK_FOLDER = os.environ.get("TRACK_FOLDER", "/app/track_uploads")
@@ -217,3 +217,35 @@ def stream_track(track_id):
         return jsonify({'error': 'File not found on server'}), 404
 
     return send_file(full_path, mimetype='audio/mpeg')
+
+@track_bp.route('/tracks-unassigned', methods=['GET'])
+def get_unassigned_tracks():
+    try:
+        unassigned_tracks = db.session.query(Track).outerjoin(
+            PlaylistTrack, 
+            Track.id == PlaylistTrack.track_id
+        ).filter(
+            PlaylistTrack.playlist_id == None
+        ).all()
+        
+        tracks_data = [{
+        'id': track.id,
+        'title': track.title,
+        'description': track.description,
+        'song_path': track.song_path,
+        'img_path': track.img_path,
+        'producer': track.producer,
+        'writer': track.writer,
+        'genre': track.genre,
+        'tiktok': track.tiktok,
+        'soundcloud': track.soundcloud,
+        'spotify': track.spotify,
+        'youtube': track.youtube,
+        'instagram': track.instagram
+    } for track in unassigned_tracks]
+            
+        return jsonify(tracks_data)
+    
+    except Exception as e:
+        current_app.logger.error(f"Error getting unassigned tracks: {e}")
+        return jsonify({'error': 'An error occurred while fetching unassigned tracks'}), 500

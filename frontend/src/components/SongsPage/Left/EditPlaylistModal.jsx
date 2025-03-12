@@ -12,7 +12,6 @@ import {
 } from '@mui/material';
 
 import PropTypes from 'prop-types';
-import usePlaylists from '../../hooks/usePlaylists';
 
 const EditPlaylistModal = ({ open, onClose, playlist, updatePlaylist }) => {
   const [formData, setFormData] = useState({
@@ -30,7 +29,6 @@ const EditPlaylistModal = ({ open, onClose, playlist, updatePlaylist }) => {
         name: playlist.name || '',
         description: playlist.description || '',
         img_file: null,
-        // Convert status to number if it's stored as string, default to 4 (WIP)
         status: playlist.status ? Number(playlist.status) : 4
       });
       

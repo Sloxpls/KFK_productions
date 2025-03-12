@@ -1,6 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-
 const fetchTracks = async () => {
   try {
     const response = await fetch("/api/tracks");
@@ -17,7 +16,6 @@ const fetchTracks = async () => {
 let currentBlobUrl = null;
 
 const streamTrack = async (trackId) => {
-
   if (currentBlobUrl) {
     URL.revokeObjectURL(currentBlobUrl);
   }
@@ -97,7 +95,8 @@ const updateTrack = async (trackData) => {
     fetch(`/api/playlists/${playlistId}/tracks/${trackData.id}`, {
       method: "POST",
     }).then((res) => {
-      if (!res.ok) throw new Error(`Failed to add track to playlist ${playlistId}`);
+      if (!res.ok)
+        throw new Error(`Failed to add track to playlist ${playlistId}`);
       return res.json();
     })
   );
@@ -106,14 +105,15 @@ const updateTrack = async (trackData) => {
     fetch(`/api/playlists/${playlistId}/tracks/${trackData.id}`, {
       method: "DELETE",
     }).then((res) => {
-      if (!res.ok) throw new Error(`Failed to remove track from playlist ${playlistId}`);
+      if (!res.ok)
+        throw new Error(`Failed to remove track from playlist ${playlistId}`);
       return res.json();
     })
   );
 
   await Promise.all([...addPromises, ...removePromises]);
   return response.json();
-}
+};
 
 export const useTracks = () => {
   const queryClient = useQueryClient();
@@ -130,6 +130,7 @@ export const useTracks = () => {
     mutationFn: uploadSong,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tracks"] });
+      queryClient.invalidateQueries({ queryKey: ["tracks-unassigned"] });
     },
   });
 
@@ -137,6 +138,7 @@ export const useTracks = () => {
     mutationFn: deleteTrack,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tracks"] });
+      queryClient.invalidateQueries({ queryKey: ["tracks-unassigned"] });
     },
   });
 
@@ -145,7 +147,8 @@ export const useTracks = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tracks"] });
       queryClient.invalidateQueries({ queryKey: ["playlists"] });
-      
+      queryClient.invalidateQueries({ queryKey: ["playlist"] });
+      queryClient.invalidateQueries({ queryKey: ["tracks-unassigned"] });
     },
   });
 
