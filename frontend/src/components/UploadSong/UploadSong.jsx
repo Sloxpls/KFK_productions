@@ -18,7 +18,7 @@ const UploadSong = () => {
     description: "",
     song_file: null,
     img_file: null,
-    producer: "",
+    producer: "KFK",
     writer: "",
     genre: "",
     tiktok: false,
