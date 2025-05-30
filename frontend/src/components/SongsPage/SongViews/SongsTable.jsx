@@ -134,6 +134,7 @@ const SongsTable = ({ tracks, searchTerm }) => {
                     />
                   </Button>
                 </TableCell>
+                {/*
                 <TableCell>
                   <div style={{ display: "flex", alignItems: "center" }}>
                     <img
@@ -148,6 +149,7 @@ const SongsTable = ({ tracks, searchTerm }) => {
                     />
                   </div>
                 </TableCell>
+                */}
                 <TableCell>{track.title}</TableCell>
                 {/* <TableCell className="description-cell">{track.description}</TableCell> */}
                 <TableCell>{track.producer}</TableCell>

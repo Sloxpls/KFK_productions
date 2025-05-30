@@ -2,7 +2,7 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-COPY backend /app/backend
+COPY . /app/backend
 
 RUN apt-get update && apt-get install -y \
     ffmpeg \
