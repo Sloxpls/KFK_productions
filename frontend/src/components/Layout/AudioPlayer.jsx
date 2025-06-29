@@ -114,7 +114,7 @@ const AudioPlayer = ({ playlist }) => {
         <div className="controls">
           <button className="player-control" onClick={handlePrevious}>⏮</button>
           <button className="player-control" data-control="play" onClick={togglePlayPause}>
-            {isPlaying ? "⏸" : "▶️"}
+            {isPlaying ? "⏸" : "▶"}
           </button>
           <button className="player-control" onClick={handleNext}>⏭</button>
         </div>
