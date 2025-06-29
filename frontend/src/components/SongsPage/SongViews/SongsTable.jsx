@@ -85,7 +85,6 @@ const SongsTable = ({ tracks, searchTerm }) => {
           <TableHead>
             <TableRow>
               <TableCell></TableCell>
-              <TableCell></TableCell>
               <TableCell>
                 <TableSortLabel
                   active={sortConfig.key === 'title'}
