@@ -13,13 +13,14 @@ const UploadSong = () => {
     createPlaylist,
     isCreating: isCreatingPlaylist 
   } = usePlaylists();
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     song_file: null,
     img_file: null,
     producer: "KFK",
-    writer: "",
+    writer: "KFK",
     genre: "",
     tiktok: false,
     soundcloud: false,
@@ -30,15 +31,6 @@ const UploadSong = () => {
     new_playlist_name: "",
   });
 
-  useEffect(() => {
-    const objectUrl = formData.img_file ? URL.createObjectURL(formData.img_file) : null;
-    return () => {
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
-    };
-  }, [formData.img_file]);
-
-  
-
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prevData) => ({
@@ -48,14 +40,25 @@ const UploadSong = () => {
   };
 
   const handleFileChange = (e) => {
-    const { name, files } = e.target;
-    if (files.length > 0) {
-      setFormData((prev) => ({
+  const { name, files } = e.target;
+  if (files.length > 0) {
+    const file = files[0];
+    setFormData((prev) => {
+      if (name === "song_file") {
+        const fileName = file.name.replace(/\.[^/.]+$/, ""); 
+        return {
+          ...prev,
+          [name]: file,
+          title: prev.title ? prev.title : fileName, 
+        };
+      }
+      return {
         ...prev,
-        [name]: files[0],
-      }));
-    }
-  };
+        [name]: file,
+      };
+    });
+  }
+};
 
   const uploadSongMutation = useMutation({
     mutationFn: async (formData) => {
@@ -137,15 +140,6 @@ const UploadSong = () => {
       {playlistsError && <div className="error-message">{playlistsError}</div>}
       <h1>Upload Song</h1>
       <form onSubmit={handleSubmit} className="form-base">
-        <div className="form-group">
-          <label htmlFor="title">Title:</label>
-          <input type="text" id="title" name="title" value={formData.title} onChange={handleChange} required />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="description">Description:</label>
-          <textarea id="description" name="description" value={formData.description} onChange={handleChange}></textarea>
-        </div>
 
         <div className="form-group">
           <label htmlFor="song_file">Song File:</label>
@@ -161,23 +155,13 @@ const UploadSong = () => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="img_file">Cover Image:</label>
-          <input
-            type="file"
-            id="img_file"
-            name="img_file"
-            accept="image/*"
-            onChange={handleFileChange}
-          />
-          {formData.img_file && (
-            <div>
-              <img
-                src={URL.createObjectURL(formData.img_file)}
-                alt="Preview"
-                style={{ maxWidth: "200px" }}
-              />
-            </div>
-          )}
+          <label htmlFor="title">Title:</label>
+          <input type="text" id="title" name="title" value={formData.title} onChange={handleChange} required />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="description">Description:</label>
+          <textarea id="description" name="description" value={formData.description} onChange={handleChange}></textarea>
         </div>
 
         <div className="form-group">

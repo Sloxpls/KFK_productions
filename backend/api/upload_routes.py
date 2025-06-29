@@ -30,7 +30,7 @@ def upload_song():
         song_file = request.files.get('song_file')
         img_file = request.files.get('img_file')
 
-        if not title or not song_file or not img_file:
+        if not title or not song_file:
             return jsonify({'error': 'one or more required fields are empty'}), 400
 
         # Save files using secure_filename
