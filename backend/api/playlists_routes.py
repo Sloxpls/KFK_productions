@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, send_from_directory
 from backend.database_models import Playlist, Track, db
 from backend.utils.token_validator import token_required
 from werkzeug.utils import secure_filename
@@ -174,7 +174,6 @@ def update_playlist(playlist_id):
     
 @playlist_bp.route('/playlists/<int:playlist_id>/image', methods=['GET'])
 def get_playlist_image(playlist_id):
-    from flask import send_from_directory
     
     playlist = Playlist.query.get(playlist_id)
     if not playlist or not playlist.img_path:
@@ -184,3 +183,16 @@ def get_playlist_image(playlist_id):
         return send_from_directory(PLAYLIST_FOLDER, playlist.img_path)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+
+@playlist_bp.route('/playlist-img-by-track/<int:track_id>', methods=['GET'])
+def get_playlist_img_by_track(track_id):
+    
+    playlist = Playlist.query.filter(Playlist.tracks.any(id=track_id)).first()
+    if not playlist:
+        return jsonify({'error': 'No playlist found for this track'}), 404
+    try:
+        return send_from_directory(PLAYLIST_FOLDER, playlist.img_path)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    

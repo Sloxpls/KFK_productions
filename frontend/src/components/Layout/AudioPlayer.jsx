@@ -101,7 +101,7 @@ const AudioPlayer = ({ playlist }) => {
         />
         <div className="track-cover-container">
           <img
-            src={selectedTrack ? `/api/tracks/${selectedTrack.id}/image` : ""}
+            src={selectedTrack ? `/api/playlist-img-by-track/${selectedTrack.id}` : ""}
             alt="Album Cover"
             className="track-cover"
           />
