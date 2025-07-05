@@ -14,7 +14,7 @@ auth_bp = Blueprint('auth', __name__)
 ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME')
 ADMIN_PW_HASH = os.environ.get('ADMIN_PW_HASH').encode()
 JWT_SECRET = os.environ.get('JWT_SECRET')
-JWT_EXPIRATION = datetime.timedelta(minutes=15)
+JWT_EXPIRATION = datetime.timedelta(minutes=60)
 
 limiter = Limiter(key_func=get_remote_address)
 login_limiter = limiter.shared_limit("5 per minute", scope="login")
