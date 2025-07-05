@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from flask import Flask
 from flask_migrate import Migrate
 from backend.database_models import db
-from api import track_bp, media_bp, playlist_bp, auth_bp, upload_bp, system_info_bp
+from backend.api import track_bp, media_bp, playlist_bp, auth_bp, system_info_bp
 
 # Load environment variables from .env file
 load_dotenv()
@@ -28,7 +28,6 @@ def create_app():
     app.register_blueprint(track_bp, url_prefix='/api')
     app.register_blueprint(playlist_bp, url_prefix='/api')
     app.register_blueprint(auth_bp, url_prefix='/api')
-    app.register_blueprint(upload_bp, url_prefix='/api')
     app.register_blueprint(system_info_bp, url_prefix='/api')
 
     return app
