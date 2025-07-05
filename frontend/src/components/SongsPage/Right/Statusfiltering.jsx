@@ -13,7 +13,8 @@ const StatusFiltering = ({
   statusFilters, 
   onFilterChange, 
   onResetFilters,
-  showResetButton = true
+  showResetButton = true,
+  availableStatuses = []
 }) => {
   const statusColors = {
     1: '#4caf50', // Uploaded - Green
@@ -29,13 +30,18 @@ const StatusFiltering = ({
     4: 'WIP'
   };
 
-  const hasActiveFilters = Object.values(statusFilters).some(value => value);
+  const entriesToShow = Object.entries(statusFilters).filter(
+    ([id]) => availableStatuses.includes(Number(id))
+  );
+
+  const hasActiveFilters = entriesToShow.some(([id, checked]) => checked);
+
 
   return (
     <div className="filters-container">
       <FormControl component="fieldset" className="status-filter-group">
         <FormGroup row>
-          {Object.entries(statusFilters).map(([statusId, isChecked]) => (
+          {entriesToShow.map(([statusId, isChecked]) => (
             <FormControlLabel
               key={statusId}
               control={
@@ -90,7 +96,8 @@ StatusFiltering.propTypes = {
   statusFilters: PropTypes.object.isRequired,
   onFilterChange: PropTypes.func.isRequired,
   onResetFilters: PropTypes.func.isRequired,
-  showResetButton: PropTypes.bool
+  showResetButton: PropTypes.bool,
+  availableStatuses: PropTypes.arrayOf(PropTypes.number)
 };
 
 export default StatusFiltering;

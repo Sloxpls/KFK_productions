@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { 
   Button, 
   TextField, 
@@ -66,6 +66,18 @@ const AlbumList = ({ onPlaylistSelect }) => {
     onPlaylistSelect(playlist);
   };
 
+    const availableStatuses = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          playlists
+            .filter(p => !p.isVirtual)   // only real playlists
+            .map(p => p.status)
+        )
+      ),
+    [playlists]
+  );
+
   if (isLoading) {
     return <div className="sidebar-loader">Loading...</div>;
   }
@@ -83,6 +95,7 @@ const AlbumList = ({ onPlaylistSelect }) => {
           statusFilters={statusFilters}
           onFilterChange={handleStatusFilterChange}
           onResetFilters={resetFilters}
+          availableStatuses={availableStatuses}
         />
       </div>
       
