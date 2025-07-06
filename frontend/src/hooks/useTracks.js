@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-const fetchTracks = async () => {
+/* const fetchTracks = async () => {
   try {
     const response = await fetch("/api/tracks");
     if (!response.ok) {
@@ -10,6 +10,25 @@ const fetchTracks = async () => {
   } catch (error) {
     console.error("Error fetching data:", error);
     throw new Error("Error fetching data. Please try again later.");
+  }
+}; */
+
+const fetchTracksSSR = async () => {
+  try {
+    const response = await fetch("/api/tracks-ssr");
+    if (!response.ok) {
+      throw new Error(`Tracks SSR API error: ${response.status}`);
+    }
+    const data = await response.json();
+    
+    // Return both tracks and metadata for components that need it
+    return {
+      tracks: data.tracks,
+      metadata: data.metadata
+    };
+  } catch (error) {
+    console.error("Error fetching SSR tracks:", error);
+    throw new Error("Error fetching tracks. Please try again later.");
   }
 };
 
@@ -118,13 +137,20 @@ const updateTrack = async (trackData) => {
 export const useTracks = () => {
   const queryClient = useQueryClient();
 
-  const { data: tracks = [], refetch: refreshTracks } = useQuery({
-    queryKey: ["tracks"],
-    queryFn: fetchTracks,
+  const { 
+    data: tracksResponse = { tracks: [], metadata: {} }, 
+    refetch: refreshTracks,
+    isLoading,
+    error 
+  } = useQuery({
+    queryKey: ["tracks-ssr"], // Updated query key
+    queryFn: fetchTracksSSR,   // Use enhanced fetch function
     refetchOnWindowFocus: false,
     refetchOnMount: true,
     refetchOnReconnect: false,
   });
+
+  const { tracks = [], metadata = {} } = tracksResponse;
 
   const uploadSongMutation = useMutation({
     mutationFn: uploadSong,
@@ -154,6 +180,9 @@ export const useTracks = () => {
 
   return {
     tracks,
+    metadata,
+    isLoading,
+    error,
     refreshTracks,
     uploadSong: uploadSongMutation.mutate,
     isUploading: uploadSongMutation.isLoading,

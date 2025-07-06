@@ -20,7 +20,7 @@ def get_playlists():
         'img_path': p.img_path
     } for p in playlists])
 
-@playlist_bp.route('/playlists-with-tracks', methods=['GET'])
+""" @playlist_bp.route('/playlists-with-tracks', methods=['GET'])
 def get_playlists_with_tracks():
     try:
         playlists = Playlist.query.all()
@@ -33,7 +33,7 @@ def get_playlists_with_tracks():
             'tracks': [track.to_dict() for track in playlist.tracks]
         } for playlist in playlists])
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': str(e)}), 500 """
 
 @playlist_bp.route('/playlists/<int:playlist_id>', methods=['GET'])
 def get_playlist(playlist_id):
@@ -189,10 +189,49 @@ def get_playlist_image(playlist_id):
 def get_playlist_img_by_track(track_id):
     
     playlist = Playlist.query.filter(Playlist.tracks.any(id=track_id)).first()
-    if not playlist:
-        return jsonify({'error': 'No playlist found for this track'}), 404
+    if not playlist or not playlist.img_path:
+        return jsonify({'has_image': False, 'message': 'No image available'}), 200
     try:
         return send_from_directory(PLAYLIST_FOLDER, playlist.img_path)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
+@playlist_bp.route('/playlists-ssr', methods=['GET'])
+def get_playlists_ssr():
+    try:
+        playlists = Playlist.query.all()
+
+        available_statuses = list(set(p.status for p in playlists if not getattr(p, 'isVirtual', False)))
+        total_tracks = sum(p.tracks.count() for p in playlists)
+
+        playlists_data = []
+        for p in playlists:
+            playlists_data.append({
+                'id': p.id,
+                'name': p.name,
+                'status': p.status,
+                'status_label': get_status_label(p.status),
+                'status_class': get_status_class(p.status),
+                'description': p.description,
+                'img_path': p.img_path,
+                'track_count': p.tracks.count(),
+            })
+
+        return jsonify({
+            'playlists': playlists_data,
+            'metadata': {
+                'available_statuses': available_statuses,
+                'total_playlists': len(playlists),
+                'total_tracks': total_tracks
+            }
+        }), 200
+
+    except Exception as e:
+        return jsonify({'error': 'Internal Server Error', 'details': str(e)}), 500
+
+def get_status_label(status):
+    labels = {1: 'Uploaded', 2: 'Pending', 3: 'Ready', 4: 'WIP'}
+    return labels.get(status, 'Unknown')
+
+def get_status_class(status):
+    return f'status-{status}'

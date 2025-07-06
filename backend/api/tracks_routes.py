@@ -2,7 +2,7 @@ import os
 from flask import Blueprint, jsonify, request, send_file, current_app
 from werkzeug.utils import secure_filename
 
-from backend.database_models import Track, db, PlaylistTrack
+from backend.database_models import Track, db, PlaylistTrack, Playlist
 from backend.utils.token_validator import token_required
 
 TRACK_FOLDER = os.environ.get("TRACK_FOLDER", "/app/track_uploads")
@@ -275,3 +275,51 @@ def get_unassigned_tracks():
     except Exception as e:
         current_app.logger.error(f"Error getting unassigned tracks: {e}")
         return jsonify({'error': 'An error occurred while fetching unassigned tracks'}), 500
+    
+@track_bp.route('/tracks-ssr', methods=['GET'])
+def get_tracks_ssr():
+    try:
+        tracks = Track.query.all()
+        
+        tracks_data = []
+        for track in tracks:
+            tracks_data.append({
+                'id': track.id,
+                'title': track.title,
+                'producer': track.producer,
+                'writer': track.writer,
+                'description': track.description,
+                'genre': track.genre,
+                'song_path': track.song_path,
+                'img_path': track.img_path,
+                'social_platforms': {
+                    'tiktok': track.tiktok,
+                    'soundcloud': track.soundcloud,
+                    'spotify': track.spotify,
+                    'youtube': track.youtube,
+                    'instagram': track.instagram
+                },
+                'social_count': sum([
+                    track.tiktok, track.soundcloud, track.spotify, 
+                    track.youtube, track.instagram
+                ]),
+                'stream_url': f'/api/tracks/{track.id}/stream',
+                'download_url': f'/api/tracks/{track.id}/download',
+                'image_url': f'/api/tracks/{track.id}/image'
+            })
+        
+        available_genres = list(set(t.genre for t in tracks if t.genre))
+        available_producers = list(set(t.producer for t in tracks if t.producer))
+        
+        return jsonify({
+            'tracks': tracks_data,
+            'metadata': {
+                'total_tracks': len(tracks_data),
+                'available_genres': available_genres,
+                'available_producers': available_producers,
+                'has_social_platforms': any(t['social_count'] > 0 for t in tracks_data)
+            }
+        }), 200
+
+    except Exception as e:
+        return jsonify({'error': 'Internal Server Error', 'details': str(e)}), 500

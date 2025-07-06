@@ -16,7 +16,7 @@ const fetchPlaylistNames = async () => {
 };
 
 // used to populate the table and grid views
-const fetchPlaylists = async () => {
+/* const fetchPlaylists = async () => {
   try {
     const response = await fetch("/api/playlists-with-tracks");
     if (!response.ok) {
@@ -31,7 +31,31 @@ const fetchPlaylists = async () => {
     console.error("Error fetching playlists:", error);
     throw error;
   }
+}; */
+
+// used to populate the table and grid views
+const fetchPlaylists = async () => {
+  try {
+    const response = await fetch("/api/playlists-ssr");
+    if (!response.ok) {
+      throw new Error(`Playlists API error: ${response.status}`);
+    }
+    const data = await response.json();
+    
+    // SSR route returns { playlists: [...], metadata: {...} }
+    return {
+      playlists: data.playlists.map(playlist => ({
+        ...playlist,
+        tracks: playlist.tracks || []
+      })),
+      metadata: data.metadata
+    };
+  } catch (error) {
+    console.error("Error fetching playlists:", error);
+    throw error;
+  }
 };
+
 
 // get individual playlist, used for playlistinfo
 const fetchPlaylist = async (playlistId) => {
@@ -122,15 +146,17 @@ const usePlaylists = () => {
 
   // Query for full playlists with tracks (used in AlbumList)
   const { 
-    data: playlists = [], 
+    data: playlistsResponse = { playlists: [], metadata: {} }, 
     isLoading: isLoadingPlaylists,
     error: playlistsError,
     refetch: refreshPlaylists 
   } = useQuery({
-    queryKey: ["playlists"],
+    queryKey: ["playlists-ssr"],
     queryFn: fetchPlaylists,
     refetchOnWindowFocus: false,
   });
+
+  const { playlists: playlistsData = [], metadata = {} } = playlistsResponse;
 
   // Query for all unassigned tracks
   const { 
@@ -144,9 +170,9 @@ const usePlaylists = () => {
   });
 
   const enhancedPlaylists = useMemo(() => {
-    if (!playlists) return playlists;
+    if (!playlistsData) return playlistsData;
 
-    const result = [...playlists];
+    const result = [...playlistsData];
     
     // Add a virtual playlist for unassigned tracks
     result.push({
@@ -160,7 +186,7 @@ const usePlaylists = () => {
     });
     
     return result;
-  }, [playlists, unassignedTracks]);
+  }, [playlistsData, unassignedTracks]);
 
 
   // Mutation for creating new playlists
@@ -217,6 +243,7 @@ const usePlaylists = () => {
 
     // For AlbumList component
     playlists: enhancedPlaylists,
+    metadata,
     isLoadingPlaylists,
     playlistsError,
     refreshPlaylists,

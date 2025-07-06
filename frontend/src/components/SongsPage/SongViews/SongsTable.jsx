@@ -11,6 +11,8 @@ import {
   Button,
   TableSortLabel,
 } from "@mui/material";
+import { useTheme, useMediaQuery } from "@mui/material";
+import MobileSongsMinimal from "./MinimalView";
 
 import EditTrack from "../EditTrack"
 import useTrackStore from "../../../hooks/useTrackStore";
@@ -168,11 +170,16 @@ const SongsTable = ({ tracks, searchTerm }) => {
                 <TableCell>{track.producer}</TableCell>
                 <TableCell>{track.writer}</TableCell>
                 <TableCell>
-                  {track.tiktok && <img className="social-icon" src="/icons/tiktok.svg" alt="tiktok" />}
-                  {track.soundcloud && <img className="social-icon" src="/icons/soundcloud.svg" alt="soundcloud" />}
-                  {track.spotify && <img className="social-icon" src="/icons/spotify.svg" alt="spotify" />}
-                  {track.youtube && <img className="social-icon" src="/icons/youtube.svg" alt="youtube" />}
-                  {track.instagram && <img className="social-icon" src="/icons/instagram.svg" alt="instagram" />}
+                  {['tiktok', 'soundcloud', 'spotify', 'youtube', 'instagram']
+                    .filter(platform => track.social_platforms?.[platform] ?? track[platform])
+                    .map(platform => (
+                      <img
+                        key={platform}
+                        className="social-icon"
+                        src={`/icons/${platform}.svg`}
+                        alt={platform}
+                      />
+                  ))}
                 </TableCell>
                 <TableCell>
                   <Button onClick={() => downloadTrack(track.id, `${track.title}.mp3`)}>
