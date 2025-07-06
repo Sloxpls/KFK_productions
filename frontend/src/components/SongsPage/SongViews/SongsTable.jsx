@@ -22,6 +22,9 @@ import "./SongsTable.css";
 import ConfirmDialog from "../../Common/ConfirmDialog";
 
 const SongsTable = ({ tracks, searchTerm }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   const [sortConfig, setSortConfig] = useState({ key: 'title', direction: 'asc' });
   const { selectedTrack, setSelectedTrack } = useTrackStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -74,6 +77,17 @@ const SongsTable = ({ tracks, searchTerm }) => {
       direction: prevConfig.key === key && prevConfig.direction === "asc" ? "desc" : "asc",
     }));
   };
+
+  if (isMobile) {
+    return (
+      <MobileSongsMinimal
+        tracks={filteredAndSortedTracks}
+        selectedTrackId={selectedTrack?.id}
+        isPlaying={isPlaying}
+        onPlayPause={handlePlay}
+      />
+    );
+  }
 
   return (
     <div className={"songs-container"}>
