@@ -1,33 +1,19 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-/* const fetchTracks = async () => {
+const fetchTracks = async () => {
   try {
     const response = await fetch("/api/tracks");
     if (!response.ok) {
       throw new Error(`Tracks API error: ${response.status}`);
     }
-    return await response.json();
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    throw new Error("Error fetching data. Please try again later.");
-  }
-}; */
-
-const fetchTracksSSR = async () => {
-  try {
-    const response = await fetch("/api/tracks-ssr");
-    if (!response.ok) {
-      throw new Error(`Tracks SSR API error: ${response.status}`);
-    }
     const data = await response.json();
     
-    // Return both tracks and metadata for components that need it
     return {
       tracks: data.tracks,
       metadata: data.metadata
     };
   } catch (error) {
-    console.error("Error fetching SSR tracks:", error);
+    console.error("Error fetching tracks:", error);
     throw new Error("Error fetching tracks. Please try again later.");
   }
 };
@@ -143,8 +129,8 @@ export const useTracks = () => {
     isLoading,
     error 
   } = useQuery({
-    queryKey: ["tracks-ssr"], // Updated query key
-    queryFn: fetchTracksSSR,   // Use enhanced fetch function
+    queryKey: ["tracks"], 
+    queryFn: fetchTracks,   
     refetchOnWindowFocus: false,
     refetchOnMount: true,
     refetchOnReconnect: false,
@@ -157,6 +143,7 @@ export const useTracks = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tracks"] });
       queryClient.invalidateQueries({ queryKey: ["tracks-unassigned"] });
+      queryClient.invalidateQueries({ queryKey: ["playlists-with-tracks"] });
     },
   });
 
@@ -165,6 +152,7 @@ export const useTracks = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tracks"] });
       queryClient.invalidateQueries({ queryKey: ["tracks-unassigned"] });
+      queryClient.invalidateQueries({ queryKey: ["playlists-with-tracks"] });
     },
   });
 
@@ -173,7 +161,7 @@ export const useTracks = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tracks"] });
       queryClient.invalidateQueries({ queryKey: ["playlists"] });
-      queryClient.invalidateQueries({ queryKey: ["playlist"] });
+      queryClient.invalidateQueries({ queryKey: ["playlists-with-tracks"] });
       queryClient.invalidateQueries({ queryKey: ["tracks-unassigned"] });
     },
   });

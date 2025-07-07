@@ -3,7 +3,7 @@ import { useMemo } from "react";
 
 const fetchPlaylistNames = async () => {
   try {
-    const response = await fetch("/api/playlists");
+    const response = await fetch("/api/playlist-names");
     if (!response.ok) {
       throw new Error(`Playlists API error: ${response.status}`);
     }
@@ -16,33 +16,14 @@ const fetchPlaylistNames = async () => {
 };
 
 // used to populate the table and grid views
-/* const fetchPlaylists = async () => {
+const fetchPlaylists = async () => {
   try {
     const response = await fetch("/api/playlists-with-tracks");
     if (!response.ok) {
       throw new Error(`Playlists API error: ${response.status}`);
     }
     const data = await response.json();
-    return data.map(playlist => ({
-      ...playlist,
-      tracks: playlist.tracks || [] // Ensure tracks is an array
-    }));
-  } catch (error) {
-    console.error("Error fetching playlists:", error);
-    throw error;
-  }
-}; */
-
-// used to populate the table and grid views
-const fetchPlaylists = async () => {
-  try {
-    const response = await fetch("/api/playlists-ssr");
-    if (!response.ok) {
-      throw new Error(`Playlists API error: ${response.status}`);
-    }
-    const data = await response.json();
     
-    // SSR route returns { playlists: [...], metadata: {...} }
     return {
       playlists: data.playlists.map(playlist => ({
         ...playlist,
@@ -151,7 +132,7 @@ const usePlaylists = () => {
     error: playlistsError,
     refetch: refreshPlaylists 
   } = useQuery({
-    queryKey: ["playlists-ssr"],
+    queryKey: ["playlists-with-tracks"],
     queryFn: fetchPlaylists,
     refetchOnWindowFocus: false,
   });
@@ -194,8 +175,8 @@ const usePlaylists = () => {
     mutationFn: createPlaylist,
     onSuccess: () => {
       // Invalidate both playlist queries to refetch the latest data
-      queryClient.invalidateQueries({ queryKey: ["playlists"] });
       queryClient.invalidateQueries({ queryKey: ["playlist-names"] });
+      queryClient.refetchQueries({ queryKey: ["playlists-with-tracks"] });
     },
   });
 
@@ -203,7 +184,7 @@ const usePlaylists = () => {
   const deletePlaylistMutation = useMutation({
     mutationFn: deletePlaylist,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["playlists"] });
+      queryClient.invalidateQueries({ queryKey: ["playlists-with-tracks"] });
       queryClient.invalidateQueries({ queryKey: ["playlist-names"] });
       queryClient.refetchQueries({ queryKey: ["tracks-unassigned"] });
 
@@ -216,7 +197,7 @@ const usePlaylists = () => {
     },
     onSuccess: (data, variables) => {
       // Invalidate general playlist queries
-      queryClient.invalidateQueries({ queryKey: ["playlists"] });
+      queryClient.invalidateQueries({ queryKey: ["playlists-with-tracks"] });
       queryClient.invalidateQueries({ queryKey: ["playlist-names"] });
       
       // Specifically invalidate the updated playlist
@@ -226,7 +207,7 @@ const usePlaylists = () => {
       queryClient.setQueryData(["playlist", variables.playlistId], data);
       
       // Force refetch all playlists to ensure consistency
-      queryClient.refetchQueries({ queryKey: ["playlists"] });
+      queryClient.refetchQueries({ queryKey: ["playlists-with-tracks"] });
 
       queryClient.refetchQueries({ queryKey: ["tracks-unassigned"] });
     },

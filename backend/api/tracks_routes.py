@@ -86,7 +86,7 @@ def upload_song():
         return jsonify({'error': 'An error occurred while uploading the song'}), 500
 
 
-@track_bp.route('/tracks', methods=['GET'])
+""" @track_bp.route('/tracks', methods=['GET'])
 def get_tracks():
     tracks = Track.query.all()
     return jsonify([{
@@ -103,7 +103,7 @@ def get_tracks():
         'spotify': t.spotify,
         'youtube': t.youtube,
         'instagram': t.instagram
-    } for t in tracks]), 200
+    } for t in tracks]), 200 """
 
 @track_bp.route('/tracks/<int:track_id>', methods=['GET'])
 def get_track(track_id):
@@ -276,8 +276,8 @@ def get_unassigned_tracks():
         current_app.logger.error(f"Error getting unassigned tracks: {e}")
         return jsonify({'error': 'An error occurred while fetching unassigned tracks'}), 500
     
-@track_bp.route('/tracks-ssr', methods=['GET'])
-def get_tracks_ssr():
+@track_bp.route('/tracks', methods=['GET'])
+def get_tracks():
     try:
         tracks = Track.query.all()
         
@@ -299,10 +299,6 @@ def get_tracks_ssr():
                     'youtube': track.youtube,
                     'instagram': track.instagram
                 },
-                'social_count': sum([
-                    track.tiktok, track.soundcloud, track.spotify, 
-                    track.youtube, track.instagram
-                ]),
                 'stream_url': f'/api/tracks/{track.id}/stream',
                 'download_url': f'/api/tracks/{track.id}/download',
                 'image_url': f'/api/tracks/{track.id}/image'
@@ -316,8 +312,7 @@ def get_tracks_ssr():
             'metadata': {
                 'total_tracks': len(tracks_data),
                 'available_genres': available_genres,
-                'available_producers': available_producers,
-                'has_social_platforms': any(t['social_count'] > 0 for t in tracks_data)
+                'available_producers': available_producers
             }
         }), 200
 

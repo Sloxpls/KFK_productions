@@ -9,31 +9,13 @@ os.makedirs(PLAYLIST_FOLDER, exist_ok=True)
 
 playlist_bp = Blueprint('playlist_bp', __name__)
 
-@playlist_bp.route('/playlists', methods=['GET'])
+# Get all playlist names, used for upload form
+@playlist_bp.route('/playlist-names', methods=['GET'])
 def get_playlists():
     playlists = Playlist.query.all()
     return jsonify([{
-        'id': p.id,
         'name': p.name,
-        'status': p.status,
-        'description': p.description,
-        'img_path': p.img_path
     } for p in playlists])
-
-""" @playlist_bp.route('/playlists-with-tracks', methods=['GET'])
-def get_playlists_with_tracks():
-    try:
-        playlists = Playlist.query.all()
-        return jsonify([{
-            'id': playlist.id,
-            'name': playlist.name,
-            'status': playlist.status,
-            'description': playlist.description,
-            'img_path': playlist.img_path,
-            'tracks': [track.to_dict() for track in playlist.tracks]
-        } for playlist in playlists])
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500 """
 
 @playlist_bp.route('/playlists/<int:playlist_id>', methods=['GET'])
 def get_playlist(playlist_id):
@@ -196,10 +178,10 @@ def get_playlist_img_by_track(track_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
-@playlist_bp.route('/playlists-ssr', methods=['GET'])
-def get_playlists_ssr():
+@playlist_bp.route('/playlists-with-tracks', methods=['GET'])
+def get_playlists_with_tracks():
     try:
-        playlists = Playlist.query.all()
+        playlists = Playlist.query.order_by(Playlist.status.asc()).all()
 
         available_statuses = list(set(p.status for p in playlists if not getattr(p, 'isVirtual', False)))
         total_tracks = sum(p.tracks.count() for p in playlists)

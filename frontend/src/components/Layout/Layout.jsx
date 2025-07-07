@@ -7,7 +7,7 @@ import Header from "./Header.jsx";
 import "./Layout.css";
 
 const Layout = () => {
-  const { tracks, refreshTracks } = useTracks();
+  const { tracks, metadata, refreshTracks } = useTracks();
 
   return (
     <>
@@ -17,7 +17,7 @@ const Layout = () => {
           </header>
 
           <main className="layout-main">
-            <Outlet context={{ tracks, refreshTracks }} />
+            <Outlet context={{ tracks, metadata, refreshTracks }} />
           </main>
 
           <footer className="layout-footer">

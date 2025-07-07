@@ -1,5 +1,5 @@
 import { useOutletContext } from "react-router-dom";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import SongsTable from "./SongViews/SongsTable.jsx";
@@ -23,7 +23,9 @@ const SongsPage = () => {
   const [currentView, setCurrentView] = useState('table');
   const [searchTerm, setSearchTerm] = useState('');
   const { usePlaylistDetails } = usePlaylists();
-  const { data: currentPlaylistData } = usePlaylistDetails(selectedPlaylist?.id);
+  const { data: currentPlaylistData } = usePlaylistDetails(
+    selectedPlaylist?.isVirtual ? null : selectedPlaylist?.id
+  );
   const [socialFilters, setSocialFilters] = useState({
     tiktok: false,
     soundcloud: false,
@@ -33,6 +35,7 @@ const SongsPage = () => {
   });
   const [sortConfig] = useState({ key: 'title', direction: 'asc' });
 
+
   const handleSearch = (term) => {
     setSearchTerm(term);
   };
@@ -41,9 +44,20 @@ const SongsPage = () => {
     setSelectedPlaylist(playlist);
   }
 
-  // Use the up-to-date playlist data if available
-  const currentPlaylist = currentPlaylistData || selectedPlaylist;
+  const currentPlaylist = useMemo(() => {
+  if (!selectedPlaylist) return null;
   
+  if (selectedPlaylist.isVirtual) {
+    return selectedPlaylist;
+  }
+  
+  if (selectedPlaylist && !selectedPlaylist.isVirtual && !currentPlaylistData) {
+    return { ...selectedPlaylist, tracks: [] }; // Empty tracks while loading
+  }
+  
+    return currentPlaylistData;
+  }, [selectedPlaylist, currentPlaylistData]);
+
   // Use the updated currentPlaylist in your JSX and filtering logic
   const { filteredAndSortedTracks } = useTrackFiltering(
     currentPlaylist ? currentPlaylist.tracks : tracks,
