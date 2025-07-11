@@ -1,11 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import usePlaylists from "../../hooks/usePlaylists";
+import useChunkedUpload from "../../hooks/useChunkedUpload";
 import "../../styles/forms.css";
 import "./UploadSong.css";
 
+
 const UploadSong = () => {
   const queryClient = useQueryClient();
+  const { uploadFile, currentChunk, totalChunks, isUploading, chunkMessage } = useChunkedUpload();
   const { 
     playlistNames, 
     isLoading: playlistsLoading, 
@@ -13,6 +16,7 @@ const UploadSong = () => {
     createPlaylist,
     isCreating: isCreatingPlaylist 
   } = usePlaylists();
+  const isUploadinga = true
 
   const [formData, setFormData] = useState({
     title: "",
@@ -31,62 +35,43 @@ const UploadSong = () => {
     new_playlist_name: "",
   });
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: type === "checkbox" ? Boolean(checked) : value,
-    }));
-  };
-
-  const handleFileChange = (e) => {
-  const { name, files } = e.target;
-  if (files.length > 0) {
-    const file = files[0];
-    setFormData((prev) => {
-      if (name === "song_file") {
-        const fileName = file.name.replace(/\.[^/.]+$/, ""); 
-        return {
-          ...prev,
-          [name]: file,
-          title: prev.title ? prev.title : fileName, 
-        };
-      }
-      return {
-        ...prev,
-        [name]: file,
-      };
-    });
-  }
-};
-
   const uploadSongMutation = useMutation({
-    mutationFn: async (formData) => {
-      // If creating a new playlist, create it first
-      if (formData.get("playlist_option") === "new") {
-        await createPlaylist({ name: formData.get("playlist_name") });
+    mutationFn: async (uploadData) => {
+      const { file, trackData } = uploadData;
+      
+      if (trackData.playlist_option === "new") {
+        await createPlaylist({ name: trackData.new_playlist_name });
       }
 
-      const response = await fetch("/api/upload-song", {
-        method: "POST",
-        body: formData,
+      return await uploadFile(file, {
+        title: trackData.title,
+        description: trackData.description,
+        producer: trackData.producer,
+        writer: trackData.writer,
+        genre: trackData.genre,
+        tiktok: trackData.tiktok.toString(),
+        soundcloud: trackData.soundcloud.toString(),
+        spotify: trackData.spotify.toString(),
+        youtube: trackData.youtube.toString(),
+        instagram: trackData.instagram.toString(),
+        playlist_name: trackData.playlist_option === "new" 
+          ? trackData.new_playlist_name 
+          : trackData.playlist_option,
       });
-      if (!response.ok) {
-        throw new Error("Failed to upload song");
-      }
-      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tracks"] });
       queryClient.invalidateQueries({ queryKey: ["playlists"] });
       alert("Song uploaded successfully!");
+      
+      // Reset form
       setFormData({
         title: "",
         description: "",
         song_file: null,
         img_file: null,
-        producer: "",
-        writer: "",
+        producer: "KFK",
+        writer: "KFK",
         genre: "",
         tiktok: false,
         soundcloud: false,
@@ -99,9 +84,38 @@ const UploadSong = () => {
     },
     onError: (error) => {
       console.error("Error uploading song:", error);
-      alert("Failed to upload song. Please try again.");
+      alert(`Failed to upload song: ${error.message}`);
     }
   });
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: type === "checkbox" ? Boolean(checked) : value,
+    }));
+  };
+
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    if (files.length > 0) {
+      const file = files[0];
+      setFormData((prev) => {
+        if (name === "song_file") {
+          const fileName = file.name.replace(/\.[^/.]+$/, ""); 
+          return {
+            ...prev,
+            [name]: file,
+            title: prev.title ? prev.title : fileName, 
+          };
+        }
+        return {
+          ...prev,
+          [name]: file,
+        };
+      });
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -110,30 +124,13 @@ const UploadSong = () => {
       return;
     }
 
-    const data = new FormData();
-    data.append("title", formData.title);
-    data.append("description", formData.description);
-    data.append("producer", formData.producer);
-    data.append("writer", formData.writer);
-    data.append("genre", formData.genre);
-
-    data.append('tiktok', formData.tiktok ? 'true' : 'false');
-    data.append('soundcloud', formData.soundcloud ? 'true' : 'false');
-    data.append('spotify', formData.spotify ? 'true' : 'false');
-    data.append('youtube', formData.youtube ? 'true' : 'false');
-    data.append('instagram', formData.instagram ? 'true' : 'false');
-
-    data.append("song_file", formData.song_file);
-    data.append("img_file", formData.img_file);
-
-    if (formData.playlist_option === "new") {
-      data.append("playlist_name", formData.new_playlist_name);
-    } else {
-      data.append("playlist_name", formData.playlist_option);
-    }
-
-    uploadSongMutation.mutate(data);
+    uploadSongMutation.mutate({
+      file: formData.song_file,
+      trackData: formData
+    });
   };
+
+  const isUploadInProgress = uploadSongMutation.isPending || isUploading;
 
   return (
     <div className="form-container">
@@ -150,56 +147,122 @@ const UploadSong = () => {
             accept="audio/*"
             onChange={handleFileChange}
             required
+            disabled={isUploadInProgress}
           />
           {formData.song_file && <div>Selected file: {formData.song_file.name}</div>}
         </div>
 
         <div className="form-group">
           <label htmlFor="title">Title:</label>
-          <input type="text" id="title" name="title" value={formData.title} onChange={handleChange} required />
+          <input 
+            type="text" 
+            id="title" 
+            name="title" 
+            value={formData.title} 
+            onChange={handleChange} 
+            required 
+            disabled={isUploadInProgress}
+          />
         </div>
 
         <div className="form-group">
           <label htmlFor="description">Description:</label>
-          <textarea id="description" name="description" value={formData.description} onChange={handleChange}></textarea>
+          <textarea 
+            id="description" 
+            name="description" 
+            value={formData.description} 
+            onChange={handleChange}
+            disabled={isUploadInProgress}
+          />
         </div>
 
         <div className="form-group">
           <label htmlFor="producer">Producer:</label>
-          <input type="text" id="producer" name="producer" value={formData.producer} onChange={handleChange} />
+          <input 
+            type="text" 
+            id="producer" 
+            name="producer" 
+            value={formData.producer} 
+            onChange={handleChange}
+            disabled={isUploadInProgress}
+          />
         </div>
 
         <div className="form-group">
           <label htmlFor="writer">Writer:</label>
-          <input type="text" id="writer" name="writer" value={formData.writer} onChange={handleChange} />
+          <input 
+            type="text" 
+            id="writer" 
+            name="writer" 
+            value={formData.writer} 
+            onChange={handleChange}
+            disabled={isUploadInProgress}
+          />
         </div>
 
         <div className="form-group">
           <label htmlFor="genre">Genre:</label>
-          <input type="text" id="genre" name="genre" value={formData.genre} onChange={handleChange} />
+          <input 
+            type="text" 
+            id="genre" 
+            name="genre" 
+            value={formData.genre} 
+            onChange={handleChange}
+            disabled={isUploadInProgress}
+          />
         </div>
 
         <div className="form-group">
           <label>Platforms:</label>
           <div className="checkbox-group">
             <label>
-              <input type="checkbox" name="tiktok" checked={formData.tiktok} onChange={handleChange} />
+              <input 
+                type="checkbox" 
+                name="tiktok" 
+                checked={formData.tiktok} 
+                onChange={handleChange}
+                disabled={isUploadInProgress}
+              />
               <span className="platform-label">TikTok</span>
             </label>
             <label>
-              <input type="checkbox" name="soundcloud" checked={formData.soundcloud} onChange={handleChange} />
+              <input 
+                type="checkbox" 
+                name="soundcloud" 
+                checked={formData.soundcloud} 
+                onChange={handleChange}
+                disabled={isUploadInProgress}
+              />
               Soundcloud
             </label>
             <label>
-              <input type="checkbox" name="spotify" checked={formData.spotify} onChange={handleChange} />
+              <input 
+                type="checkbox" 
+                name="spotify" 
+                checked={formData.spotify} 
+                onChange={handleChange}
+                disabled={isUploadInProgress}
+              />
               Spotify
             </label>
             <label>
-              <input type="checkbox" name="youtube" checked={formData.youtube} onChange={handleChange} />
+              <input 
+                type="checkbox" 
+                name="youtube" 
+                checked={formData.youtube} 
+                onChange={handleChange}
+                disabled={isUploadInProgress}
+              />
               YouTube
             </label>
             <label>
-              <input type="checkbox" name="instagram" checked={formData.instagram} onChange={handleChange} />
+              <input 
+                type="checkbox" 
+                name="instagram" 
+                checked={formData.instagram} 
+                onChange={handleChange}
+                disabled={isUploadInProgress}
+              />
               Instagram
             </label>
           </div>
@@ -214,7 +277,7 @@ const UploadSong = () => {
               name="playlist_option"
               value={formData.playlist_option}
               onChange={handleChange}
-              disabled={isCreatingPlaylist}
+              disabled={isCreatingPlaylist || isUploadInProgress}
             >
               <option value="" disabled>
                 Select a playlist
@@ -238,15 +301,29 @@ const UploadSong = () => {
               name="new_playlist_name"
               value={formData.new_playlist_name}
               onChange={handleChange}
-              disabled={isCreatingPlaylist}
+              disabled={isCreatingPlaylist || isUploadInProgress}
               required
             />
           </div>
         )}
 
-        <button type="submit" className="btn btn-success">
-          Upload Song
+        <button type="submit" className="btn btn-success" disabled={isUploadInProgress}>
+          {isUploadInProgress ? 'Uploading...' : 'Upload Song'}
         </button>
+        {isUploading && (
+          <div className="upload-overlay">
+              <div className="upload-content">
+                <div className="chunk-counter">
+                  <span className="chunk-current">{currentChunk}</span>
+                  <span className="chunk-separator">/</span>
+                  <span className="chunk-total">{totalChunks}</span>
+                <div className="chunk-message">
+                  {chunkMessage}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </form>
     </div>
   );

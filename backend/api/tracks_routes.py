@@ -1,6 +1,7 @@
 import os
 from flask import Blueprint, jsonify, request, send_file, current_app
 from werkzeug.utils import secure_filename
+import shutil
 
 from backend.database_models import Track, db, PlaylistTrack, Playlist
 from backend.utils.token_validator import token_required
@@ -85,25 +86,80 @@ def upload_song():
         current_app.logger.error(f"Error uploading song: {e}")
         return jsonify({'error': 'An error occurred while uploading the song'}), 500
 
+@track_bp.route('/upload-chunk', methods=['POST'])
+def upload_chunk():
+    try:
+        chunk = request.files.get('chunk')
+        chunk_index = int(request.form.get('chunkIndex'))
+        total_chunks = int(request.form.get('totalChunks'))
+        upload_id = request.form.get('uploadId')
+        original_filename = request.form.get('originalFilename')
+        
+        # Create temporary directory for this upload
+        temp_dir = os.path.join(TRACK_FOLDER, 'temp', upload_id)
+        os.makedirs(temp_dir, exist_ok=True)
+        
+        # Save chunk
+        chunk_filename = f'chunk_{chunk_index:04d}'
+        chunk_path = os.path.join(temp_dir, chunk_filename)
+        chunk.save(chunk_path)
+        
+        # Check if all chunks received
+        if chunk_index == total_chunks - 1:
+            # Reassemble file
+            final_filename = secure_filename(original_filename)
+            final_path = os.path.join(TRACK_FOLDER, final_filename)
+            
+            with open(final_path, 'wb') as output_file:
+                for i in range(total_chunks):
+                    chunk_path = os.path.join(temp_dir, f'chunk_{i:04d}')
+                    with open(chunk_path, 'rb') as chunk_file:
+                        output_file.write(chunk_file.read())
+            
+            # Clean up temporary files
 
-""" @track_bp.route('/tracks', methods=['GET'])
-def get_tracks():
-    tracks = Track.query.all()
-    return jsonify([{
-        'id': t.id,
-        'title': t.title,
-        'description': t.description,
-        'song_path': t.song_path,
-        'img_path': t.img_path,
-        'producer': t.producer,
-        'writer': t.writer,
-        'genre': t.genre,
-        'tiktok': t.tiktok,
-        'soundcloud': t.soundcloud,
-        'spotify': t.spotify,
-        'youtube': t.youtube,
-        'instagram': t.instagram
-    } for t in tracks]), 200 """
+            shutil.rmtree(temp_dir)
+            
+            # Create track record (get metadata from last chunk)
+            # Convert string boolean values to Python booleans
+            tiktok = request.form.get('tiktok', 'false').lower() == 'true'
+            youtube = request.form.get('youtube', 'false').lower() == 'true'
+            spotify = request.form.get('spotify', 'false').lower() == 'true'
+            instagram = request.form.get('instagram', 'false').lower() == 'true'
+            soundcloud = request.form.get('soundcloud', 'false').lower() == 'true'
+
+            # Extract form data and files
+            title = request.form.get('title')
+            description = request.form.get('description')
+            producer = request.form.get('producer')
+            writer = request.form.get('writer')
+            genre = request.form.get('genre')
+            img_file = request.files.get('img_file')
+            
+            
+            new_track = Track(
+                title=title,
+                producer=producer,
+                song_path=final_filename,
+                img_path=img_file.filename if img_file else None,
+                description=description,
+                writer=writer,
+                genre=genre,
+                tiktok=tiktok,
+                soundcloud=soundcloud,
+                spotify=spotify,
+                youtube=youtube,
+                instagram=instagram
+            )
+            db.session.add(new_track)
+            db.session.commit()
+            
+            return jsonify({'message': 'Upload complete', 'id': new_track.id}), 201
+        
+        return jsonify({'message': f'Chunk {chunk_index + 1}/{total_chunks} uploaded'}), 200
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @track_bp.route('/tracks/<int:track_id>', methods=['GET'])
 def get_track(track_id):
