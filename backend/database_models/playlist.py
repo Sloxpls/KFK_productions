@@ -6,7 +6,7 @@ class Playlist(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(255), nullable=False)
 
-    status = db.Column(db.Integer, nullable=True, default=1)
+    status = db.Column(db.Integer, nullable=True, default=4)
     description = db.Column(db.Text, nullable=True)
     img_path = db.Column(db.String(255), nullable=True)
 
