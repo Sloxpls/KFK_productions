@@ -47,8 +47,12 @@ const useChunkedUpload = () => {
       formData.append('totalChunks', chunks.length);
       formData.append('uploadId', uploadId);
       formData.append('originalFilename', file.name);
-      if (i === chunks.length - 1) {
-        Object.entries(trackData).forEach(([k,v])=>formData.append(k, v));
+      const isLastChunk = i === chunks.length - 1;
+
+      if (isLastChunk) {
+        for (const key in trackData) {
+          formData.append(key, trackData[key]);
+        }
       }
 
       const response = await fetch('/api/upload-chunk', {
